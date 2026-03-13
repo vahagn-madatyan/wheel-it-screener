@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WheelScan — Options Wheel Strategy Screener</title>
+<link rel="stylesheet" href="./base.css">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<div class="dashboard" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 32 32" fill="none" aria-label="WheelScan logo">
+        <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" fill="none"/>
+        <circle cx="16" cy="16" r="8" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"/>
+        <circle cx="16" cy="16" r="3" fill="currentColor"/>
+        <line x1="16" y1="2" x2="16" y2="8" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="16" y1="24" x2="16" y2="30" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="2" y1="16" x2="8" y2="16" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="24" y1="16" x2="30" y2="16" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div>
+        <h1>WheelScan</h1>
+        <span>Wheel Strategy Screener</span>
+      </div>
+    </div>
+
+    <!-- API KEY -->
+    <div class="settings-section">
+      <button class="section-toggle" onclick="toggleSection('api-section')">
+        <div class="settings-section-title" style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          API Keys
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="section-content" id="api-section">
+        <div class="field-group full" style="margin-top: var(--space-3)">
+          <div class="field api-key-field">
+            <label>Finnhub API Key <span class="api-status disconnected" id="finnhub-status">Not Set</span></label>
+            <input type="password" id="finnhub-key" placeholder="Free key from finnhub.io" oninput="updateApiStatus()">
+          </div>
+          <div style="font-size: var(--text-xs); color: var(--color-text-faint); margin-top: 2px;">Free at <a href="https://finnhub.io/register" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: none;">finnhub.io</a> — Stock data, 30 calls/sec</div>
+        </div>
+        <div class="field-group full">
+          <div class="field api-key-field">
+            <label>Alpaca Key ID <span class="api-status disconnected" id="alpaca-key-status">Not Set</span></label>
+            <input type="password" id="alpaca-key-id" placeholder="APCA-API-KEY-ID" oninput="updateApiStatus()">
+          </div>
+        </div>
+        <div class="field-group full">
+          <div class="field api-key-field">
+            <label>Alpaca Secret Key <span class="api-status disconnected" id="alpaca-secret-status">Not Set</span></label>
+            <input type="password" id="alpaca-secret-key" placeholder="APCA-API-SECRET-KEY" oninput="updateApiStatus()">
+          </div>
+          <div style="font-size: var(--text-xs); color: var(--color-text-faint); margin-top: 2px;">Free at <a href="https://alpaca.markets" target="_blank" rel="noopener noreferrer" style="color: var(--color-primary); text-decoration: none;">alpaca.markets</a> — Options chain, Greeks, OI (indicative feed, 200 req/min)</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <!-- STOCK FILTERS -->
+    <div class="settings-section">
+      <button class="section-toggle" onclick="toggleSection('stock-section')">
+        <div class="settings-section-title" style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          Stock Filters
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="section-content" id="stock-section">
+        <div class="preset-row" style="margin-top: var(--space-3)">
+          <label>Preset</label>
+          <select id="filter-preset" onchange="applyPreset(this.value)">
+            <option value="finviz_cut2">Finviz Cut 2 (Recommended)</option>
+            <option value="conservative">Conservative</option>
+            <option value="aggressive">Aggressive</option>
+            <option value="custom" selected>Custom</option>
+          </select>
+        </div>
+        <div class="field-group full">
+          <div class="field">
+            <label>Ticker Universe</label>
+            <select id="ticker-universe">
+              <option value="wheel_popular">Popular Wheel Stocks (50)</option>
+              <option value="sp500_top">S&amp;P 500 Top 50</option>
+              <option value="high_dividend">High Dividend (30)</option>
+              <option value="custom">Custom Tickers Only</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group full">
+          <div class="field">
+            <label>Add Custom Tickers <span style="color:var(--color-text-faint); font-weight:400">(comma-separated)</span></label>
+            <input type="text" id="custom-tickers" placeholder="e.g. OXY, SOFI, PLTR, HOOD">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label>Min Price ($)</label>
+            <input type="number" id="min-price" value="10" min="0" step="1">
+          </div>
+          <div class="field">
+            <label>Max Price ($)</label>
+            <input type="number" id="max-price" value="50" min="0" step="1">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label data-tooltip="Minimum market cap in billions" class="tooltip-trigger">Min Mkt Cap ($B)</label>
+            <input type="number" id="min-mktcap" value="2" min="0" step="0.5">
+          </div>
+          <div class="field">
+            <label data-tooltip="Maximum market cap in billions" class="tooltip-trigger">Max Mkt Cap ($B)</label>
+            <input type="number" id="max-mktcap" value="2000" min="0" step="0.5">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label data-tooltip="Minimum average daily volume (millions)" class="tooltip-trigger">Min Vol (M)</label>
+            <input type="number" id="min-volume" value="2" min="0" step="0.5">
+          </div>
+          <div class="field">
+            <label data-tooltip="Maximum P/E ratio" class="tooltip-trigger">Max P/E Ratio</label>
+            <input type="number" id="max-pe" value="60" min="0" step="1">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label data-tooltip="Max Debt/Equity ratio. Under 1 = healthy balance sheet" class="tooltip-trigger">Max D/E Ratio</label>
+            <input type="number" id="max-debt-equity" value="1" min="0" step="0.1">
+          </div>
+          <div class="field">
+            <label data-tooltip="Minimum net profit margin %" class="tooltip-trigger">Min Net Margin %</label>
+            <input type="number" id="min-net-margin" value="0" step="1">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label data-tooltip="Minimum quarterly revenue growth %" class="tooltip-trigger">Min Sales Grw %</label>
+            <input type="number" id="min-sales-growth" value="0" step="1">
+          </div>
+          <div class="field">
+            <label data-tooltip="Minimum return on equity %" class="tooltip-trigger">Min ROE %</label>
+            <input type="number" id="min-roe" value="0" step="1">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <!-- WHEEL STRATEGY CRITERIA -->
+    <div class="settings-section">
+      <button class="section-toggle" onclick="toggleSection('wheel-section')">
+        <div class="settings-section-title" style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Wheel Criteria
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="section-content" id="wheel-section">
+        <div class="field-group" style="margin-top: var(--space-3)">
+          <div class="field">
+            <label data-tooltip="Min annualized premium yield from CSP" class="tooltip-trigger">Min Premium %</label>
+            <input type="number" id="min-premium" value="12" min="0" step="1">
+          </div>
+          <div class="field">
+            <label data-tooltip="Max CSP buying power per contract" class="tooltip-trigger">Max BP ($)</label>
+            <input type="number" id="max-bp" value="10000" min="0" step="500">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label data-tooltip="Target DTE for puts" class="tooltip-trigger">Target DTE</label>
+            <select id="target-dte">
+              <option value="30" selected>30 Days</option>
+              <option value="45">45 Days</option>
+              <option value="60">60 Days</option>
+              <option value="90">90 Days</option>
+            </select>
+          </div>
+          <div class="field">
+            <label data-tooltip="Target delta for put selection" class="tooltip-trigger">Put Delta</label>
+            <select id="target-delta">
+              <option value="0.20">0.20 (Conservative)</option>
+              <option value="0.25">0.25</option>
+              <option value="0.30" selected>0.30 (Standard)</option>
+              <option value="0.35">0.35</option>
+              <option value="0.40">0.40 (Aggressive)</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label data-tooltip="Minimum IV Rank (0-100)" class="tooltip-trigger">Min IV Rank</label>
+            <input type="number" id="min-iv-rank" value="20" min="0" max="100" step="5">
+          </div>
+          <div class="field">
+            <label data-tooltip="Maximum IV Rank (0-100)" class="tooltip-trigger">Max IV Rank</label>
+            <input type="number" id="max-iv-rank" value="80" min="0" max="100" step="5">
+          </div>
+        </div>
+
+        <div class="toggle-field">
+          <label>Require Dividends</label>
+          <div class="toggle-switch" id="toggle-dividends" onclick="toggleSwitch(this)"></div>
+        </div>
+        <div class="toggle-field">
+          <label>Above 200-day SMA</label>
+          <div class="toggle-switch active" id="toggle-sma200" onclick="toggleSwitch(this)"></div>
+        </div>
+        <div class="toggle-field">
+          <label>Exclude Earnings (within 14d)</label>
+          <div class="toggle-switch active" id="toggle-earnings" onclick="toggleSwitch(this)"></div>
+        </div>
+        <div class="toggle-field">
+          <label>Has Weekly Options</label>
+          <div class="toggle-switch" id="toggle-weeklies" onclick="toggleSwitch(this)"></div>
+        </div>
+        <div class="toggle-field">
+          <label data-tooltip="Exclude Biotech, Regional Banks, Oil E&amp;P, SPACs, Meme stocks" class="tooltip-trigger">Exclude Risky Sectors</label>
+          <div class="toggle-switch active" id="toggle-risky-sectors" onclick="toggleSwitch(this)"></div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="sidebar-divider">
+
+    <!-- SCORING WEIGHTS -->
+    <div class="settings-section">
+      <button class="section-toggle collapsed" onclick="toggleSection('scoring-section')">
+        <div class="settings-section-title" style="margin-bottom:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+          Scoring Weights
+        </div>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="section-content collapsed" id="scoring-section">
+        <div class="field-group" style="margin-top: var(--space-3)">
+          <div class="field">
+            <label>Premium Weight</label>
+            <input type="number" id="weight-premium" value="30" min="0" max="100" step="5">
+          </div>
+          <div class="field">
+            <label>Liquidity Weight</label>
+            <input type="number" id="weight-liquidity" value="20" min="0" max="100" step="5">
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field">
+            <label>Stability Weight</label>
+            <input type="number" id="weight-stability" value="25" min="0" max="100" step="5">
+          </div>
+          <div class="field">
+            <label>Fundamentals Wt</label>
+            <input type="number" id="weight-fundamentals" value="25" min="0" max="100" step="5">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <button class="run-btn" id="run-btn" onclick="runScreener()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Run Screener
+    </button>
+    <button class="reset-btn" onclick="resetDefaults()">Reset to Defaults</button>
+  </aside>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <button class="mobile-sidebar-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle settings">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <h2>Screener Results</h2>
+      <div class="header-stats" id="header-stats">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" data-theme-toggle aria-label="Toggle theme">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main-content">
+    <!-- KPI ROW -->
+    <div class="kpi-row" id="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Stocks Scanned</div>
+        <div class="kpi-value" id="kpi-scanned">—</div>
+        <div class="kpi-sub">from selected sources</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Passed Filters</div>
+        <div class="kpi-value" id="kpi-passed">—</div>
+        <div class="kpi-sub">meet wheel criteria</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Wheel Score</div>
+        <div class="kpi-value" id="kpi-avg-score">—</div>
+        <div class="kpi-sub">weighted composite</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avg Premium Yield</div>
+        <div class="kpi-value" id="kpi-avg-premium">—</div>
+        <div class="kpi-sub">annualized estimate</div>
+      </div>
+    </div>
+
+    <!-- RESULTS TABLE -->
+    <div class="results-container" id="results-container">
+      <div class="results-header">
+        <h3>Wheel Candidates <span id="results-count" style="color: var(--color-text-faint); font-weight: 400;"></span></h3>
+        <div class="results-actions">
+          <button class="sort-btn active" onclick="sortResults('score')" id="sort-score">Score</button>
+          <button class="sort-btn" onclick="sortResults('premium')" id="sort-premium">Premium</button>
+          <button class="sort-btn" onclick="sortResults('price')" id="sort-price">Price</button>
+          <button class="sort-btn" onclick="sortResults('volume')" id="sort-volume">Volume</button>
+          <button class="sort-btn" onclick="exportCSV()" id="export-btn" style="color: var(--color-primary); border-color: var(--color-primary);">Export CSV</button>
+        </div>
+      </div>
+
+      <div class="table-wrap" id="table-container">
+        <!-- Empty state -->
+        <div class="empty-state" id="empty-state">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <h3>No results yet</h3>
+          <p>Configure your wheel strategy filters in the sidebar and hit "Run Screener" to find optimal stocks for selling cash-secured puts.</p>
+        </div>
+
+        <!-- Loading skeleton (hidden by default) -->
+        <div id="loading-skeleton" style="display: none;">
+          <div class="skeleton-row"><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:120px"></div><div class="skeleton-cell" style="width:70px"></div><div class="skeleton-cell" style="width:80px"></div><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:100px"></div></div>
+          <div class="skeleton-row"><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:100px"></div><div class="skeleton-cell" style="width:70px"></div><div class="skeleton-cell" style="width:80px"></div><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:100px"></div></div>
+          <div class="skeleton-row"><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:140px"></div><div class="skeleton-cell" style="width:70px"></div><div class="skeleton-cell" style="width:80px"></div><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:100px"></div></div>
+          <div class="skeleton-row"><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:110px"></div><div class="skeleton-cell" style="width:70px"></div><div class="skeleton-cell" style="width:80px"></div><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:100px"></div></div>
+          <div class="skeleton-row"><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:130px"></div><div class="skeleton-cell" style="width:70px"></div><div class="skeleton-cell" style="width:80px"></div><div class="skeleton-cell" style="width:60px"></div><div class="skeleton-cell" style="width:100px"></div></div>
+        </div>
+
+        <!-- Results table (hidden by default) -->
+        <table class="results-table" id="results-table" style="display: none;">
+          <thead>
+            <tr>
+              <th onclick="sortByCol('symbol')">Ticker <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('price')">Price <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('marketCap')">Mkt Cap <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('volume')">Vol (Avg) <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('pe')">P/E <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('ivRank')">IV Rank <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('premiumYield')">Prem Yield <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('buyingPower')">BP Req <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('sma200')">200 SMA <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('earningsDays')">Earnings <span class="sort-arrow">↕</span></th>
+              <th onclick="sortByCol('wheelScore')">Score <span class="sort-arrow">↕</span></th>
+              <th>Chain</th>
+            </tr>
+          </thead>
+          <tbody id="results-body">
+          </tbody>
+        </table>
+      </div>
+
+      <div class="status-bar" id="status-bar">
+        <span class="status-dot" id="status-dot"></span>
+        <span id="status-text">Ready — configure filters and run screener</span>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+    </footer>
+  </main>
+</div>
+
+<!-- OPTION CHAIN PANEL -->
+<div class="chain-overlay" id="chain-overlay" style="display:none" onclick="closeChainPanel()">
+  <div class="chain-panel" onclick="event.stopPropagation()">
+    <div class="chain-panel-header">
+      <div class="chain-stock-info">
+        <span class="chain-symbol" id="chain-symbol">—</span>
+        <span class="chain-name" id="chain-name">—</span>
+        <span class="chain-price" id="chain-price">—</span>
+      </div>
+      <div class="chain-controls">
+        <div class="field" style="min-width:180px">
+          <label>Expiration Date</label>
+          <select id="chain-expiry" onchange="fetchChainForExpiry()">
+            <option>Select stock first</option>
+          </select>
+        </div>
+        <button class="chain-close-btn" onclick="closeChainPanel()" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="chain-info-bar" id="chain-info-bar"></div>
+    <div class="chain-table-wrap" id="chain-table-wrap">
+      <div class="chain-loading" id="chain-loading" style="display:none">
+        <div class="spinner"></div>
+        <span>Loading option chain...</span>
+      </div>
+      <div class="chain-empty" id="chain-empty">
+        <p>Select an expiration date to view the put option chain with wheel strategy recommendations.</p>
+      </div>
+      <table class="chain-table" id="chain-table" style="display:none">
+        <thead>
+          <tr>
+            <th>Strike</th>
+            <th>Bid</th>
+            <th>Ask</th>
+            <th>Spread</th>
+            <th>Mid</th>
+            <th>Vol</th>
+            <th>OI</th>
+            <th>Delta</th>
+            <th>IV</th>
+            <th>Ann Yield</th>
+            <th>Put Score</th>
+            <th>Rec</th>
+          </tr>
+        </thead>
+        <tbody id="chain-body"></tbody>
+      </table>
+    </div>
+    <div class="chain-footer" id="chain-footer">
+      <span>Options data via <a href="https://alpaca.markets" target="_blank" rel="noopener noreferrer">Alpaca</a> Market Data API (indicative feed: delayed quotes, Greeks via Black-Scholes).</span>
+    </div>
+  </div>
+</div>
+
+<script src="./app.js"></script>
+</body>
+</html>
