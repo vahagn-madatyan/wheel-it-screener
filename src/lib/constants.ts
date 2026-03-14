@@ -1,0 +1,77 @@
+import type { Preset, WeightConfig } from "@/types";
+
+// ---- Curated Ticker Lists (exact match to app.js) ----
+export const TICKER_LISTS: Record<string, string[]> = {
+  wheel_popular: [
+    "AAPL","MSFT","AMZN","GOOGL","META","NVDA","AMD","TSLA","JPM","BAC",
+    "WFC","C","GS","V","MA","DIS","NFLX","PYPL","SQ","INTC",
+    "CSCO","QCOM","MU","F","GM","T","VZ","PFE","JNJ","MRK",
+    "ABBV","BMY","UNH","CVS","XOM","CVX","COP","OXY","ET","KO",
+    "PEP","MCD","WMT","TGT","HD","LOW","NKE","SBUX","PLTR","SOFI",
+  ],
+  sp500_top: [
+    "AAPL","MSFT","AMZN","NVDA","GOOGL","META","TSLA","BRK.B","LLY","UNH",
+    "JPM","V","XOM","AVGO","MA","JNJ","PG","HD","COST","MRK",
+    "ABBV","CVX","PEP","KO","ADBE","WMT","CRM","BAC","MCD","CSCO",
+    "TMO","ACN","ABT","LIN","ORCL","DHR","NKE","NFLX","AMD","TXN",
+    "CMCSA","PM","NEE","LOW","UPS","RTX","HON","INTC","AMGN","IBM",
+  ],
+  high_dividend: [
+    "T","VZ","MO","PM","XOM","CVX","COP","OXY","ET","EPD",
+    "KMI","WMB","ABBV","PFE","BMY","JNJ","MRK","KO","PEP","CSCO",
+    "IBM","INTC","F","GM","WFC","BAC","USB","KEY","SCHW","MMM",
+  ],
+};
+
+// ---- Excluded sectors (from strategy doc) ----
+export const EXCLUDED_INDUSTRIES: string[] = [
+  "Biotechnology", "Pharmaceuticals",
+  "Blank Checks", "Shell Companies",
+  "Savings Institutions", "Thrifts & Mortgage Finance",
+  "Oil & Gas Exploration & Production", "Oil & Gas Drilling",
+  "Mortgage Real Estate Investment Trusts (REITs)",
+  "Mortgage Finance",
+];
+
+// ---- Known meme / high-risk tickers to exclude ----
+export const EXCLUDED_TICKERS: string[] = [
+  "GME","AMC","BBBY","BB","WISH","CLOV","SPCE","RIDE","WKHS","SNDL",
+  "MARA","RIOT","COIN","MSTR","HUT","BITF","BITO","GBTC",
+  "TQQQ","SQQQ","UVXY","SVXY","SPXS","SPXL","LABU","LABD","JNUG","JDST",
+];
+
+// ---- Default weight configuration ----
+export const DEFAULT_WEIGHTS: WeightConfig = {
+  weightPremium: 30,
+  weightLiquidity: 20,
+  weightStability: 25,
+  weightFundamentals: 25,
+};
+
+// ---- Presets (exact match to app.js, including string types for select-bound values) ----
+export const PRESETS: Record<string, Preset> = {
+  finviz_cut2: {
+    minPrice: 10, maxPrice: 50, minMktCap: 2, maxMktCap: 2000,
+    minVolume: 2, maxPE: 60, maxDebtEquity: 1, minNetMargin: 0,
+    minSalesGrowth: 5, minROE: 0, minPremium: 12, maxBP: 10000,
+    targetDTE: "30", targetDelta: "0.30", minIVRank: 30, maxIVRank: 80,
+    dividends: false, sma200: true, earnings: true, weeklies: false, riskySectors: true,
+    weightPremium: 30, weightLiquidity: 20, weightStability: 25, weightFundamentals: 25,
+  },
+  conservative: {
+    minPrice: 20, maxPrice: 100, minMktCap: 10, maxMktCap: 2000,
+    minVolume: 5, maxPE: 30, maxDebtEquity: 0.5, minNetMargin: 10,
+    minSalesGrowth: 0, minROE: 10, minPremium: 8, maxBP: 15000,
+    targetDTE: "45", targetDelta: "0.20", minIVRank: 20, maxIVRank: 60,
+    dividends: true, sma200: true, earnings: true, weeklies: false, riskySectors: true,
+    weightPremium: 20, weightLiquidity: 25, weightStability: 30, weightFundamentals: 25,
+  },
+  aggressive: {
+    minPrice: 5, maxPrice: 200, minMktCap: 1, maxMktCap: 2000,
+    minVolume: 0.5, maxPE: 100, maxDebtEquity: 2, minNetMargin: -50,
+    minSalesGrowth: -50, minROE: -50, minPremium: 15, maxBP: 20000,
+    targetDTE: "30", targetDelta: "0.35", minIVRank: 30, maxIVRank: 100,
+    dividends: false, sma200: false, earnings: true, weeklies: false, riskySectors: false,
+    weightPremium: 40, weightLiquidity: 20, weightStability: 15, weightFundamentals: 25,
+  },
+};
