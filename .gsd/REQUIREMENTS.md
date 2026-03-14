@@ -59,25 +59,25 @@
 
 ### R006 — Zustand stores with persist middleware
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: 6 stores — filterStore, resultsStore, scanStore, apiKeyStore (persisted to localStorage), themeStore (persisted), chainStore
 - Why it matters: Centralized state replaces scattered vanilla JS globals
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: 33 Vitest tests pass covering all 6 stores — state transitions, preset conversion (string→number), persist serialization/deserialization, derived status computation, DOM classList sync. localStorage keys `wheelscan-api-keys` and `wheelscan-theme` inspectable in devtools.
+- Notes: Decisions #18 (scanStore phase enum), #19 (apiKeyStore derived status)
 
 ### R007 — Typed API services with token-bucket rate limiter
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Finnhub, Alpaca, Massive.com (Polygon) API clients with TypeScript types, token-bucket rate limiter (configurable per-provider), retry logic, error typing
 - Why it matters: API layer must handle rate limits gracefully — Massive.com free tier is 5 calls/min
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: M001/S06
-- Validation: unmapped
-- Notes: Finnhub has its own rate limits; Alpaca is more generous
+- Validation: 27 Vitest tests pass — 6 rate limiter tests (throttling, FIFO drain, reset, dispose) + 21 service tests (URL construction, auth headers/params, pagination, AbortSignal, ApiError typing). All services accept AbortSignal for cancellation. Finnhub retries 429 with multiplicative backoff.
+- Notes: Decisions #20 (rate limiter pattern), #21 (ApiError convention), #22 (Finnhub retry strategy)
 
 ### R008 — TanStack Query v5 integration
 - Class: core-capability
@@ -87,8 +87,8 @@
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: M001/S05, M001/S06
-- Validation: unmapped
-- Notes: none
+- Validation: QueryClientProvider wired in main.tsx with staleTime 5min, retry 1, refetchOnWindowFocus false. Dev server renders without errors. useMutation/useQuery hooks validated at runtime in S05/S06.
+- Notes: Provider is wired (S02 scope). Hook usage (useMutation for scan, useQuery for chains) is S05/S06 scope — partially validated.
 
 ### R009 — CSS Grid dashboard layout
 - Class: core-capability
@@ -363,9 +363,9 @@
 | R003 | core-capability | validated | M001/S01 | none | 8 interfaces, tsc clean |
 | R004 | primary-user-loop | validated | M001/S01 | none | 128 parity tests pass |
 | R005 | quality-attribute | validated | M001/S01 | none | 128 tests across 6 files |
-| R006 | core-capability | active | M001/S02 | none | unmapped |
-| R007 | core-capability | active | M001/S02 | M001/S06 | unmapped |
-| R008 | core-capability | active | M001/S02 | M001/S05, M001/S06 | unmapped |
+| R006 | core-capability | validated | M001/S02 | none | 33 store tests pass; persist serialization verified |
+| R007 | core-capability | validated | M001/S02 | M001/S06 | 27 service/rate-limiter tests pass |
+| R008 | core-capability | active | M001/S02 | M001/S05, M001/S06 | QueryClientProvider wired; hooks pending S05/S06 |
 | R009 | core-capability | active | M001/S03 | none | unmapped |
 | R010 | core-capability | active | M001/S03 | M001/S04 | unmapped |
 | R011 | quality-attribute | active | M001/S03 | none | unmapped |
@@ -393,7 +393,7 @@
 
 ## Coverage Summary
 
-- Active requirements: 28
+- Active requirements: 26
 - Mapped to slices: 32
-- Validated: 4 (R001, R003, R004, R005)
+- Validated: 6 (R001, R003, R004, R005, R006, R007)
 - Unmapped active requirements: 0

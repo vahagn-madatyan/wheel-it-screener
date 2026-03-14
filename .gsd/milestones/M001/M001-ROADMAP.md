@@ -55,7 +55,7 @@ This milestone is complete only when all are true:
 
 - [x] **S01: Foundation + Business Logic** `risk:medium` `depends:[]`
   > After this: Vite dev server runs, TypeScript types defined, all scoring/filtering logic extracted as pure functions, Vitest tests pass proving parity with vanilla app
-- [ ] **S02: State Management + API Services** `risk:medium` `depends:[S01]`
+- [x] **S02: State Management + API Services** `risk:medium` `depends:[S01]`
   > After this: 6 Zustand stores created with correct shapes, API key store persists to localStorage, Finnhub/Alpaca/Massive.com typed service clients exist, token-bucket rate limiter works, TanStack Query provider wired
 - [ ] **S03: Layout Shell** `risk:low` `depends:[S01]`
   > After this: CSS Grid dashboard renders with 320px sidebar + fluid main, sidebar sections collapse via Radix, responsive breakpoints work at 1024px and 640px, Financial Terminal Noir base theme visible

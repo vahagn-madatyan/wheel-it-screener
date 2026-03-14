@@ -12,7 +12,7 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01 (Foundation + Business Logic) is complete.
+Migration in progress on `ui-improve` branch. S01 and S02 complete. S03 (Layout Shell) is next.
 
 **What exists now:**
 - Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
@@ -20,6 +20,10 @@ Migration in progress on `ui-improve` branch. S01 (Foundation + Business Logic) 
 - All 8 domain TypeScript interfaces in `src/types/index.ts`
 - All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants
 - 128 Vitest parity tests proving scoring/filtering matches vanilla app
+- 6 Zustand stores (filter, results, scan, apiKey w/ persist, theme w/ persist, chain)
+- Typed API services for Finnhub, Alpaca, Massive.com with token-bucket rate limiting
+- TanStack Query v5 QueryClientProvider wired at app root
+- 60 store + service tests (33 store, 27 service/rate-limiter)
 - Minimal App shell (placeholder — layout comes in S03)
 
 **Vanilla files (still present, to be removed in S08):**
@@ -55,4 +59,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01 complete (foundation + business logic), S02 next (state management + API services)
+- 🔄 M001: React Migration & Visual Redesign — S01–S02 complete, S03 next (layout shell)
