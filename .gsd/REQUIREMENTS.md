@@ -92,36 +92,36 @@
 
 ### R009 — CSS Grid dashboard layout
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: 320px fixed sidebar + fluid main area, CSS Grid, dark background with subtle noise texture
 - Why it matters: Primary layout structure for the entire app
 - Source: user
 - Primary owning slice: M001/S03
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: CSS Grid `grid-cols-[320px_1fr]` renders at desktop width. Sidebar measured at exactly 320px via getBoundingClientRect. Main area fills remaining width. Noise texture deferred to S07.
+- Notes: DashboardLayout component in src/components/layout/DashboardLayout.tsx
 
 ### R010 — Collapsible sidebar sections
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Sidebar sections (API Keys, Presets, Filters, Scoring Weights) collapsible via Radix Collapsible with smooth animation
 - Why it matters: Sidebar has many controls; collapsing keeps it manageable
 - Source: user
 - Primary owning slice: M001/S03
 - Supporting slices: M001/S04
-- Validation: unmapped
-- Notes: none
+- Validation: SidebarSection wraps Radix Collapsible with chevron rotation via data-state selectors and tw-animate-css height keyframes. Sections toggle between open/closed states. S04 populates with real controls.
+- Notes: SidebarSection component in src/components/layout/SidebarSection.tsx
 
 ### R011 — Responsive breakpoints
 - Class: quality-attribute
-- Status: active
+- Status: validated
 - Description: At 1024px sidebar collapses to hamburger overlay, at 640px layout stacks vertically
 - Why it matters: Usable on tablets and smaller screens
 - Source: user
 - Primary owning slice: M001/S03
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: Verified in browser at 1280px (desktop inline), 1023px (hamburger + overlay with backdrop), 640px (stacked). Escape key and backdrop click close overlay. MediaQueryList listener auto-closes overlay on resize past lg breakpoint.
+- Notes: Mobile overlay uses conditional DOM mounting pattern (Decision #24)
 
 ### R012 — Sidebar controls wired to filter store
 - Class: primary-user-loop
@@ -366,9 +366,9 @@
 | R006 | core-capability | validated | M001/S02 | none | 33 store tests pass; persist serialization verified |
 | R007 | core-capability | validated | M001/S02 | M001/S06 | 27 service/rate-limiter tests pass |
 | R008 | core-capability | active | M001/S02 | M001/S05, M001/S06 | QueryClientProvider wired; hooks pending S05/S06 |
-| R009 | core-capability | active | M001/S03 | none | unmapped |
-| R010 | core-capability | active | M001/S03 | M001/S04 | unmapped |
-| R011 | quality-attribute | active | M001/S03 | none | unmapped |
+| R009 | core-capability | validated | M001/S03 | none | CSS Grid 320px+1fr verified in browser |
+| R010 | core-capability | validated | M001/S03 | M001/S04 | Radix Collapsible with animated height |
+| R011 | quality-attribute | validated | M001/S03 | none | 1024px hamburger overlay + 640px stacked verified |
 | R012 | primary-user-loop | active | M001/S04 | none | unmapped |
 | R013 | primary-user-loop | active | M001/S04 | none | unmapped |
 | R014 | primary-user-loop | active | M001/S04 | none | unmapped |
@@ -393,7 +393,7 @@
 
 ## Coverage Summary
 
-- Active requirements: 26
+- Active requirements: 23
 - Mapped to slices: 32
-- Validated: 6 (R001, R003, R004, R005, R006, R007)
+- Validated: 9 (R001, R003, R004, R005, R006, R007, R009, R010, R011)
 - Unmapped active requirements: 0

@@ -1,3 +1,5 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { EXCLUDED_INDUSTRIES, EXCLUDED_TICKERS, TICKER_LISTS } from "./constants";
 
 /**
@@ -58,4 +60,9 @@ export function getTickerList(filters: {
   }
 
   return tickers;
+}
+
+/** Merge Tailwind classes with conflict resolution. */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }
