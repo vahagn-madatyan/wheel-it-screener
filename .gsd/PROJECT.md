@@ -12,19 +12,20 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01–S03 complete. S04 (Sidebar Controls) is next.
+Migration in progress on `ui-improve` branch. S01–S04 complete. S05 (Results + Scan Flow) is next.
 
 **What exists now:**
 - Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
 - Tailwind v4 + shadcn/ui with Financial Terminal Noir oklch theme (dark + light)
 - All 8 domain TypeScript interfaces in `src/types/index.ts`
 - All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants
-- 188 Vitest tests (parity + stores + services) all passing
+- 196 Vitest tests (parity + stores + services + weight redistribution) all passing
 - 6 Zustand stores (filter, results, scan, apiKey w/ persist, theme w/ persist, chain)
 - Typed API services for Finnhub, Alpaca, Massive.com with token-bucket rate limiting
 - TanStack Query v5 QueryClientProvider wired at app root
 - CSS Grid dashboard layout with 320px collapsible sidebar, hamburger overlay on mobile, responsive breakpoints at 1024px and 640px
-- shadcn/ui foundation (components.json, cn(), Collapsible) ready for component authoring
+- Complete sidebar with all ~25 filter controls bound to stores — presets, weight sliders, API key inputs, toggles, dropdowns, numeric fields
+- Run Screener button (disabled until Finnhub key set) and Reset to Defaults button
 
 **Vanilla files (still present, to be removed in S08):**
 - `app.js` — 1334-line monolith (source for logic extraction)
@@ -59,4 +60,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01–S03 complete, S04 next (sidebar controls)
+- 🔄 M001: React Migration & Visual Redesign — S01–S04 complete, S05 next (results + scan flow)

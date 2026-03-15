@@ -59,7 +59,7 @@ This milestone is complete only when all are true:
   > After this: 6 Zustand stores created with correct shapes, API key store persists to localStorage, Finnhub/Alpaca/Massive.com typed service clients exist, token-bucket rate limiter works, TanStack Query provider wired
 - [x] **S03: Layout Shell** `risk:low` `depends:[S01]`
   > After this: CSS Grid dashboard renders with 320px sidebar + fluid main, sidebar sections collapse via Radix, responsive breakpoints work at 1024px and 640px, Financial Terminal Noir base theme visible
-- [ ] **S04: Sidebar Controls** `risk:medium` `depends:[S02,S03]`
+- [x] **S04: Sidebar Controls** `risk:medium` `depends:[S02,S03]`
   > After this: All filter inputs render in sidebar, bound to filterStore, presets switch all values, weight sliders work with sum constraint, API key inputs with masked fields and status badges
 - [ ] **S05: Results + Scan Flow** `risk:high` `depends:[S04]`
   > After this: Run button triggers full scan via Finnhub API, progress bar shows ticker-by-ticker progress, KPI cards animate on completion, results table populates with sorted/scored data, wheel score tooltips show breakdown, CSV export works

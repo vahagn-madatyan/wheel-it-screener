@@ -1,29 +1,36 @@
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { SidebarSection } from "@/components/layout/SidebarSection";
+import { ApiKeysSection } from "@/components/sidebar/ApiKeysSection";
+import { StockFiltersSection } from "@/components/sidebar/StockFiltersSection";
+import { WheelCriteriaSection } from "@/components/sidebar/WheelCriteriaSection";
+import { ScoringWeightsSection } from "@/components/sidebar/ScoringWeightsSection";
+import { ActionButtons } from "@/components/sidebar/ActionButtons";
 
 export function App() {
   return (
     <DashboardLayout
       sidebar={
         <Sidebar>
-          <SidebarSection title="Universe">
-            <p className="text-sm text-sidebar-foreground/70">
-              Ticker selection controls will go here.
-            </p>
+          <SidebarSection title="API Keys">
+            <ApiKeysSection />
           </SidebarSection>
 
-          <SidebarSection title="Strategy">
-            <p className="text-sm text-sidebar-foreground/70">
-              DTE, delta, and premium filters will go here.
-            </p>
+          <SidebarSection title="Stock Filters">
+            <StockFiltersSection />
           </SidebarSection>
 
-          <SidebarSection title="Scoring">
-            <p className="text-sm text-sidebar-foreground/70">
-              Weight sliders and scoring config will go here.
-            </p>
+          <SidebarSection title="Wheel Criteria">
+            <WheelCriteriaSection />
           </SidebarSection>
+
+          <SidebarSection title="Scoring Weights">
+            <ScoringWeightsSection />
+          </SidebarSection>
+
+          <div className="px-4 py-3">
+            <ActionButtons />
+          </div>
         </Sidebar>
       }
     >

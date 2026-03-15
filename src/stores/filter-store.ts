@@ -74,3 +74,4 @@ export const useFilterStore = create<FilterStore>()((set) => ({
     set(presetToFilterState(preset));
   },
 }));
+

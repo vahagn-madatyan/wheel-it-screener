@@ -125,47 +125,47 @@
 
 ### R012 — Sidebar controls wired to filter store
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: All filter inputs (price range, volume, market cap, IV rank, premium yield, spread, earnings days, D/E ratio, net margin, sales growth, ROE, sector exclusion) two-way bound to filterStore
 - Why it matters: Filters drive what results appear — core user interaction
 - Source: user
 - Primary owning slice: M001/S04
 - Supporting slices: none
-- Validation: unmapped
+- Validation: All ~25 filter controls rendered in sidebar, two-way bound to filterStore, verified in browser with correct Finviz Cut 2 default values. 196 tests pass including store-level preset/reset tests.
 - Notes: New strategy filters from STRATEGY_FILTERS.md: D/E ratio, net margin, sales growth, ROE, sector exclusion
 
 ### R013 — API key inputs with masked fields + status badges
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Three API key inputs (Finnhub, Alpaca, Massive.com) with masked display, show/hide toggle, connection status badge (untested/valid/invalid)
 - Why it matters: Users must enter API keys to use the app
 - Source: user
 - Primary owning slice: M001/S04
 - Supporting slices: none
-- Validation: unmapped
+- Validation: 4 API key inputs render with masked fields, eye toggle works both directions, status badges update on key entry ("Not Set" → green "Set"), localStorage persistence verified. Alpaca coordinated update pattern confirmed working.
 - Notes: Keys persisted via apiKeyStore with Zustand persist
 
 ### R014 — Filter presets
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Dropdown with presets — Finviz Cut 2, Conservative, Aggressive — that populate all filter fields. Custom preset created from current values.
 - Why it matters: Quick-start for users who don't want to manually set 12+ filters
 - Source: user
 - Primary owning slice: M001/S04
 - Supporting slices: none
-- Validation: unmapped
+- Validation: Preset dropdown renders with 3 presets + Custom. Derived detection via useMemo correctly identifies current preset or shows "Custom" when manually edited. applyPreset and resetFilters store actions verified by 33 store tests.
 - Notes: Preset values defined in STRATEGY_FILTERS.md
 
 ### R015 — Visual weight sliders
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Scoring weight inputs rendered as sliders (not number inputs) with visual feedback, constrained to sum to 100%
 - Why it matters: More intuitive than typing numbers for weight distribution
 - Source: user
 - Primary owning slice: M001/S04
 - Supporting slices: none
-- Validation: unmapped
-- Notes: 6 weights: price, volume, IV rank, premium yield, spread, earnings proximity
+- Validation: 4 Radix Slider components render with percentage labels (30/20/25/25 default). Proportional redistribution verified by 8 unit tests. "Total: 100%" displayed in UI. Edge cases tested: all-others-zero, single absorber, rounding.
+- Notes: 4 user-facing weight categories (Premium, Liquidity, Stability, Fundamentals) map to the 6-factor scoring model internally
 
 ### R016 — KPI cards with animated count-up
 - Class: differentiator
@@ -369,10 +369,10 @@
 | R009 | core-capability | validated | M001/S03 | none | CSS Grid 320px+1fr verified in browser |
 | R010 | core-capability | validated | M001/S03 | M001/S04 | Radix Collapsible with animated height |
 | R011 | quality-attribute | validated | M001/S03 | none | 1024px hamburger overlay + 640px stacked verified |
-| R012 | primary-user-loop | active | M001/S04 | none | unmapped |
-| R013 | primary-user-loop | active | M001/S04 | none | unmapped |
-| R014 | primary-user-loop | active | M001/S04 | none | unmapped |
-| R015 | differentiator | active | M001/S04 | none | unmapped |
+| R012 | primary-user-loop | validated | M001/S04 | none | ~25 controls bound to filterStore, browser verified |
+| R013 | primary-user-loop | validated | M001/S04 | none | masked inputs + eye toggle + status badges verified |
+| R014 | primary-user-loop | validated | M001/S04 | none | 3 presets + derived Custom, store tests pass |
+| R015 | differentiator | validated | M001/S04 | none | 4 sliders + redistribution, 8 unit tests + browser |
 | R016 | differentiator | active | M001/S05 | none | unmapped |
 | R017 | primary-user-loop | active | M001/S05 | none | unmapped |
 | R018 | primary-user-loop | active | M001/S05 | none | unmapped |
@@ -393,7 +393,7 @@
 
 ## Coverage Summary
 
-- Active requirements: 23
+- Active requirements: 19
 - Mapped to slices: 32
-- Validated: 9 (R001, R003, R004, R005, R006, R007, R009, R010, R011)
+- Validated: 13 (R001, R003, R004, R005, R006, R007, R009, R010, R011, R012, R013, R014, R015)
 - Unmapped active requirements: 0

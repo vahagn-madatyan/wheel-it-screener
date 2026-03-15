@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — React Migration & Visual Redesign
-**Active Slice:** S04 — Sidebar Controls
+**Active Slice:** S05 — Results + Scan Flow
 **Phase:** planning
 **Requirements Status:** 32 active · 0 validated · 0 deferred · 0 out of scope
 
@@ -15,4 +15,4 @@
 - None
 
 ## Next Action
-Plan slice S04 (Sidebar Controls).
+Plan slice S05 (Results + Scan Flow).
