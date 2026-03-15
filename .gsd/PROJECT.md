@@ -12,20 +12,24 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01–S04 complete. S05 (Results + Scan Flow) is next.
+Migration in progress on `ui-improve` branch. S01–S05 complete. S06 (Option Chain Modal) is next.
 
 **What exists now:**
 - Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
 - Tailwind v4 + shadcn/ui with Financial Terminal Noir oklch theme (dark + light)
 - All 8 domain TypeScript interfaces in `src/types/index.ts`
 - All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants
-- 196 Vitest tests (parity + stores + services + weight redistribution) all passing
+- 206 Vitest tests (parity + stores + services + weight redistribution + CSV export) all passing
 - 6 Zustand stores (filter, results, scan, apiKey w/ persist, theme w/ persist, chain)
 - Typed API services for Finnhub, Alpaca, Massive.com with token-bucket rate limiting
 - TanStack Query v5 QueryClientProvider wired at app root
 - CSS Grid dashboard layout with 320px collapsible sidebar, hamburger overlay on mobile, responsive breakpoints at 1024px and 640px
 - Complete sidebar with all ~25 filter controls bound to stores — presets, weight sliders, API key inputs, toggles, dropdowns, numeric fields
-- Run Screener button (disabled until Finnhub key set) and Reset to Defaults button
+- Run Screener button triggers 5-phase Finnhub scan with progress bar, cancel support, and inline error handling
+- 12-column sortable results table with gradient score bars, SMA/earnings badges, and score tooltips
+- 4 KPI summary cards with animated count-up (Tickers Scanned, Qualified, Avg Score, Avg Premium)
+- 24-column CSV export matching vanilla format with timestamped filename
+- Empty state for pre-scan and zero-results scenarios
 
 **Vanilla files (still present, to be removed in S08):**
 - `app.js` — 1334-line monolith (source for logic extraction)
@@ -60,4 +64,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01–S04 complete, S05 next (results + scan flow)
+- 🔄 M001: React Migration & Visual Redesign — S01–S05 complete, S06 next (option chain modal)

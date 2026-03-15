@@ -6,8 +6,19 @@ import { StockFiltersSection } from "@/components/sidebar/StockFiltersSection";
 import { WheelCriteriaSection } from "@/components/sidebar/WheelCriteriaSection";
 import { ScoringWeightsSection } from "@/components/sidebar/ScoringWeightsSection";
 import { ActionButtons } from "@/components/sidebar/ActionButtons";
+import { ProgressBar } from "@/components/main/ProgressBar";
+import { KpiCards } from "@/components/main/KpiCards";
+import { ResultsTable } from "@/components/main/ResultsTable";
+import { EmptyState } from "@/components/main/EmptyState";
+import { useScanStore } from "@/stores/scan-store";
+import { useResultsStore } from "@/stores/results-store";
 
 export function App() {
+  const phase = useScanStore((s) => s.phase);
+  const filteredResults = useResultsStore((s) => s.filteredResults);
+
+  const showTable = filteredResults.length > 0 && (phase === "complete" || phase === "running");
+
   return (
     <DashboardLayout
       sidebar={
@@ -34,15 +45,10 @@ export function App() {
         </Sidebar>
       }
     >
-      <div className="flex flex-1 items-center justify-center p-6">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight text-primary">
-            WheelScan
-          </h2>
-          <p className="mt-2 text-muted-foreground">
-            Configure filters in the sidebar, then run a scan.
-          </p>
-        </div>
+      <div className="flex flex-1 flex-col gap-4 overflow-hidden p-4 md:p-6">
+        <KpiCards />
+        <ProgressBar />
+        {showTable ? <ResultsTable /> : <EmptyState />}
       </div>
     </DashboardLayout>
   );

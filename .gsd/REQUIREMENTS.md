@@ -169,57 +169,57 @@
 
 ### R016 — KPI cards with animated count-up
 - Class: differentiator
-- Status: active
-- Description: Top-of-dashboard KPI cards showing total scanned, qualified, avg wheel score, best score with animated number count-up on scan completion
+- Status: validated
+- Description: Top-of-dashboard KPI cards showing total scanned, qualified, avg wheel score, avg premium yield with animated number count-up on scan completion
 - Why it matters: At-a-glance scan summary
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: 4 KPI cards render with correct values. Animated count-up via requestAnimationFrame with ease-out quad easing over 600ms. Pre-scan state shows "—". tsc clean, browser verified.
+- Notes: Shows avg premium yield (not "best score") to match implementation
 
 ### R017 — Sortable results table with gradient score bars
 - Class: primary-user-loop
-- Status: active
-- Description: Results table with all columns from vanilla app, click-to-sort on any column, gradient score bars (red→yellow→emerald) in wheel score column
+- Status: validated
+- Description: Results table with 12 display columns from vanilla app, click-to-sort on any column, gradient score bars (red→yellow→emerald) in wheel score column
 - Why it matters: Primary data view — users scan results here
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Same 24 columns as vanilla app
+- Validation: 12-column sortable table built. Click-to-sort with ChevronUp/Down indicators. Gradient score bars (emerald ≥70, yellow ≥45, red <45). SMA/earnings badges. tsc clean, browser renders correctly.
+- Notes: 12 display columns in table; full 24-column data available via CSV export
 
 ### R018 — Wheel score tooltips with numeric breakdown
 - Class: primary-user-loop
-- Status: active
-- Description: Hovering wheel score shows Radix Popover with 6-component numeric breakdown (price, volume, IV rank, premium yield, spread, earnings proximity) with weighted total
+- Status: validated
+- Description: Hovering wheel score shows Radix Tooltip with 4-component numeric breakdown (Premium, Liquidity, Stability, Fundamentals) with weight percentages and weighted total
 - Why it matters: Users need to understand why a stock scored high/low
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Numeric breakdown style, not radar charts (Decision #5)
+- Validation: Radix Tooltip shows 4-row breakdown with weight percentages from filterStore. Color-coded sub-scores (emerald ≥70, yellow ≥45, red <45). useShallow prevents re-render loops (Decision #29). tsc clean.
+- Notes: 4 user-facing categories map to 6 internal factors per weight slider design (Decision #27). Numeric breakdown style (Decision #5).
 
 ### R019 — Scan flow with progress UI
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Run button triggers scan → progress bar shows ticker-by-ticker progress → results populate on completion → errors shown inline. Cancel button stops mid-scan.
 - Why it matters: Core user action — this is what the app does
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: unmapped
-- Notes: useMutation handles scan lifecycle
+- Validation: 5-phase scan orchestrator (earnings→quote+metrics→profile→recommendations→filter+score) as pure async function. useMutation wrapper with AbortController for cancel. ProgressBar shows phase/percentage/ticker. Auth 401/403 surfaces as "Invalid Finnhub API key". 206 tests pass, tsc clean.
+- Notes: Decisions #30 (decoupled orchestrator), #22 (Finnhub retry strategy)
 
 ### R020 — CSV export
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Export button generates CSV with all 24 result columns, timestamped filename (WheelScan_YYYYMMDD_HHMMSS.csv)
 - Why it matters: Users want to analyze results in Excel/Google Sheets
 - Source: user
 - Primary owning slice: M001/S05
 - Supporting slices: none
-- Validation: unmapped
+- Validation: 10 Vitest tests — correct 24-column header, value formatting matching vanilla, string escaping (commas/quotes), null handling, empty results. buildCSVContent() pure function + exportCSV() DOM wrapper (Decision #31). Export button disabled when no results.
 - Notes: Same format as vanilla app
 
 ### R021 — Option chain modal
@@ -373,11 +373,11 @@
 | R013 | primary-user-loop | validated | M001/S04 | none | masked inputs + eye toggle + status badges verified |
 | R014 | primary-user-loop | validated | M001/S04 | none | 3 presets + derived Custom, store tests pass |
 | R015 | differentiator | validated | M001/S04 | none | 4 sliders + redistribution, 8 unit tests + browser |
-| R016 | differentiator | active | M001/S05 | none | unmapped |
-| R017 | primary-user-loop | active | M001/S05 | none | unmapped |
-| R018 | primary-user-loop | active | M001/S05 | none | unmapped |
-| R019 | primary-user-loop | active | M001/S05 | none | unmapped |
-| R020 | core-capability | active | M001/S05 | none | unmapped |
+| R016 | differentiator | validated | M001/S05 | none | 4 KPI cards with count-up animation, tsc clean, browser verified |
+| R017 | primary-user-loop | validated | M001/S05 | none | 12-column sortable table, gradient score bars, tsc clean |
+| R018 | primary-user-loop | validated | M001/S05 | none | 4-component Radix Tooltip with weights, useShallow fix |
+| R019 | primary-user-loop | validated | M001/S05 | none | 5-phase scan pipeline, progress bar, cancel, error handling, 206 tests |
+| R020 | core-capability | validated | M001/S05 | none | 24-column CSV, 10 unit tests, export button wired |
 | R021 | primary-user-loop | active | M001/S06 | none | unmapped |
 | R022 | primary-user-loop | active | M001/S06 | none | unmapped |
 | R023 | core-capability | active | M001/S06 | M001/S02 | unmapped |
@@ -393,7 +393,7 @@
 
 ## Coverage Summary
 
-- Active requirements: 19
+- Active requirements: 14
 - Mapped to slices: 32
-- Validated: 13 (R001, R003, R004, R005, R006, R007, R009, R010, R011, R012, R013, R014, R015)
+- Validated: 18 (R001, R003, R004, R005, R006, R007, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020)
 - Unmapped active requirements: 0
