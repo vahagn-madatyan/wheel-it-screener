@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { useChainStore } from '@/stores/chain-store';
 import { useResultsStore } from '@/stores/results-store';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
@@ -12,8 +13,9 @@ import { ProgressBar } from '@/components/main/ProgressBar';
 import { KpiCards } from '@/components/main/KpiCards';
 import { ResultsTable } from '@/components/main/ResultsTable';
 import { EmptyState } from '@/components/main/EmptyState';
-import { ChainModal } from '@/components/main/ChainModal';
 import { useScanStore } from '@/stores/scan-store';
+
+const ChainModal = lazy(() => import('@/components/main/ChainModal'));
 
 // DEV: expose stores to window for browser testing (tree-shaken in production)
 if (import.meta.env.DEV) {
@@ -62,7 +64,9 @@ export function App() {
         {showTable ? <ResultsTable /> : <EmptyState />}
       </div>
 
-      <ChainModal />
+      <Suspense fallback={null}>
+        <ChainModal />
+      </Suspense>
     </DashboardLayout>
   );
 }

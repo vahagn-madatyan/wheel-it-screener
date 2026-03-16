@@ -90,3 +90,9 @@ npx eslint .         # 0 errors
 - `dist/assets/` — 2+ JS files (main chunk + ChainModal chunk)
 - Main chunk under 500KB, no Vite warning
 - SPA loads from static build via `npm run preview`
+
+## Observability Impact
+- **Build chunk sizes:** `npm run build` output shows per-chunk sizes — verify ChainModal appears as a separate chunk and main chunk stays under 500KB.
+- **Network waterfall:** In browser DevTools Network tab, ChainModal JS loads as a separate request when a user clicks a ticker row to open the modal — confirms lazy-loading works at runtime.
+- **No new runtime signals:** This is a build-time code-splitting change. No new logs, endpoints, or error surfaces. Existing error/loading states inside ChainModal are unchanged.
+- **Diagnostic command:** `ls dist/assets/*.js | wc -l` — should return ≥2 after any build.

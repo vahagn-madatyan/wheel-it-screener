@@ -1,0 +1,6 @@
+# GSD agent metadata (auto-generated, not source code)
+.gsd/
+.bg-shell/
+
+# Build output
+dist/

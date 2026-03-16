@@ -24,3 +24,7 @@ In react-hooks v7, `// eslint-disable-next-line react-hooks/exhaustive-deps` com
 ## window type assertion in strict TypeScript
 
 `window as Record<string, unknown>` fails because Window and Record don't overlap sufficiently. Use two-step: `window as unknown as Record<string, unknown>`.
+
+## .prettierignore needed for .gsd/ metadata
+
+GSD agent metadata files (.gsd/, .bg-shell/) are auto-generated markdown that doesn't conform to Prettier formatting rules. Without a `.prettierignore`, `npx prettier --check .` reports these as unformatted and fails CI/verification. Add `.gsd/` and `.bg-shell/` to `.prettierignore` in any project using both GSD and Prettier.

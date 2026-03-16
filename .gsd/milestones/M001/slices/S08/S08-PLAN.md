@@ -62,7 +62,7 @@
   - Verify: `npx eslint .` → 0 errors; `npx prettier --check .` → all formatted; `npx vitest run` → 222 pass; `npx tsc --noEmit` → 0 errors
   - Done when: ESLint + Prettier pass clean on entire codebase, both installed as devDependencies, lint script works without npx
 
-- [ ] **T03: Lazy-load ChainModal and verify production build** `est:15m`
+- [x] **T03: Lazy-load ChainModal and verify production build** `est:15m`
   - Why: R031 (code splitting) + R032 (static SPA build). ChainModal is 362 lines statically imported — lazy-loading it should push the main chunk under the 500KB Vite warning threshold.
   - Files: `src/components/main/ChainModal.tsx`, `src/App.tsx`
   - Do: (1) In ChainModal.tsx, add `export default ChainModal;` at the bottom (preserve existing named export for any direct imports). (2) In App.tsx, replace `import { ChainModal } from "@/components/main/ChainModal"` with `const ChainModal = lazy(() => import("@/components/main/ChainModal"))`. Add `lazy, Suspense` to React imports. (3) Wrap `<ChainModal />` usage in `<Suspense fallback={null}>`. (4) Run `npm run build` — verify 2+ JS chunks in dist/assets/, no 500KB warning. (5) Run `npm run preview` — verify SPA loads at localhost:4173. (6) Final gate: `npx vitest run` → 222 pass, `npx tsc --noEmit` clean.

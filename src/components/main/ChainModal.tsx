@@ -445,3 +445,5 @@ export function ChainModal() {
     </Dialog>
   );
 }
+
+export default ChainModal;
