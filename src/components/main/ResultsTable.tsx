@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { ChevronUp, ChevronDown, ArrowUpDown, Download } from "lucide-react";
 import { useResultsStore } from "@/stores/results-store";
+import { useChainStore } from "@/stores/chain-store";
 import { formatNum, formatMktCap, truncate } from "@/lib/formatters";
 import { exportCSV } from "@/lib/csv-export";
 import { cn } from "@/lib/utils";
@@ -106,10 +107,7 @@ const COLUMNS: Column[] = [
     render: (r) => (
       <button
         className="rounded bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
-        onClick={() => {
-          // Stub for S06 — option chain panel
-          console.log(`[chain] open puts for ${r.symbol}`);
-        }}
+        onClick={() => useChainStore.getState().open(r.symbol)}
       >
         Puts
       </button>

@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — React Migration & Visual Redesign
-**Active Slice:** S06 — Option Chain Modal
+**Active Slice:** S07 — Visual Polish + Animation
 **Phase:** planning
 **Requirements Status:** 32 active · 0 validated · 0 deferred · 0 out of scope
 
@@ -15,4 +15,4 @@
 - None
 
 ## Next Action
-Plan slice S06 (Option Chain Modal).
+Plan slice S07 (Visual Polish + Animation).

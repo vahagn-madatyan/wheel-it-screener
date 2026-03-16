@@ -81,14 +81,14 @@
 
 ### R008 — TanStack Query v5 integration
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: useMutation for scan flow (with progress callbacks via onMutate/onSuccess/onError), useQuery for option chain fetching, QueryClientProvider at app root
 - Why it matters: Manages async state, caching, loading/error states for all API interactions
 - Source: user
 - Primary owning slice: M001/S02
 - Supporting slices: M001/S05, M001/S06
-- Validation: QueryClientProvider wired in main.tsx with staleTime 5min, retry 1, refetchOnWindowFocus false. Dev server renders without errors. useMutation/useQuery hooks validated at runtime in S05/S06.
-- Notes: Provider is wired (S02 scope). Hook usage (useMutation for scan, useQuery for chains) is S05/S06 scope — partially validated.
+- Validation: QueryClientProvider wired in main.tsx. useMutation for scan flow validated in S05 (progress, cancel, error handling). useQuery for chain data validated in S06 (Alpaca/Massive fetch, store sync, AbortSignal, retry:false). Both hooks work at runtime.
+- Notes: Fully validated across S02 (provider), S05 (mutation), S06 (query).
 
 ### R009 — CSS Grid dashboard layout
 - Class: core-capability
@@ -224,36 +224,36 @@
 
 ### R021 — Option chain modal
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Clicking "Puts" on a result row opens Radix Dialog with backdrop blur, spring slide-up animation, showing option chain for that ticker
 - Why it matters: Drill-down from screener to actual tradeable options
 - Source: user
 - Primary owning slice: M001/S06
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: Radix Dialog opens via chainStore.open(symbol), shows header (symbol/name/price), 4 states (loading/error/empty/table), closes on X/Escape/backdrop. Puts button wired. 222 tests pass, tsc clean, browser verified. Spring animation deferred to S07.
+- Notes: Animation layer added in S07
 
 ### R022 — Put scoring table with tooltips + rec badges
 - Class: primary-user-loop
-- Status: active
+- Status: validated
 - Description: Option chain modal shows put options table with 5-component put score, tooltips showing score breakdown, recommendation badges (Best Pick, Good, OK, Caution, ITM)
 - Why it matters: Helps user pick the best strike/expiry
 - Source: user
 - Primary owning slice: M001/S06
 - Supporting slices: none
-- Validation: unmapped
+- Validation: 12-column table (Strike/Bid/Ask/Spread%/Mid/Vol/OI/Delta/IV%/AnnYield%/Score/Rec) with PutColumn render functions. PutScoreTooltip shows 5-component breakdown. Rec badges: Best Pick (emerald), Good (blue), OK (gray), Caution (amber), ITM (muted). ITM rows 50% opacity. Best rows emerald highlight. tsc clean, code review verified.
 - Notes: Put score: spread 30%, liquidity 25%, premium 20%, delta 15%, IV 10%
 
 ### R023 — Massive.com (Polygon) options provider
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Massive.com API integration as secondary options data provider alongside Finnhub/Alpaca, with 5 calls/min rate limiting, OCC symbol parsing
 - Why it matters: User wants multiple data source options
 - Source: user
 - Primary owning slice: M001/S06
 - Supporting slices: M001/S02
-- Validation: unmapped
-- Notes: Free tier is restrictive — needs careful rate limiting and user feedback
+- Validation: fetchChainMassive implemented and tested (chain.test.ts). Provider detection: Alpaca preferred > Massive > null. Rate limiter created via useRef in useChainQuery, disposed on unmount. 13 chain tests cover Massive parse, provider detection (5 cases), error handling.
+- Notes: Live validation with Massive.com key deferred to runtime — mock-tested in Vitest
 
 ### R024 — Framer Motion animations
 - Class: differentiator
@@ -365,7 +365,7 @@
 | R005 | quality-attribute | validated | M001/S01 | none | 128 tests across 6 files |
 | R006 | core-capability | validated | M001/S02 | none | 33 store tests pass; persist serialization verified |
 | R007 | core-capability | validated | M001/S02 | M001/S06 | 27 service/rate-limiter tests pass |
-| R008 | core-capability | active | M001/S02 | M001/S05, M001/S06 | QueryClientProvider wired; hooks pending S05/S06 |
+| R008 | core-capability | validated | M001/S02 | M001/S05, M001/S06 | useMutation (S05) + useQuery (S06) validated at runtime |
 | R009 | core-capability | validated | M001/S03 | none | CSS Grid 320px+1fr verified in browser |
 | R010 | core-capability | validated | M001/S03 | M001/S04 | Radix Collapsible with animated height |
 | R011 | quality-attribute | validated | M001/S03 | none | 1024px hamburger overlay + 640px stacked verified |
@@ -378,9 +378,9 @@
 | R018 | primary-user-loop | validated | M001/S05 | none | 4-component Radix Tooltip with weights, useShallow fix |
 | R019 | primary-user-loop | validated | M001/S05 | none | 5-phase scan pipeline, progress bar, cancel, error handling, 206 tests |
 | R020 | core-capability | validated | M001/S05 | none | 24-column CSV, 10 unit tests, export button wired |
-| R021 | primary-user-loop | active | M001/S06 | none | unmapped |
-| R022 | primary-user-loop | active | M001/S06 | none | unmapped |
-| R023 | core-capability | active | M001/S06 | M001/S02 | unmapped |
+| R021 | primary-user-loop | validated | M001/S06 | none | Modal opens, 4 states render, closes correctly |
+| R022 | primary-user-loop | validated | M001/S06 | none | 12-column table, 5-component tooltips, rec badges |
+| R023 | core-capability | validated | M001/S06 | M001/S02 | Alpaca + Massive providers, 13 chain tests |
 | R024 | differentiator | active | M001/S07 | none | unmapped |
 | R025 | differentiator | active | M001/S07 | none | unmapped |
 | R026 | differentiator | active | M001/S07 | none | unmapped |
@@ -393,7 +393,7 @@
 
 ## Coverage Summary
 
-- Active requirements: 14
+- Active requirements: 10
 - Mapped to slices: 32
-- Validated: 18 (R001, R003, R004, R005, R006, R007, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020)
+- Validated: 22 (R001, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020, R021, R022, R023)
 - Unmapped active requirements: 0

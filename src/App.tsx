@@ -1,3 +1,5 @@
+import { useChainStore } from "@/stores/chain-store";
+import { useResultsStore } from "@/stores/results-store";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { SidebarSection } from "@/components/layout/SidebarSection";
@@ -10,8 +12,15 @@ import { ProgressBar } from "@/components/main/ProgressBar";
 import { KpiCards } from "@/components/main/KpiCards";
 import { ResultsTable } from "@/components/main/ResultsTable";
 import { EmptyState } from "@/components/main/EmptyState";
+import { ChainModal } from "@/components/main/ChainModal";
 import { useScanStore } from "@/stores/scan-store";
-import { useResultsStore } from "@/stores/results-store";
+
+// DEV: expose stores to window for browser testing (tree-shaken in production)
+if (import.meta.env.DEV) {
+  (window as any).__chainStore = useChainStore;
+  (window as any).__resultsStore = useResultsStore;
+  (window as any).__scanStore = useScanStore;
+}
 
 export function App() {
   const phase = useScanStore((s) => s.phase);
@@ -50,6 +59,8 @@ export function App() {
         <ProgressBar />
         {showTable ? <ResultsTable /> : <EmptyState />}
       </div>
+
+      <ChainModal />
     </DashboardLayout>
   );
 }

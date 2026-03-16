@@ -379,11 +379,13 @@ describe("chainStore", () => {
     puts: [],
   };
 
-  it("starts with null chainData", () => {
+  it("starts with null chainData and closed modal", () => {
     const state = useChainStore.getState();
     expect(state.chainData).toBeNull();
     expect(state.loading).toBe(false);
     expect(state.error).toBeNull();
+    expect(state.isOpen).toBe(false);
+    expect(state.symbol).toBeNull();
   });
 
   it("setChainData stores data and clears loading/error", () => {
@@ -424,5 +426,41 @@ describe("chainStore", () => {
     expect(state.chainData).toBeNull();
     expect(state.loading).toBe(false);
     expect(state.error).toBeNull();
+  });
+
+  it("open(symbol) sets isOpen and symbol, clears data/error", () => {
+    useChainStore.getState().setChainData(mockChain);
+    useChainStore.getState().setError("stale error");
+    useChainStore.getState().open("MSFT");
+
+    const state = useChainStore.getState();
+    expect(state.isOpen).toBe(true);
+    expect(state.symbol).toBe("MSFT");
+    expect(state.chainData).toBeNull();
+    expect(state.error).toBeNull();
+    expect(state.loading).toBe(false);
+  });
+
+  it("close() resets isOpen, symbol, data, and error", () => {
+    useChainStore.getState().open("AAPL");
+    useChainStore.getState().setChainData(mockChain);
+    useChainStore.getState().close();
+
+    const state = useChainStore.getState();
+    expect(state.isOpen).toBe(false);
+    expect(state.symbol).toBeNull();
+    expect(state.chainData).toBeNull();
+    expect(state.error).toBeNull();
+  });
+
+  it("open(symbol) after previous open clears stale data", () => {
+    useChainStore.getState().open("AAPL");
+    useChainStore.getState().setChainData(mockChain);
+
+    // Open for a different symbol
+    useChainStore.getState().open("TSLA");
+    const state = useChainStore.getState();
+    expect(state.symbol).toBe("TSLA");
+    expect(state.chainData).toBeNull();
   });
 });

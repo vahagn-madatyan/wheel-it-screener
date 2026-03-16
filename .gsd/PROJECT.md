@@ -12,17 +12,17 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01–S05 complete. S06 (Option Chain Modal) is next.
+Migration in progress on `ui-improve` branch. S01–S06 complete. S07 (Visual Polish + Animation) is next.
 
 **What exists now:**
 - Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
 - Tailwind v4 + shadcn/ui with Financial Terminal Noir oklch theme (dark + light)
 - All 8 domain TypeScript interfaces in `src/types/index.ts`
-- All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants
-- 206 Vitest tests (parity + stores + services + weight redistribution + CSV export) all passing
-- 6 Zustand stores (filter, results, scan, apiKey w/ persist, theme w/ persist, chain)
+- All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants, chain fetchers
+- 222 Vitest tests (parity + stores + services + weight redistribution + CSV export + chain fetcher) all passing
+- 6 Zustand stores (filter, results, scan, apiKey w/ persist, theme w/ persist, chain w/ modal control)
 - Typed API services for Finnhub, Alpaca, Massive.com with token-bucket rate limiting
-- TanStack Query v5 QueryClientProvider wired at app root
+- TanStack Query v5 — useMutation for scan flow, useQuery for chain data
 - CSS Grid dashboard layout with 320px collapsible sidebar, hamburger overlay on mobile, responsive breakpoints at 1024px and 640px
 - Complete sidebar with all ~25 filter controls bound to stores — presets, weight sliders, API key inputs, toggles, dropdowns, numeric fields
 - Run Screener button triggers 5-phase Finnhub scan with progress bar, cancel support, and inline error handling
@@ -30,6 +30,7 @@ Migration in progress on `ui-improve` branch. S01–S05 complete. S06 (Option Ch
 - 4 KPI summary cards with animated count-up (Tickers Scanned, Qualified, Avg Score, Avg Premium)
 - 24-column CSV export matching vanilla format with timestamped filename
 - Empty state for pre-scan and zero-results scenarios
+- Option chain modal: Puts button → Radix Dialog with 12-column put table, 5-component score tooltips, rec badges, Alpaca/Massive provider detection, expiry auto-select
 
 **Vanilla files (still present, to be removed in S08):**
 - `app.js` — 1334-line monolith (source for logic extraction)
@@ -64,4 +65,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01–S05 complete, S06 next (option chain modal)
+- 🔄 M001: React Migration & Visual Redesign — S01–S06 complete, S07 next (visual polish + animation)

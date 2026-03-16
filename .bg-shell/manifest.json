@@ -1,14 +1,14 @@
 [
   {
-    "id": "b3ec6734",
+    "id": "c307d226",
     "label": "vite-dev",
-    "command": "cd /Users/djbeatbug/RoadToMillion/wheel-it-screener && npx vite --host 2>&1",
+    "command": "cd /Users/djbeatbug/RoadToMillion/wheel-it-screener && npx vite --port 5173",
     "cwd": "/Users/djbeatbug/RoadToMillion/wheel-it-screener",
-    "startedAt": 1773601373186,
+    "startedAt": 1773610387513,
     "processType": "server",
     "group": null,
     "readyPattern": null,
     "readyPort": 5173,
-    "pid": 87584
+    "pid": 43896
   }
 ]
