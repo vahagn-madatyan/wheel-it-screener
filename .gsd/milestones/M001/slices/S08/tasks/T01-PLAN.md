@@ -83,6 +83,11 @@ npm run build       # succeeds
 - `src/components/ui/tooltip.tsx` — line 46 has tw-animate-css animation classes to replace
 - `package.json` — has `tw-animate-css` in devDependencies
 
+## Observability Impact
+- **Removed:** tw-animate-css keyframe animations from tooltip — now uses CSS transitions. No runtime signals change; tooltip open/close is purely visual.
+- **Inspection:** `grep -r "tw-animate-css" src/ package.json` should return nothing post-task. `ls app.js style.css base.css index.vanilla.html` should all be "No such file".
+- **Failure visibility:** If tw-animate-css remnants remain, tooltip animations will break silently (no error, just missing CSS). Build and tsc will still pass — visual inspection is the only signal.
+
 ## Expected Output
 - 4 vanilla files deleted from project root
 - src/index.css: no tw-animate-css import

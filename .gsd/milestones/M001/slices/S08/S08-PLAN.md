@@ -31,6 +31,15 @@
 - `npm run build` → succeeds, 2+ JS chunks in dist/assets/, no "chunks are larger than 500 kB" warning
 - `npm run preview` → serves at localhost:4173
 
+## Observability / Diagnostics
+
+- **Build output:** `npm run build` prints chunk sizes and warnings to stdout — check for "chunks are larger than 500 kB" absence.
+- **Preview server:** `npm run preview` serves at localhost:4173 — visual inspection confirms SPA loads.
+- **Lint/format:** `npx eslint .` and `npx prettier --check .` produce machine-readable pass/fail output.
+- **Test suite:** `npx vitest run` outputs pass/fail counts — expect 222 pass, 0 fail.
+- **Type checking:** `npx tsc --noEmit` outputs diagnostic count — expect 0 errors.
+- **No secrets or sensitive data** in this slice — all changes are build tooling and static assets.
+
 ## Integration Closure
 
 - Upstream surfaces consumed: All S01–S07 deliverables (complete app)
@@ -39,7 +48,7 @@
 
 ## Tasks
 
-- [ ] **T01: Delete vanilla files and remove tw-animate-css remnant** `est:15m`
+- [x] **T01: Delete vanilla files and remove tw-animate-css remnant** `est:15m`
   - Why: Clears legacy files (R029) and removes the orphaned tw-animate-css dependency that S07 partially cleaned but left in tooltip.tsx and index.css
   - Files: `app.js`, `style.css`, `base.css`, `index.vanilla.html`, `src/index.css`, `src/components/ui/tooltip.tsx`, `package.json`
   - Do: (1) Delete app.js, style.css, base.css, index.vanilla.html. (2) In tooltip.tsx line 46, replace the tw-animate-css classes `animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95` with standard Tailwind transition classes that achieve the same fade+zoom effect. (3) Remove `@import "tw-animate-css";` from src/index.css. (4) Run `npm uninstall tw-animate-css`. (5) Verify: `npx tsc --noEmit` clean, `npx vitest run` 222 tests pass, `npm run build` succeeds.
