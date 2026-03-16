@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useFilterStore } from "@/stores/filter-store";
 import { PRESETS } from "@/lib/constants";
 import type { FilterState, Preset } from "@/types";

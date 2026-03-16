@@ -15,13 +15,13 @@
 
 ### R002 — Tailwind v4 + shadcn/ui with Financial Terminal Noir theme
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Tailwind v4 with @tailwindcss/vite plugin, shadcn/ui CLI initialized, CSS variables theming with emerald primary (#34d399), cool near-black base (hsl 220 14% 5%)
 - Why it matters: Design system foundation for all components
 - Source: user
 - Primary owning slice: M001/S01
 - Supporting slices: M001/S07
-- Validation: CSS variables defined in oklch for all shadcn semantic tokens (both dark and light). Visual polish (noise, gradients, fonts) deferred to S07.
+- Validation: CSS variables defined in oklch for all shadcn semantic tokens (both dark and light). Visual polish complete in S07: font trio (Space Grotesk, General Sans, JetBrains Mono), SVG noise texture overlay, gradient borders on KPI cards, theme toggle — all verified in browser.
 - Notes: Theme split into theme.css (oklch vars) + index.css (@import chain). Decision #12.
 
 ### R003 — TypeScript interfaces for all domain types
@@ -257,57 +257,57 @@
 
 ### R024 — Framer Motion animations
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Page load staggers, sidebar toggle springs, modal slide-up with backdrop fade, score bar gradient fills, theme toggle icon morph
 - Why it matters: Premium feel differentiator
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: none
-- Validation: unmapped
+- Validation: motion@12 installed. KPI card stagger (0.08s spring), ResultsTable row stagger (0.02s, first 20), dialog spring slide-up via forceMount+AnimatePresence (Decision #35), ProgressBar/EmptyState AnimatePresence fades, ThemeToggle rotate+scale morph. All verified in browser with zero console errors.
 - Notes: none
 
 ### R025 — Noise texture overlay + gradient borders
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Subtle SVG noise texture overlay on backgrounds, gradient borders on cards, refined box-shadows
 - Why it matters: Visual polish for terminal noir aesthetic
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: none
-- Validation: unmapped
+- Validation: Inline SVG feTurbulence noise overlay at 4% opacity, fixed inset-0 pointer-events-none in DashboardLayout. KPI cards wrapped in bg-gradient-to-br from-primary/30 p-px border technique. Both verified in browser DOM and visually.
 - Notes: none
 
 ### R026 — Font trio via CDN
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Space Grotesk (display/headings), General Sans (body/UI), JetBrains Mono (data/numbers) loaded from Google Fonts + Fontshare CDN
 - Why it matters: Typography is core to the premium look
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: none
-- Validation: unmapped
+- Validation: Preconnect + CSS links in index.html. Tailwind tokens --font-display (Space Grotesk), --font-sans (General Sans), --font-mono (JetBrains Mono). Browser computed font-family verified for all three on heading, body, and tabular elements.
 - Notes: Self-host later if needed (Decision #8)
 
 ### R027 — Theme toggle (dark/light)
 - Class: core-capability
-- Status: active
+- Status: validated
 - Description: Toggle between dark (primary) and light themes, persisted to localStorage, with icon morph animation (sun↔moon)
 - Why it matters: User preference persistence
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: M001/S02
-- Validation: unmapped
+- Validation: ThemeToggle component with Lucide Sun/Moon icons, wired to useThemeStore (persisted). Toggles <html> class dark↔light. AnimatePresence rotate+scale icon morph. aria-label switches between "Switch to light mode" / "Switch to dark mode". Browser verified both directions.
 - Notes: none
 
 ### R028 — Run button with gradient + progress fill
 - Class: differentiator
-- Status: active
+- Status: validated
 - Description: Run Scan button has emerald gradient background with animated progress bar fill during scan
 - Why it matters: Visual feedback during long scans
 - Source: user
 - Primary owning slice: M001/S07
 - Supporting slices: M001/S05
-- Validation: unmapped
+- Validation: bg-gradient-to-r from-emerald-600 to-emerald-500 on enabled button. During phase=running, absolute-positioned bg-emerald-400/20 div tracks progress*100% width via CSS transition. Gradient and structure verified in browser and code.
 - Notes: none
 
 ### R029 — Remove old vanilla files
@@ -359,7 +359,7 @@
 | ID | Class | Status | Primary owner | Supporting | Proof |
 |---|---|---|---|---|---|
 | R001 | core-capability | validated | M001/S01 | none | tsc + dev server + @/ aliases |
-| R002 | core-capability | active | M001/S01 | M001/S07 | oklch vars defined; visual polish pending S07 |
+| R002 | core-capability | validated | M001/S01 | M001/S07 | oklch vars + font trio + noise + gradient borders + theme toggle |
 | R003 | core-capability | validated | M001/S01 | none | 8 interfaces, tsc clean |
 | R004 | primary-user-loop | validated | M001/S01 | none | 128 parity tests pass |
 | R005 | quality-attribute | validated | M001/S01 | none | 128 tests across 6 files |
@@ -381,11 +381,11 @@
 | R021 | primary-user-loop | validated | M001/S06 | none | Modal opens, 4 states render, closes correctly |
 | R022 | primary-user-loop | validated | M001/S06 | none | 12-column table, 5-component tooltips, rec badges |
 | R023 | core-capability | validated | M001/S06 | M001/S02 | Alpaca + Massive providers, 13 chain tests |
-| R024 | differentiator | active | M001/S07 | none | unmapped |
-| R025 | differentiator | active | M001/S07 | none | unmapped |
-| R026 | differentiator | active | M001/S07 | none | unmapped |
-| R027 | core-capability | active | M001/S07 | M001/S02 | unmapped |
-| R028 | differentiator | active | M001/S07 | M001/S05 | unmapped |
+| R024 | differentiator | validated | M001/S07 | none | motion@12 stagger/spring/AnimatePresence on 6 components |
+| R025 | differentiator | validated | M001/S07 | none | SVG noise overlay + gradient border on KPI cards |
+| R026 | differentiator | validated | M001/S07 | none | Space Grotesk + General Sans + JetBrains Mono via CDN |
+| R027 | core-capability | validated | M001/S07 | M001/S02 | ThemeToggle with icon morph, persisted dark↔light |
+| R028 | differentiator | validated | M001/S07 | M001/S05 | Emerald gradient + progress fill bar on run button |
 | R029 | constraint | active | M001/S08 | none | unmapped |
 | R030 | quality-attribute | active | M001/S08 | none | unmapped |
 | R031 | quality-attribute | active | M001/S08 | none | unmapped |
@@ -393,7 +393,7 @@
 
 ## Coverage Summary
 
-- Active requirements: 10
+- Active requirements: 4 (R029, R030, R031, R032)
 - Mapped to slices: 32
-- Validated: 22 (R001, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020, R021, R022, R023)
+- Validated: 28 (R001, R002, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020, R021, R022, R023, R024, R025, R026, R027, R028)
 - Unmapped active requirements: 0

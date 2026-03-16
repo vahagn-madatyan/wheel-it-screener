@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ApiError } from '../api-error';
 import { FinnhubService } from '../finnhub';
 import { AlpacaService } from '../alpaca';
@@ -166,7 +166,7 @@ describe('FinnhubService', () => {
 
     const err = await resultPromise;
     expect(err).toBeInstanceOf(ApiError);
-    expect(err.status).toBe(429);
+    expect((err as ApiError).status).toBe(429);
     expect(mockFetch).toHaveBeenCalledTimes(3);
 
     vi.useRealTimers();

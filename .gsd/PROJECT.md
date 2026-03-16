@@ -12,7 +12,7 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01–S06 complete. S07 (Visual Polish + Animation) is next.
+Migration in progress on `ui-improve` branch. S01–S07 complete. S08 (Cleanup + Deploy) is next — the final slice.
 
 **What exists now:**
 - Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
@@ -31,6 +31,11 @@ Migration in progress on `ui-improve` branch. S01–S06 complete. S07 (Visual Po
 - 24-column CSV export matching vanilla format with timestamped filename
 - Empty state for pre-scan and zero-results scenarios
 - Option chain modal: Puts button → Radix Dialog with 12-column put table, 5-component score tooltips, rec badges, Alpaca/Massive provider detection, expiry auto-select
+- Visual polish complete: font trio (Space Grotesk, General Sans, JetBrains Mono), SVG noise texture overlay, gradient borders on KPI cards
+- Framer Motion animations: KPI stagger, table row stagger, dialog spring slide-up, ProgressBar/EmptyState AnimatePresence fades, ThemeToggle icon morph
+- Theme toggle with Sun/Moon icon in header, persisted to localStorage
+- Run button emerald gradient with progress fill during scan
+- Production build (`npm run build`) succeeds — 539KB bundle (173KB gzipped)
 
 **Vanilla files (still present, to be removed in S08):**
 - `app.js` — 1334-line monolith (source for logic extraction)
@@ -65,4 +70,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01–S06 complete, S07 next (visual polish + animation)
+- 🔄 M001: React Migration & Visual Redesign — S01–S07 complete, S08 next (cleanup + deploy)

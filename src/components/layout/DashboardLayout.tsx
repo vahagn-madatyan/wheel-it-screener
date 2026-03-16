@@ -62,7 +62,25 @@ export function DashboardLayout({ sidebar, children }: DashboardLayoutProps) {
   const showOverlay = sidebarOpen || isClosing;
 
   return (
-    <div className="grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr] lg:grid-cols-[320px_1fr]">
+    <div className="relative grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr] lg:grid-cols-[320px_1fr]">
+      {/* Noise texture overlay — subtle grain aesthetic */}
+      <div
+        className="pointer-events-none fixed inset-0 z-[1] opacity-[0.04]"
+        aria-hidden="true"
+      >
+        <svg className="h-full w-full" xmlns="http://www.w3.org/2000/svg">
+          <filter id="noise">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.65"
+              numOctaves="3"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noise)" />
+        </svg>
+      </div>
       {/* Desktop sidebar — always visible at lg+ */}
       <div className="row-span-2 hidden lg:flex">{sidebar}</div>
 

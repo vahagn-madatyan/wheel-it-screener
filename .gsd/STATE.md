@@ -1,7 +1,7 @@
 # GSD State
 
 **Active Milestone:** M001 — React Migration & Visual Redesign
-**Active Slice:** S07 — Visual Polish + Animation
+**Active Slice:** S08 — Cleanup + Deploy
 **Phase:** planning
 **Requirements Status:** 32 active · 0 validated · 0 deferred · 0 out of scope
 
@@ -15,4 +15,4 @@
 - None
 
 ## Next Action
-Plan slice S07 (Visual Polish + Animation).
+Plan slice S08 (Cleanup + Deploy).

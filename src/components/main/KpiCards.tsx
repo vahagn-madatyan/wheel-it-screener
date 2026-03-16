@@ -1,7 +1,22 @@
 import { useEffect, useRef, useState } from "react";
+import { motion, type Variants } from "motion/react";
 import { useScanStore } from "@/stores/scan-store";
 import { useResultsStore } from "@/stores/results-store";
 import { cn } from "@/lib/utils";
+
+const kpiContainerVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const kpiItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
+};
 
 // ---- Animated count-up hook ----
 
@@ -58,11 +73,13 @@ function KpiCard({ label, value, format }: KpiCardProps) {
   const hasValue = value !== null;
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-bold tabular-nums tracking-tight text-foreground">
-        {hasValue ? format(animated) : "—"}
-      </p>
+    <div className="rounded-lg bg-gradient-to-br from-primary/30 via-border to-border p-px">
+      <div className="rounded-[calc(var(--radius)-1px)] bg-card p-4">
+        <p className="text-xs font-medium text-muted-foreground">{label}</p>
+        <p className="mt-1 font-mono text-2xl font-bold tabular-nums tracking-tight text-foreground">
+          {hasValue ? format(animated) : "—"}
+        </p>
+      </div>
     </div>
   );
 }
@@ -99,30 +116,41 @@ export function KpiCards() {
   })();
 
   return (
-    <div
+    <motion.div
       className={cn("grid grid-cols-2 gap-3 md:grid-cols-4")}
       data-testid="kpi-cards"
+      variants={kpiContainerVariants}
+      initial="hidden"
+      animate={hasScanData ? "visible" : "hidden"}
     >
-      <KpiCard
-        label="Tickers Scanned"
-        value={hasScanData ? scannedCount : null}
-        format={(n) => Math.round(n).toLocaleString()}
-      />
-      <KpiCard
-        label="Qualified"
-        value={hasScanData ? filteredResults.length : null}
-        format={(n) => Math.round(n).toLocaleString()}
-      />
-      <KpiCard
-        label="Avg Score"
-        value={hasScanData ? avgScore : null}
-        format={(n) => n.toFixed(1)}
-      />
-      <KpiCard
-        label="Avg Premium"
-        value={hasScanData ? avgPremium : null}
-        format={(n) => `${n.toFixed(2)}%`}
-      />
-    </div>
+      <motion.div variants={kpiItemVariants}>
+        <KpiCard
+          label="Tickers Scanned"
+          value={hasScanData ? scannedCount : null}
+          format={(n) => Math.round(n).toLocaleString()}
+        />
+      </motion.div>
+      <motion.div variants={kpiItemVariants}>
+        <KpiCard
+          label="Qualified"
+          value={hasScanData ? filteredResults.length : null}
+          format={(n) => Math.round(n).toLocaleString()}
+        />
+      </motion.div>
+      <motion.div variants={kpiItemVariants}>
+        <KpiCard
+          label="Avg Score"
+          value={hasScanData ? avgScore : null}
+          format={(n) => n.toFixed(1)}
+        />
+      </motion.div>
+      <motion.div variants={kpiItemVariants}>
+        <KpiCard
+          label="Avg Premium"
+          value={hasScanData ? avgPremium : null}
+          format={(n) => `${n.toFixed(2)}%`}
+        />
+      </motion.div>
+    </motion.div>
   );
 }

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface HeaderProps {
   /** Callback to toggle mobile sidebar — when provided, renders hamburger (hidden on desktop) */
@@ -27,11 +28,14 @@ export function Header({ onMenuClick, actions }: HeaderProps) {
         </button>
       )}
 
-      <h1 className="text-lg font-semibold tracking-tight text-primary">
+      <h1 className="font-display text-lg font-semibold tracking-tight text-primary">
         WheelScan
       </h1>
 
-      <div className="ml-auto flex items-center gap-2">{actions}</div>
+      <div className="ml-auto flex items-center gap-2">
+        {actions}
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

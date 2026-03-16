@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { motion, type Variants } from "motion/react";
 import { ChevronUp, ChevronDown, ArrowUpDown, Download } from "lucide-react";
 import { useResultsStore } from "@/stores/results-store";
 import { useChainStore } from "@/stores/chain-store";
@@ -260,6 +261,24 @@ function compareFn(
   return dir === "asc" ? cmp : -cmp;
 }
 
+// ---- Row animation ----
+
+const STAGGER_LIMIT = 20;
+
+const rowVariants: Variants = {
+  hidden: { opacity: 0, y: 8 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
+};
+
+const tbodyVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.02 } },
+};
+
 // ---- Main component ----
 
 export function ResultsTable() {
@@ -320,26 +339,36 @@ export function ResultsTable() {
             ))}
           </tr>
         </thead>
-        <tbody>
-          {sorted.map((row) => (
-            <tr
-              key={row.symbol}
-              className="border-b border-border/50 transition-colors hover:bg-muted/30"
-            >
-              {COLUMNS.map((col) => (
-                <td
-                  key={col.header}
-                  className={cn(
-                    "whitespace-nowrap px-3 py-2",
-                    col.className,
-                  )}
-                >
-                  {col.render(row)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+        <motion.tbody
+          variants={tbodyVariants}
+          initial="hidden"
+          animate="visible"
+          key={sorted.length}
+        >
+          {sorted.map((row, idx) => {
+            const shouldAnimate = idx < STAGGER_LIMIT;
+            const Tag = shouldAnimate ? motion.tr : "tr";
+            return (
+              <Tag
+                key={row.symbol}
+                {...(shouldAnimate ? { variants: rowVariants } : {})}
+                className="border-b border-border/50 transition-colors hover:bg-muted/30"
+              >
+                {COLUMNS.map((col) => (
+                  <td
+                    key={col.header}
+                    className={cn(
+                      "whitespace-nowrap px-3 py-2",
+                      col.className,
+                    )}
+                  >
+                    {col.render(row)}
+                  </td>
+                ))}
+              </Tag>
+            );
+          })}
+        </motion.tbody>
       </table>
       </div>
     </div>

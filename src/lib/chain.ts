@@ -1,7 +1,6 @@
 import { AlpacaService } from "@/services/alpaca";
 import type {
   AlpacaOptionSnapshot,
-  AlpacaOptionContract,
 } from "@/services/alpaca";
 import { MassiveService } from "@/services/massive";
 import type { PolygonOptionSnapshotResult } from "@/services/massive";
@@ -151,7 +150,7 @@ export async function fetchChainAlpaca(
   // Step 3: Merge on OCC symbol key
   const puts: PutOption[] = [];
   for (const [contractSymbol, snap] of Object.entries(snapshots)) {
-    const greeks = snap.greeks || {};
+    const greeks = snap.greeks || ({} as Partial<NonNullable<AlpacaOptionSnapshot['greeks']>>);
     const quote = snap.latestQuote || { bp: 0, ap: 0, bs: 0, as: 0, t: "" };
     const trade = snap.latestTrade || { p: 0, s: 0, t: "" };
 

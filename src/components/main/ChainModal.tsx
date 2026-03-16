@@ -175,8 +175,8 @@ export function ChainModal() {
   );
 
   // Filter values for info bar
-  const { targetDTE, targetDelta } = useFilterStore(
-    useShallow((s) => ({ targetDTE: s.targetDTE, targetDelta: s.targetDelta })),
+  const { targetDelta } = useFilterStore(
+    useShallow((s) => ({ targetDelta: s.targetDelta })),
   );
 
   // Provider detection
@@ -217,6 +217,7 @@ export function ChainModal() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => { if (!open) close(); }}>
       <DialogContent
+        open={isOpen}
         className="max-w-5xl max-h-[85vh] flex flex-col gap-0 p-0"
         data-testid="chain-modal"
       >

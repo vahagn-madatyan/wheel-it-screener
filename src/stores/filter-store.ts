@@ -1,15 +1,6 @@
 import { create } from "zustand";
 import type { FilterState, Preset } from "@/types";
-import { PRESETS, DEFAULT_WEIGHTS } from "@/lib/constants";
-
-/** Maps Preset boolean field names to FilterState field names */
-const BOOL_FIELD_MAP: Record<string, keyof FilterState> = {
-  dividends: "requireDividends",
-  sma200: "aboveSMA200",
-  earnings: "excludeEarnings",
-  weeklies: "requireWeeklies",
-  riskySectors: "excludeRiskySectors",
-} as const;
+import { PRESETS } from "@/lib/constants";
 
 /** Convert a Preset (string DTE/Delta, short bool names) to FilterState fields */
 function presetToFilterState(preset: Preset): Omit<FilterState, "tickerUniverse" | "customTickers"> {
