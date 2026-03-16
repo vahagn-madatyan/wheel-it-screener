@@ -1,17 +1,15 @@
-import { AlpacaService } from "@/services/alpaca";
-import type {
-  AlpacaOptionSnapshot,
-} from "@/services/alpaca";
-import { MassiveService } from "@/services/massive";
-import type { PolygonOptionSnapshotResult } from "@/services/massive";
-import { TokenBucketRateLimiter } from "@/services/rate-limiter";
-import { scorePuts } from "@/lib/put-scoring";
-import { parseStrikeFromSymbol } from "@/lib/utils";
-import type { PutOption, ChainData } from "@/types";
+import { AlpacaService } from '@/services/alpaca';
+import type { AlpacaOptionSnapshot } from '@/services/alpaca';
+import { MassiveService } from '@/services/massive';
+import type { PolygonOptionSnapshotResult } from '@/services/massive';
+import { TokenBucketRateLimiter } from '@/services/rate-limiter';
+import { scorePuts } from '@/lib/put-scoring';
+import { parseStrikeFromSymbol } from '@/lib/utils';
+import type { PutOption, ChainData } from '@/types';
 
 // ---- Public types ----
 
-export type ChainProvider = "alpaca" | "massive";
+export type ChainProvider = 'alpaca' | 'massive';
 
 export interface ChainParams {
   symbol: string;
@@ -44,7 +42,7 @@ export function selectBestExpiry(
 
   const valid = expirations
     .map((exp) => {
-      const expDate = new Date(exp + "T00:00:00");
+      const expDate = new Date(exp + 'T00:00:00');
       const dte = Math.round(
         (expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
       );
@@ -66,7 +64,7 @@ export function selectBestExpiry(
 function computeDTE(expiry: string): number {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const expDate = new Date(expiry + "T00:00:00");
+  const expDate = new Date(expiry + 'T00:00:00');
   return Math.max(
     1,
     Math.round((expDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
@@ -84,8 +82,8 @@ export function detectChainProvider(keys: {
   alpacaSecretKey: string;
   massiveKey: string;
 }): ChainProvider | null {
-  if (keys.alpacaKeyId && keys.alpacaSecretKey) return "alpaca";
-  if (keys.massiveKey) return "massive";
+  if (keys.alpacaKeyId && keys.alpacaSecretKey) return 'alpaca';
+  if (keys.massiveKey) return 'massive';
   return null;
 }
 
@@ -109,10 +107,10 @@ export async function fetchChainAlpaca(
 
   for (let pg = 0; pg < 10; pg++) {
     const params: Record<string, string> = {
-      type: "put",
+      type: 'put',
       expiration_date: expiry,
-      feed: "indicative",
-      limit: "1000",
+      feed: 'indicative',
+      limit: '1000',
     };
     if (pageToken) params.page_token = pageToken;
 
@@ -130,10 +128,10 @@ export async function fetchChainAlpaca(
     const contracts = await service.getAllOptionContracts(
       {
         underlying_symbols: symbol,
-        type: "put",
-        status: "active",
+        type: 'put',
+        status: 'active',
         expiration_date: expiry,
-        limit: "10000",
+        limit: '10000',
       },
       signal,
     );
@@ -150,9 +148,11 @@ export async function fetchChainAlpaca(
   // Step 3: Merge on OCC symbol key
   const puts: PutOption[] = [];
   for (const [contractSymbol, snap] of Object.entries(snapshots)) {
-    const greeks = snap.greeks || ({} as Partial<NonNullable<AlpacaOptionSnapshot['greeks']>>);
-    const quote = snap.latestQuote || { bp: 0, ap: 0, bs: 0, as: 0, t: "" };
-    const trade = snap.latestTrade || { p: 0, s: 0, t: "" };
+    const greeks =
+      snap.greeks ||
+      ({} as Partial<NonNullable<AlpacaOptionSnapshot['greeks']>>);
+    const quote = snap.latestQuote || { bp: 0, ap: 0, bs: 0, as: 0, t: '' };
+    const trade = snap.latestTrade || { p: 0, s: 0, t: '' };
 
     const strike = parseStrikeFromSymbol(contractSymbol);
     if (strike <= 0) continue;
@@ -162,8 +162,7 @@ export async function fetchChainAlpaca(
     const mid = (bid + ask) / 2;
     const spread = ask - bid;
     const spreadPct = mid > 0 ? (spread / mid) * 100 : 999;
-    const delta =
-      greeks.delta !== undefined ? greeks.delta : null;
+    const delta = greeks.delta !== undefined ? greeks.delta : null;
     const iv =
       snap.impliedVolatility !== undefined ? snap.impliedVolatility : null;
     const itm = currentPrice > 0 && strike >= currentPrice;
@@ -189,7 +188,7 @@ export async function fetchChainAlpaca(
       itm,
       dte,
       putScore: 0,
-      rec: "",
+      rec: '',
     });
   }
 
@@ -214,8 +213,8 @@ export async function fetchChainMassive(
   const results = await service.getAllOptionChainSnapshots(
     symbol,
     {
-      "contract_type": "put",
-      "expiration_date": expiry,
+      contract_type: 'put',
+      expiration_date: expiry,
     },
     signal,
   );
@@ -249,7 +248,7 @@ export async function fetchChainMassive(
       itm,
       dte,
       putScore: 0,
-      rec: "",
+      rec: '',
     };
   });
 
@@ -272,7 +271,7 @@ export async function fetchChain(params: ChainParams): Promise<ChainData> {
   // Get expirations
   let expirations: string[];
 
-  if (provider === "alpaca") {
+  if (provider === 'alpaca') {
     const service = new AlpacaService(
       params.alpacaKeyId!,
       params.alpacaSecretKey!,
@@ -287,15 +286,13 @@ export async function fetchChain(params: ChainParams): Promise<ChainData> {
     const contracts = await service.getAllOptionContracts(
       {
         underlying_ticker: symbol,
-        contract_type: "put",
-        expired: "false",
-        limit: "1000",
+        contract_type: 'put',
+        expired: 'false',
+        limit: '1000',
       },
       signal,
     );
-    expirations = [
-      ...new Set(contracts.map((c) => c.expiration_date)),
-    ].sort();
+    expirations = [...new Set(contracts.map((c) => c.expiration_date))].sort();
   }
 
   // Select best expiry
@@ -309,7 +306,7 @@ export async function fetchChain(params: ChainParams): Promise<ChainData> {
   // Fetch puts for selected expiry
   let puts: PutOption[];
 
-  if (provider === "alpaca") {
+  if (provider === 'alpaca') {
     const service = new AlpacaService(
       params.alpacaKeyId!,
       params.alpacaSecretKey!,

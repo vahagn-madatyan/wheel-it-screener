@@ -83,7 +83,7 @@ export interface StockResult {
   earningsDate?: string | null;
   ivRank?: number;
   premiumYield?: number;
-  sma200Status?: "above" | "below" | "n/a";
+  sma200Status?: 'above' | 'below' | 'n/a';
   sma200Pct?: number | null;
 
   // Computed scores (populated by computeWheelScore)
@@ -179,8 +179,8 @@ export interface ApiKeys {
   alpacaSecretKey: string;
   massiveKey: string;
   status: {
-    finnhub: "set" | "not_set";
-    alpaca: "set" | "not_set";
-    massive: "set" | "not_set";
+    finnhub: 'set' | 'not_set';
+    alpaca: 'set' | 'not_set';
+    massive: 'set' | 'not_set';
   };
 }

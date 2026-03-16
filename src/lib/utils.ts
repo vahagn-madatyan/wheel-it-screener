@@ -1,6 +1,10 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { EXCLUDED_INDUSTRIES, EXCLUDED_TICKERS, TICKER_LISTS } from "./constants";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import {
+  EXCLUDED_INDUSTRIES,
+  EXCLUDED_TICKERS,
+  TICKER_LISTS,
+} from './constants';
 
 /**
  * Parse strike price from OCC option symbol.
@@ -43,8 +47,10 @@ export function getTickerList(filters: {
 }): string[] {
   let tickers: string[] = [];
 
-  if (filters.tickerUniverse !== "custom") {
-    tickers = [...(TICKER_LISTS[filters.tickerUniverse] || TICKER_LISTS.wheel_popular)];
+  if (filters.tickerUniverse !== 'custom') {
+    tickers = [
+      ...(TICKER_LISTS[filters.tickerUniverse] || TICKER_LISTS.wheel_popular),
+    ];
   }
 
   // Add custom tickers

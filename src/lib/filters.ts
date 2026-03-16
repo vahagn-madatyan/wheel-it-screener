@@ -1,10 +1,10 @@
-import type { StockResult, FilterState } from "@/types";
-import { isExcludedSector } from "./utils";
+import type { StockResult, FilterState } from '@/types';
+import { isExcludedSector } from './utils';
 import {
   computeWheelMetrics,
   computeWheelScore,
   type EarningsEntry,
-} from "./scoring";
+} from './scoring';
 
 /**
  * Apply the complete filter pipeline and return scored, sorted results.
@@ -37,8 +37,7 @@ export function filterStocks(
     if (stock.avgVolume > 0 && stock.avgVolume < filters.minVolume) continue;
 
     // P/E filter
-    if (stock.pe !== null && stock.pe > 0 && stock.pe > filters.maxPE)
-      continue;
+    if (stock.pe !== null && stock.pe > 0 && stock.pe > filters.maxPE) continue;
 
     // D/E filter — undefined means "don't filter" (replaces vanilla !isNaN)
     if (
@@ -73,7 +72,10 @@ export function filterStocks(
       continue;
 
     // Sector exclusion filter
-    if (filters.excludeRiskySectors && isExcludedSector(stock.industry, stock.symbol))
+    if (
+      filters.excludeRiskySectors &&
+      isExcludedSector(stock.industry, stock.symbol)
+    )
       continue;
 
     // Compute wheel metrics (pure — returns new object)

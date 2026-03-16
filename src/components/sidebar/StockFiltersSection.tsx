@@ -1,30 +1,30 @@
-import { useCallback, useMemo } from "react";
-import { useFilterStore } from "@/stores/filter-store";
-import { PRESETS } from "@/lib/constants";
-import type { FilterState, Preset } from "@/types";
-import { NumberInput } from "./NumberInput";
+import { useCallback, useMemo } from 'react';
+import { useFilterStore } from '@/stores/filter-store';
+import { PRESETS } from '@/lib/constants';
+import type { FilterState, Preset } from '@/types';
+import { NumberInput } from './NumberInput';
 
 /** Numeric fields that presets set (used for preset detection) */
 const PRESET_NUMERIC_FIELDS = [
-  "minPrice",
-  "maxPrice",
-  "minMktCap",
-  "maxMktCap",
-  "minVolume",
-  "maxPE",
-  "maxDebtEquity",
-  "minNetMargin",
-  "minSalesGrowth",
-  "minROE",
+  'minPrice',
+  'maxPrice',
+  'minMktCap',
+  'maxMktCap',
+  'minVolume',
+  'maxPE',
+  'maxDebtEquity',
+  'minNetMargin',
+  'minSalesGrowth',
+  'minROE',
 ] as const;
 
 /** Boolean fields that presets set (mapped to FilterState keys) */
 const PRESET_BOOL_MAP: Record<string, keyof FilterState> = {
-  dividends: "requireDividends",
-  sma200: "aboveSMA200",
-  earnings: "excludeEarnings",
-  weeklies: "requireWeeklies",
-  riskySectors: "excludeRiskySectors",
+  dividends: 'requireDividends',
+  sma200: 'aboveSMA200',
+  earnings: 'excludeEarnings',
+  weeklies: 'requireWeeklies',
+  riskySectors: 'excludeRiskySectors',
 };
 
 /** Check whether current filter state matches a specific preset */
@@ -56,21 +56,21 @@ function detectPreset(state: FilterState): string {
   for (const [name, preset] of Object.entries(PRESETS)) {
     if (matchesPreset(state, preset)) return name;
   }
-  return "custom";
+  return 'custom';
 }
 
 const PRESET_OPTIONS = [
-  { value: "finviz_cut2", label: "Finviz Cut 2 (Default)" },
-  { value: "conservative", label: "Conservative" },
-  { value: "aggressive", label: "Aggressive" },
-  { value: "custom", label: "Custom" },
+  { value: 'finviz_cut2', label: 'Finviz Cut 2 (Default)' },
+  { value: 'conservative', label: 'Conservative' },
+  { value: 'aggressive', label: 'Aggressive' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 const UNIVERSE_OPTIONS = [
-  { value: "wheel_popular", label: "Wheel Popular (50)" },
-  { value: "sp500_top", label: "S&P 500 Top 50" },
-  { value: "high_dividend", label: "High Dividend (30)" },
-  { value: "custom", label: "Custom Tickers" },
+  { value: 'wheel_popular', label: 'Wheel Popular (50)' },
+  { value: 'sp500_top', label: 'S&P 500 Top 50' },
+  { value: 'high_dividend', label: 'High Dividend (30)' },
+  { value: 'custom', label: 'Custom Tickers' },
 ];
 
 export function StockFiltersSection() {
@@ -79,20 +79,12 @@ export function StockFiltersSection() {
   const applyPreset = useFilterStore((s) => s.applyPreset);
 
   // Derive the current preset from the full filter state
-  const currentPreset = useMemo(() => detectPreset(state), [
-    state.minPrice, state.maxPrice, state.minMktCap, state.maxMktCap,
-    state.minVolume, state.maxPE, state.maxDebtEquity, state.minNetMargin,
-    state.minSalesGrowth, state.minROE, state.minPremium, state.maxBP,
-    state.targetDTE, state.targetDelta, state.minIVRank, state.maxIVRank,
-    state.requireDividends, state.aboveSMA200, state.excludeEarnings,
-    state.requireWeeklies, state.excludeRiskySectors,
-    state.weightPremium, state.weightLiquidity, state.weightStability, state.weightFundamentals,
-  ]);
+  const currentPreset = useMemo(() => detectPreset(state), [state]);
 
   const handlePresetChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const value = e.target.value;
-      if (value !== "custom") {
+      if (value !== 'custom') {
         applyPreset(value);
       }
     },
@@ -101,7 +93,7 @@ export function StockFiltersSection() {
 
   const handleUniverseChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFilter("tickerUniverse", e.target.value);
+      setFilter('tickerUniverse', e.target.value);
     },
     [setFilter],
   );
@@ -153,7 +145,7 @@ export function StockFiltersSection() {
       </div>
 
       {/* Custom Tickers (only visible when universe is "custom") */}
-      {state.tickerUniverse === "custom" && (
+      {state.tickerUniverse === 'custom' && (
         <div className="flex flex-col gap-1">
           <label
             htmlFor="custom-tickers"
@@ -165,7 +157,7 @@ export function StockFiltersSection() {
             id="custom-tickers"
             type="text"
             value={state.customTickers}
-            onChange={(e) => setFilter("customTickers", e.target.value)}
+            onChange={(e) => setFilter('customTickers', e.target.value)}
             placeholder="AAPL, MSFT, NVDA…"
             className="h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm text-sidebar-foreground placeholder:text-sidebar-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary"
           />
@@ -177,7 +169,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Min Price ($)"
           value={state.minPrice}
-          onChange={(v) => setFilter("minPrice", v ?? 0)}
+          onChange={(v) => setFilter('minPrice', v ?? 0)}
           min={0}
           step={1}
           required
@@ -185,7 +177,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Max Price ($)"
           value={state.maxPrice}
-          onChange={(v) => setFilter("maxPrice", v ?? 0)}
+          onChange={(v) => setFilter('maxPrice', v ?? 0)}
           min={0}
           step={1}
           required
@@ -194,7 +186,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Min Mkt Cap (B)"
           value={state.minMktCap}
-          onChange={(v) => setFilter("minMktCap", v ?? 0)}
+          onChange={(v) => setFilter('minMktCap', v ?? 0)}
           min={0}
           step={0.1}
           required
@@ -202,7 +194,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Max Mkt Cap (B)"
           value={state.maxMktCap}
-          onChange={(v) => setFilter("maxMktCap", v ?? 0)}
+          onChange={(v) => setFilter('maxMktCap', v ?? 0)}
           min={0}
           step={1}
           required
@@ -211,7 +203,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Min Volume (M)"
           value={state.minVolume}
-          onChange={(v) => setFilter("minVolume", v ?? 0)}
+          onChange={(v) => setFilter('minVolume', v ?? 0)}
           min={0}
           step={0.1}
           required
@@ -219,7 +211,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Max P/E"
           value={state.maxPE}
-          onChange={(v) => setFilter("maxPE", v ?? 0)}
+          onChange={(v) => setFilter('maxPE', v ?? 0)}
           min={0}
           step={1}
           required
@@ -228,7 +220,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Max D/E Ratio"
           value={state.maxDebtEquity}
-          onChange={(v) => setFilter("maxDebtEquity", v)}
+          onChange={(v) => setFilter('maxDebtEquity', v)}
           min={0}
           step={0.1}
           placeholder="Any"
@@ -236,7 +228,7 @@ export function StockFiltersSection() {
         <NumberInput
           label="Min Net Margin (%)"
           value={state.minNetMargin}
-          onChange={(v) => setFilter("minNetMargin", v)}
+          onChange={(v) => setFilter('minNetMargin', v)}
           step={1}
           placeholder="Any"
         />
@@ -244,14 +236,14 @@ export function StockFiltersSection() {
         <NumberInput
           label="Min Sales Growth (%)"
           value={state.minSalesGrowth}
-          onChange={(v) => setFilter("minSalesGrowth", v)}
+          onChange={(v) => setFilter('minSalesGrowth', v)}
           step={1}
           placeholder="Any"
         />
         <NumberInput
           label="Min ROE (%)"
           value={state.minROE}
-          onChange={(v) => setFilter("minROE", v)}
+          onChange={(v) => setFilter('minROE', v)}
           step={1}
           placeholder="Any"
         />

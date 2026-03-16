@@ -19,12 +19,12 @@ export interface AlpacaOptionSnapshot {
     as: number; // ask size
     bp: number; // bid price
     bs: number; // bid size
-    t: string;  // timestamp
+    t: string; // timestamp
   };
   latestTrade?: {
-    p: number;  // price
-    s: number;  // size
-    t: string;  // timestamp
+    p: number; // price
+    s: number; // size
+    t: string; // timestamp
   };
 }
 
@@ -74,7 +74,10 @@ export class AlpacaService {
     private readonly secretKey: string,
   ) {}
 
-  async getOptionExpirations(symbol: string, signal?: AbortSignal): Promise<string[]> {
+  async getOptionExpirations(
+    symbol: string,
+    signal?: AbortSignal,
+  ): Promise<string[]> {
     // No dedicated expirations endpoint — extract unique dates from contracts listing
     const contracts = await this.getAllOptionContracts(
       { underlying_symbols: symbol },

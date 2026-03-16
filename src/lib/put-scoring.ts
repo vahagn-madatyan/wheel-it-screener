@@ -1,4 +1,4 @@
-import type { PutOption } from "@/types";
+import type { PutOption } from '@/types';
 
 /**
  * Score an array of put options and assign recommendation badges.
@@ -12,14 +12,8 @@ import type { PutOption } from "@/types";
  * - Rec badges: top 2 OTM by score (with bid>0) get "best" if ≥50,
  *   then ≥60 → "good", ≥35 → "ok", else "caution"
  */
-export function scorePuts(
-  puts: PutOption[],
-  targetDelta: number,
-): PutOption[] {
-  const maxOI = Math.max(
-    1,
-    Math.max(...puts.map((p) => p.oi).concat([1])),
-  );
+export function scorePuts(puts: PutOption[], targetDelta: number): PutOption[] {
+  const maxOI = Math.max(1, Math.max(...puts.map((p) => p.oi).concat([1])));
   const maxVol = Math.max(
     1,
     Math.max(...puts.map((p) => p.volume).concat([1])),
@@ -31,7 +25,7 @@ export function scorePuts(
 
     if (result.itm) {
       result.putScore = 0;
-      result.rec = "itm";
+      result.rec = 'itm';
       return result;
     }
 
@@ -78,7 +72,9 @@ export function scorePuts(
 
     // Store rounded sub-scores
     result.spreadScore = Math.round(spreadScore);
-    result.liquidityScore = Math.round(Math.min(100, liquidityScore + liqBonus));
+    result.liquidityScore = Math.round(
+      Math.min(100, liquidityScore + liqBonus),
+    );
     result.premScore = Math.round(premScore);
     result.deltaScore = Math.round(deltaScore);
     result.ivScore = Math.round(ivScore);
@@ -101,16 +97,16 @@ export function scorePuts(
   otmPuts.sort((a, b) => b.putScore - a.putScore);
 
   otmPuts.forEach((p, i) => {
-    if (i < 2 && p.putScore >= 50) p.rec = "best";
-    else if (p.putScore >= 60) p.rec = "good";
-    else if (p.putScore >= 35) p.rec = "ok";
-    else p.rec = "caution";
+    if (i < 2 && p.putScore >= 50) p.rec = 'best';
+    else if (p.putScore >= 60) p.rec = 'good';
+    else if (p.putScore >= 35) p.rec = 'ok';
+    else p.rec = 'caution';
   });
 
   // Unscored non-ITM puts get "caution", unscored ITM get "itm"
   scored.forEach((p) => {
-    if (!p.rec && !p.itm) p.rec = "caution";
-    if (!p.rec) p.rec = "itm";
+    if (!p.rec && !p.itm) p.rec = 'caution';
+    if (!p.rec) p.rec = 'itm';
   });
 
   return scored;

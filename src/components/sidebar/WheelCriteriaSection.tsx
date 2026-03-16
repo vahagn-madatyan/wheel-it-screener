@@ -1,21 +1,21 @@
-import { useCallback } from "react";
-import { useFilterStore } from "@/stores/filter-store";
-import { Switch } from "@/components/ui/switch";
-import { NumberInput } from "./NumberInput";
+import { useCallback } from 'react';
+import { useFilterStore } from '@/stores/filter-store';
+import { Switch } from '@/components/ui/switch';
+import { NumberInput } from './NumberInput';
 
 const DTE_OPTIONS = [
-  { value: 30, label: "30 days" },
-  { value: 45, label: "45 days" },
-  { value: 60, label: "60 days" },
-  { value: 90, label: "90 days" },
+  { value: 30, label: '30 days' },
+  { value: 45, label: '45 days' },
+  { value: 60, label: '60 days' },
+  { value: 90, label: '90 days' },
 ];
 
 const DELTA_OPTIONS = [
-  { value: 0.20, label: "0.20" },
-  { value: 0.25, label: "0.25" },
-  { value: 0.30, label: "0.30" },
-  { value: 0.35, label: "0.35" },
-  { value: 0.40, label: "0.40" },
+  { value: 0.2, label: '0.20' },
+  { value: 0.25, label: '0.25' },
+  { value: 0.3, label: '0.30' },
+  { value: 0.35, label: '0.35' },
+  { value: 0.4, label: '0.40' },
 ];
 
 interface ToggleRowProps {
@@ -25,10 +25,13 @@ interface ToggleRowProps {
 }
 
 function ToggleRow({ label, checked, onCheckedChange }: ToggleRowProps) {
-  const id = `toggle-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  const id = `toggle-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
   return (
     <div className="flex items-center justify-between">
-      <label htmlFor={id} className="text-xs text-sidebar-foreground/80 cursor-pointer">
+      <label
+        htmlFor={id}
+        className="text-xs text-sidebar-foreground/80 cursor-pointer"
+      >
         {label}
       </label>
       <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
@@ -52,14 +55,14 @@ export function WheelCriteriaSection() {
 
   const handleDTEChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFilter("targetDTE", parseInt(e.target.value, 10));
+      setFilter('targetDTE', parseInt(e.target.value, 10));
     },
     [setFilter],
   );
 
   const handleDeltaChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFilter("targetDelta", parseFloat(e.target.value));
+      setFilter('targetDelta', parseFloat(e.target.value));
     },
     [setFilter],
   );
@@ -71,7 +74,7 @@ export function WheelCriteriaSection() {
         <NumberInput
           label="Min Premium (%)"
           value={minPremium}
-          onChange={(v) => setFilter("minPremium", v ?? 0)}
+          onChange={(v) => setFilter('minPremium', v ?? 0)}
           min={0}
           step={1}
           required
@@ -79,7 +82,7 @@ export function WheelCriteriaSection() {
         <NumberInput
           label="Max Buying Power ($)"
           value={maxBP}
-          onChange={(v) => setFilter("maxBP", v ?? 0)}
+          onChange={(v) => setFilter('maxBP', v ?? 0)}
           min={0}
           step={100}
           required
@@ -136,7 +139,7 @@ export function WheelCriteriaSection() {
         <NumberInput
           label="Min IV Rank"
           value={minIVRank}
-          onChange={(v) => setFilter("minIVRank", v ?? 0)}
+          onChange={(v) => setFilter('minIVRank', v ?? 0)}
           min={0}
           max={100}
           step={1}
@@ -145,7 +148,7 @@ export function WheelCriteriaSection() {
         <NumberInput
           label="Max IV Rank"
           value={maxIVRank}
-          onChange={(v) => setFilter("maxIVRank", v ?? 0)}
+          onChange={(v) => setFilter('maxIVRank', v ?? 0)}
           min={0}
           max={100}
           step={1}
@@ -158,27 +161,27 @@ export function WheelCriteriaSection() {
         <ToggleRow
           label="Require Dividends"
           checked={requireDividends}
-          onCheckedChange={(v) => setFilter("requireDividends", v)}
+          onCheckedChange={(v) => setFilter('requireDividends', v)}
         />
         <ToggleRow
           label="Above 200-day SMA"
           checked={aboveSMA200}
-          onCheckedChange={(v) => setFilter("aboveSMA200", v)}
+          onCheckedChange={(v) => setFilter('aboveSMA200', v)}
         />
         <ToggleRow
           label="Exclude Earnings (14d)"
           checked={excludeEarnings}
-          onCheckedChange={(v) => setFilter("excludeEarnings", v)}
+          onCheckedChange={(v) => setFilter('excludeEarnings', v)}
         />
         <ToggleRow
           label="Has Weekly Options"
           checked={requireWeeklies}
-          onCheckedChange={(v) => setFilter("requireWeeklies", v)}
+          onCheckedChange={(v) => setFilter('requireWeeklies', v)}
         />
         <ToggleRow
           label="Exclude Risky Sectors"
           checked={excludeRiskySectors}
-          onCheckedChange={(v) => setFilter("excludeRiskySectors", v)}
+          onCheckedChange={(v) => setFilter('excludeRiskySectors', v)}
         />
       </div>
     </div>

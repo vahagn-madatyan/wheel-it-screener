@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from "react";
-import { cn } from "@/lib/utils";
+import { useState, useCallback, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 interface NumberInputProps {
   label: string;
@@ -36,24 +36,24 @@ export function NumberInput({
   required = false,
 }: NumberInputProps) {
   const [draft, setDraft] = useState(() =>
-    value !== undefined ? String(value) : "",
+    value !== undefined ? String(value) : '',
   );
 
   // Sync draft when external value changes (e.g. preset switch)
   useEffect(() => {
-    setDraft(value !== undefined ? String(value) : "");
+    setDraft(value !== undefined ? String(value) : '');
   }, [value]);
 
   const commit = useCallback(() => {
     const trimmed = draft.trim();
-    if (trimmed === "") {
+    if (trimmed === '') {
       onChange(required ? 0 : undefined);
       return;
     }
     const parsed = parseFloat(trimmed);
     if (Number.isNaN(parsed)) {
       // Revert draft to current value
-      setDraft(value !== undefined ? String(value) : "");
+      setDraft(value !== undefined ? String(value) : '');
       return;
     }
     // Clamp to min/max if provided
@@ -66,7 +66,7 @@ export function NumberInput({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") {
+      if (e.key === 'Enter') {
         e.preventDefault();
         commit();
       }
@@ -74,10 +74,10 @@ export function NumberInput({
     [commit],
   );
 
-  const inputId = `number-input-${label.toLowerCase().replace(/\s+/g, "-")}`;
+  const inputId = `number-input-${label.toLowerCase().replace(/\s+/g, '-')}`;
 
   return (
-    <div className={cn("flex flex-col gap-1", className)}>
+    <div className={cn('flex flex-col gap-1', className)}>
       <label
         htmlFor={inputId}
         className="text-xs font-medium text-sidebar-foreground/70"
@@ -96,10 +96,10 @@ export function NumberInput({
         step={step}
         placeholder={placeholder}
         className={cn(
-          "h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm",
-          "text-sidebar-foreground placeholder:text-sidebar-foreground/40",
-          "focus:outline-none focus:ring-1 focus:ring-primary",
-          "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+          'h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm',
+          'text-sidebar-foreground placeholder:text-sidebar-foreground/40',
+          'focus:outline-none focus:ring-1 focus:ring-primary',
+          '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
         )}
       />
     </div>

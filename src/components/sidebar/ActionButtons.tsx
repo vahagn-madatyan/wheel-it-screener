@@ -1,12 +1,15 @@
-import { useFilterStore } from "@/stores/filter-store";
-import { useApiKeyStore } from "@/stores/api-key-store";
-import { useScanStore } from "@/stores/scan-store";
-import { useScanRunner } from "@/hooks/use-scan-runner";
-import { cn } from "@/lib/utils";
+import { useFilterStore } from '@/stores/filter-store';
+import { useApiKeyStore } from '@/stores/api-key-store';
+import { useScanStore } from '@/stores/scan-store';
+import { useScanRunner } from '@/hooks/use-scan-runner';
+import { cn } from '@/lib/utils';
 
-function getDisabledReason(phase: string, finnhubStatus: string): string | null {
-  if (phase === "running") return "Scan in progress…";
-  if (finnhubStatus === "not_set") return "Set Finnhub API key first";
+function getDisabledReason(
+  phase: string,
+  finnhubStatus: string,
+): string | null {
+  if (phase === 'running') return 'Scan in progress…';
+  if (finnhubStatus === 'not_set') return 'Set Finnhub API key first';
   return null;
 }
 
@@ -19,7 +22,7 @@ export function ActionButtons() {
 
   const disabledReason = getDisabledReason(phase, finnhubStatus);
   const isRunDisabled = disabledReason !== null;
-  const isRunning = phase === "running";
+  const isRunning = phase === 'running';
 
   return (
     <div className="flex flex-col gap-2">
@@ -29,11 +32,11 @@ export function ActionButtons() {
           disabled={isRunDisabled}
           onClick={runScan}
           className={cn(
-            "relative h-9 w-full overflow-hidden rounded-md text-sm font-medium transition-colors",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            'relative h-9 w-full overflow-hidden rounded-md text-sm font-medium transition-colors',
+            'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
             isRunDisabled
-              ? "cursor-not-allowed bg-primary/40 text-primary-foreground/60"
-              : "bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-500 hover:to-emerald-400",
+              ? 'cursor-not-allowed bg-primary/40 text-primary-foreground/60'
+              : 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white hover:from-emerald-500 hover:to-emerald-400',
           )}
         >
           {isRunning && (
@@ -43,7 +46,7 @@ export function ActionButtons() {
             />
           )}
           <span className="relative z-10">
-            {isRunning ? "Scanning…" : "Run Screener"}
+            {isRunning ? 'Scanning…' : 'Run Screener'}
           </span>
         </button>
         {disabledReason && !isRunning && (
@@ -58,9 +61,9 @@ export function ActionButtons() {
           type="button"
           onClick={cancel}
           className={cn(
-            "h-9 w-full rounded-md border border-destructive/50 text-sm font-medium",
-            "text-destructive transition-colors",
-            "hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            'h-9 w-full rounded-md border border-destructive/50 text-sm font-medium',
+            'text-destructive transition-colors',
+            'hover:bg-destructive/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           )}
         >
           Cancel Scan
@@ -70,9 +73,9 @@ export function ActionButtons() {
           type="button"
           onClick={resetFilters}
           className={cn(
-            "h-9 w-full rounded-md border border-sidebar-border text-sm font-medium",
-            "text-sidebar-foreground transition-colors",
-            "hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            'h-9 w-full rounded-md border border-sidebar-border text-sm font-medium',
+            'text-sidebar-foreground transition-colors',
+            'hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           )}
         >
           Reset to Defaults

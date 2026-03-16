@@ -1,9 +1,11 @@
-import { create } from "zustand";
-import type { FilterState, Preset } from "@/types";
-import { PRESETS } from "@/lib/constants";
+import { create } from 'zustand';
+import type { FilterState, Preset } from '@/types';
+import { PRESETS } from '@/lib/constants';
 
 /** Convert a Preset (string DTE/Delta, short bool names) to FilterState fields */
-function presetToFilterState(preset: Preset): Omit<FilterState, "tickerUniverse" | "customTickers"> {
+function presetToFilterState(
+  preset: Preset,
+): Omit<FilterState, 'tickerUniverse' | 'customTickers'> {
   return {
     minPrice: preset.minPrice,
     maxPrice: preset.maxPrice,
@@ -38,13 +40,16 @@ const DEFAULT_PRESET = PRESETS.finviz_cut2;
 function getDefaultFilterState(): FilterState {
   return {
     ...presetToFilterState(DEFAULT_PRESET),
-    tickerUniverse: "wheel_popular",
-    customTickers: "",
+    tickerUniverse: 'wheel_popular',
+    customTickers: '',
   };
 }
 
 interface FilterStore extends FilterState {
-  setFilter: <K extends keyof FilterState>(key: K, value: FilterState[K]) => void;
+  setFilter: <K extends keyof FilterState>(
+    key: K,
+    value: FilterState[K],
+  ) => void;
   resetFilters: () => void;
   applyPreset: (presetName: string) => void;
 }
@@ -65,4 +70,3 @@ export const useFilterStore = create<FilterStore>()((set) => ({
     set(presetToFilterState(preset));
   },
 }));
-

@@ -135,7 +135,10 @@ export class MassiveService {
 
     let nextUrl = firstPage.next_url;
     while (nextUrl) {
-      const page = await this.requestUrl<PolygonOptionChainResponse>(nextUrl, signal);
+      const page = await this.requestUrl<PolygonOptionChainResponse>(
+        nextUrl,
+        signal,
+      );
       all.push(...page.results);
       nextUrl = page.next_url;
     }
@@ -171,7 +174,10 @@ export class MassiveService {
 
     let nextUrl = firstPage.next_url;
     while (nextUrl) {
-      const page = await this.requestUrl<PolygonContractsResponse>(nextUrl, signal);
+      const page = await this.requestUrl<PolygonContractsResponse>(
+        nextUrl,
+        signal,
+      );
       all.push(...page.results);
       nextUrl = page.next_url;
     }
@@ -213,7 +219,10 @@ export class MassiveService {
    * Fetch a full URL (used for next_url pagination).
    * Appends apiKey if not already present.
    */
-  private async requestUrl<T>(fullUrl: string, signal?: AbortSignal): Promise<T> {
+  private async requestUrl<T>(
+    fullUrl: string,
+    signal?: AbortSignal,
+  ): Promise<T> {
     if (this.rateLimiter) {
       await this.rateLimiter.acquire();
     }

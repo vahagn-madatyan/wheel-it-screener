@@ -1,24 +1,24 @@
-import { AnimatePresence, motion } from "motion/react";
-import { Sun, Moon } from "lucide-react";
-import { useThemeStore } from "@/stores/theme-store";
-import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from 'motion/react';
+import { Sun, Moon } from 'lucide-react';
+import { useThemeStore } from '@/stores/theme-store';
+import { cn } from '@/lib/utils';
 
 export function ThemeToggle() {
   const theme = useThemeStore((s) => s.theme);
   const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
-  const isDark = theme === "dark";
+  const isDark = theme === 'dark';
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
       className={cn(
-        "relative inline-flex size-9 items-center justify-center overflow-hidden rounded-md",
-        "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-        "transition-colors",
+        'relative inline-flex size-9 items-center justify-center overflow-hidden rounded-md',
+        'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+        'transition-colors',
       )}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       <AnimatePresence mode="wait" initial={false}>
         <motion.span

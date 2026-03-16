@@ -1,20 +1,20 @@
-import { useCallback } from "react";
-import { useFilterStore } from "@/stores/filter-store";
-import { Slider } from "@/components/ui/slider";
-import type { WeightConfig } from "@/types";
+import { useCallback } from 'react';
+import { useFilterStore } from '@/stores/filter-store';
+import { Slider } from '@/components/ui/slider';
+import type { WeightConfig } from '@/types';
 
 const WEIGHT_KEYS: (keyof WeightConfig)[] = [
-  "weightPremium",
-  "weightLiquidity",
-  "weightStability",
-  "weightFundamentals",
+  'weightPremium',
+  'weightLiquidity',
+  'weightStability',
+  'weightFundamentals',
 ];
 
 const WEIGHT_LABELS: Record<keyof WeightConfig, string> = {
-  weightPremium: "Premium",
-  weightLiquidity: "Liquidity",
-  weightStability: "Stability",
-  weightFundamentals: "Fundamentals",
+  weightPremium: 'Premium',
+  weightLiquidity: 'Liquidity',
+  weightStability: 'Stability',
+  weightFundamentals: 'Fundamentals',
 };
 
 /**
@@ -58,10 +58,11 @@ export function redistributeWeights(
   }
 
   // Distribute the negative-diff proportionally by each key's share
-  const rawAdjusted: { key: keyof WeightConfig; value: number }[] = otherKeys.map((k) => {
-    const share = weights[k] / otherSum;
-    return { key: k, value: weights[k] - diff * share };
-  });
+  const rawAdjusted: { key: keyof WeightConfig; value: number }[] =
+    otherKeys.map((k) => {
+      const share = weights[k] / otherSum;
+      return { key: k, value: weights[k] - diff * share };
+    });
 
   // Clamp at 0
   for (const item of rawAdjusted) {
@@ -148,7 +149,9 @@ export function ScoringWeightsSection() {
         </div>
       ))}
       <p className="text-[10px] text-sidebar-foreground/40">
-        Total: {weightPremium + weightLiquidity + weightStability + weightFundamentals}%
+        Total:{' '}
+        {weightPremium + weightLiquidity + weightStability + weightFundamentals}
+        %
       </p>
     </div>
   );

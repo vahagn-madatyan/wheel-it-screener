@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import type { StockResult } from "@/types";
+import { create } from 'zustand';
+import type { StockResult } from '@/types';
 
-type SortDirection = "asc" | "desc";
+type SortDirection = 'asc' | 'desc';
 
 interface SortConfig {
   key: keyof StockResult;
@@ -20,15 +20,19 @@ interface ResultsStore {
 export const useResultsStore = create<ResultsStore>()((set) => ({
   allResults: [],
   filteredResults: [],
-  sort: { key: "wheelScore", direction: "desc" },
+  sort: { key: 'wheelScore', direction: 'desc' },
 
-  setResults: (all, filtered) => set({ allResults: all, filteredResults: filtered }),
+  setResults: (all, filtered) =>
+    set({ allResults: all, filteredResults: filtered }),
 
   setSortKey: (key) =>
     set((state) => ({
       sort: {
         key,
-        direction: state.sort.key === key && state.sort.direction === "desc" ? "asc" : "desc",
+        direction:
+          state.sort.key === key && state.sort.direction === 'desc'
+            ? 'asc'
+            : 'desc',
       },
     })),
 

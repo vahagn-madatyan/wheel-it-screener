@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { useShallow } from "zustand/react/shallow";
-import { fetchChain, detectChainProvider } from "@/lib/chain";
-import { useChainStore } from "@/stores/chain-store";
-import { useApiKeyStore } from "@/stores/api-key-store";
-import { useFilterStore } from "@/stores/filter-store";
-import { useResultsStore } from "@/stores/results-store";
-import { TokenBucketRateLimiter } from "@/services/rate-limiter";
+import { useEffect, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useShallow } from 'zustand/react/shallow';
+import { fetchChain, detectChainProvider } from '@/lib/chain';
+import { useChainStore } from '@/stores/chain-store';
+import { useApiKeyStore } from '@/stores/api-key-store';
+import { useFilterStore } from '@/stores/filter-store';
+import { useResultsStore } from '@/stores/results-store';
+import { TokenBucketRateLimiter } from '@/services/rate-limiter';
 
 /**
  * TanStack Query hook for option chain fetching.
@@ -38,7 +38,11 @@ export function useChainQuery() {
     return result?.price ?? 0;
   });
 
-  const provider = detectChainProvider({ alpacaKeyId, alpacaSecretKey, massiveKey });
+  const provider = detectChainProvider({
+    alpacaKeyId,
+    alpacaSecretKey,
+    massiveKey,
+  });
 
   // Rate limiter for Massive — created once, disposed on unmount
   const rateLimiterRef = useRef<TokenBucketRateLimiter | null>(null);
@@ -51,15 +55,17 @@ export function useChainQuery() {
   }, []);
 
   const query = useQuery({
-    queryKey: ["chain", symbol, provider] as const,
+    queryKey: ['chain', symbol, provider] as const,
     queryFn: async ({ signal }) => {
       if (!symbol || !provider) {
-        throw new Error("No provider configured — set Alpaca or Massive.com API keys");
+        throw new Error(
+          'No provider configured — set Alpaca or Massive.com API keys',
+        );
       }
 
       // Create/reuse rate limiter for Massive
       let massiveRateLimiter: TokenBucketRateLimiter | undefined;
-      if (provider === "massive") {
+      if (provider === 'massive') {
         if (!rateLimiterRef.current) {
           rateLimiterRef.current = new TokenBucketRateLimiter(5, 5, 60000);
         }
@@ -102,7 +108,7 @@ export function useChainQuery() {
       const message =
         query.error instanceof Error
           ? query.error.message
-          : "Failed to load option chain";
+          : 'Failed to load option chain';
       console.error(`[chain] error: ${message}`);
       useChainStore.getState().setError(message);
     }

@@ -1,13 +1,18 @@
-import { describe, it, expect } from "vitest";
-import { redistributeWeights } from "../ScoringWeightsSection";
-import type { WeightConfig } from "@/types";
+import { describe, it, expect } from 'vitest';
+import { redistributeWeights } from '../ScoringWeightsSection';
+import type { WeightConfig } from '@/types';
 
 /** Helper: sum all weight values */
 function sum(w: WeightConfig): number {
-  return w.weightPremium + w.weightLiquidity + w.weightStability + w.weightFundamentals;
+  return (
+    w.weightPremium +
+    w.weightLiquidity +
+    w.weightStability +
+    w.weightFundamentals
+  );
 }
 
-describe("redistributeWeights", () => {
+describe('redistributeWeights', () => {
   const defaults: WeightConfig = {
     weightPremium: 30,
     weightLiquidity: 20,
@@ -15,10 +20,10 @@ describe("redistributeWeights", () => {
     weightFundamentals: 25,
   };
 
-  it("(a) increase one weight → others decrease proportionally", () => {
+  it('(a) increase one weight → others decrease proportionally', () => {
     // Increase premium from 30 → 50 (diff = +20)
     // Others share 70 total, each loses proportionally
-    const result = redistributeWeights("weightPremium", 50, defaults);
+    const result = redistributeWeights('weightPremium', 50, defaults);
 
     expect(result.weightPremium).toBe(50);
     expect(sum(result)).toBe(100);
@@ -34,9 +39,9 @@ describe("redistributeWeights", () => {
     expect(result.weightLiquidity).toBeLessThanOrEqual(15);
   });
 
-  it("(b) decrease one weight → others increase proportionally", () => {
+  it('(b) decrease one weight → others increase proportionally', () => {
     // Decrease premium from 30 → 10 (diff = -20)
-    const result = redistributeWeights("weightPremium", 10, defaults);
+    const result = redistributeWeights('weightPremium', 10, defaults);
 
     expect(result.weightPremium).toBe(10);
     expect(sum(result)).toBe(100);
@@ -46,8 +51,8 @@ describe("redistributeWeights", () => {
     expect(result.weightFundamentals).toBeGreaterThan(25);
   });
 
-  it("(c) set one weight to 100 → others become 0", () => {
-    const result = redistributeWeights("weightPremium", 100, defaults);
+  it('(c) set one weight to 100 → others become 0', () => {
+    const result = redistributeWeights('weightPremium', 100, defaults);
 
     expect(result.weightPremium).toBe(100);
     expect(result.weightLiquidity).toBe(0);
@@ -56,8 +61,8 @@ describe("redistributeWeights", () => {
     expect(sum(result)).toBe(100);
   });
 
-  it("(d) set one weight to 0 → others increase proportionally", () => {
-    const result = redistributeWeights("weightPremium", 0, defaults);
+  it('(d) set one weight to 0 → others increase proportionally', () => {
+    const result = redistributeWeights('weightPremium', 0, defaults);
 
     expect(result.weightPremium).toBe(0);
     expect(sum(result)).toBe(100);
@@ -66,7 +71,7 @@ describe("redistributeWeights", () => {
     expect(result.weightFundamentals).toBeGreaterThan(25);
   });
 
-  it("(e) rounding preserves sum = 100", () => {
+  it('(e) rounding preserves sum = 100', () => {
     // Use odd numbers that won't divide evenly
     const oddWeights: WeightConfig = {
       weightPremium: 33,
@@ -74,7 +79,7 @@ describe("redistributeWeights", () => {
       weightStability: 23,
       weightFundamentals: 22,
     };
-    const result = redistributeWeights("weightPremium", 47, oddWeights);
+    const result = redistributeWeights('weightPremium', 47, oddWeights);
 
     expect(result.weightPremium).toBe(47);
     expect(sum(result)).toBe(100);
@@ -87,7 +92,7 @@ describe("redistributeWeights", () => {
     expect(result.weightFundamentals).toBeGreaterThanOrEqual(0);
   });
 
-  it("(f) edge case: two others at 0, only one absorbs the change", () => {
+  it('(f) edge case: two others at 0, only one absorbs the change', () => {
     const edgeWeights: WeightConfig = {
       weightPremium: 60,
       weightLiquidity: 0,
@@ -95,7 +100,7 @@ describe("redistributeWeights", () => {
       weightFundamentals: 40,
     };
     // Increase premium from 60 → 80
-    const result = redistributeWeights("weightPremium", 80, edgeWeights);
+    const result = redistributeWeights('weightPremium', 80, edgeWeights);
 
     expect(result.weightPremium).toBe(80);
     expect(result.weightLiquidity).toBe(0);
@@ -104,12 +109,12 @@ describe("redistributeWeights", () => {
     expect(sum(result)).toBe(100);
   });
 
-  it("no change returns identical weights", () => {
-    const result = redistributeWeights("weightPremium", 30, defaults);
+  it('no change returns identical weights', () => {
+    const result = redistributeWeights('weightPremium', 30, defaults);
     expect(result).toEqual(defaults);
   });
 
-  it("handles all others at 0 when decreasing changed key", () => {
+  it('handles all others at 0 when decreasing changed key', () => {
     // Edge: premium is 100, others are 0, decrease premium to 40
     const allOne: WeightConfig = {
       weightPremium: 100,
@@ -117,11 +122,15 @@ describe("redistributeWeights", () => {
       weightStability: 0,
       weightFundamentals: 0,
     };
-    const result = redistributeWeights("weightPremium", 40, allOne);
+    const result = redistributeWeights('weightPremium', 40, allOne);
 
     expect(result.weightPremium).toBe(40);
     expect(sum(result)).toBe(100);
     // The 60 freed up should be distributed among the three others
-    expect(result.weightLiquidity + result.weightStability + result.weightFundamentals).toBe(60);
+    expect(
+      result.weightLiquidity +
+        result.weightStability +
+        result.weightFundamentals,
+    ).toBe(60);
   });
 });

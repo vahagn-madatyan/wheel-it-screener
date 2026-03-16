@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import type { ChainData } from "@/types";
+import { create } from 'zustand';
+import type { ChainData } from '@/types';
 
 interface ChainStore {
   chainData: ChainData | null;
@@ -41,5 +41,11 @@ export const useChainStore = create<ChainStore>()((set) => ({
     set({ isOpen: true, symbol, chainData: null, loading: false, error: null }),
 
   close: () =>
-    set({ isOpen: false, symbol: null, chainData: null, loading: false, error: null }),
+    set({
+      isOpen: false,
+      symbol: null,
+      chainData: null,
+      loading: false,
+      error: null,
+    }),
 }));

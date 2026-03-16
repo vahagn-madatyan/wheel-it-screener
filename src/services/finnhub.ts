@@ -8,14 +8,14 @@ const RETRY_BACKOFF_MS = 1200;
 // ---- Response types matching Finnhub API shapes ----
 
 export interface FinnhubQuote {
-  c: number;  // current price
-  d: number;  // change
+  c: number; // current price
+  d: number; // change
   dp: number; // percent change
-  h: number;  // high
-  l: number;  // low
-  o: number;  // open
+  h: number; // high
+  l: number; // low
+  o: number; // open
   pc: number; // previous close
-  t: number;  // timestamp
+  t: number; // timestamp
 }
 
 export interface FinnhubMetrics {
@@ -82,20 +82,45 @@ export class FinnhubService {
     return this.request<FinnhubQuote>('/quote', { symbol }, signal);
   }
 
-  async getMetrics(symbol: string, signal?: AbortSignal): Promise<FinnhubMetrics> {
-    return this.request<FinnhubMetrics>('/stock/metric', { symbol, metric: 'all' }, signal);
+  async getMetrics(
+    symbol: string,
+    signal?: AbortSignal,
+  ): Promise<FinnhubMetrics> {
+    return this.request<FinnhubMetrics>(
+      '/stock/metric',
+      { symbol, metric: 'all' },
+      signal,
+    );
   }
 
-  async getEarningsCalendar(from: string, to: string, signal?: AbortSignal): Promise<FinnhubEarningsCalendar> {
-    return this.request<FinnhubEarningsCalendar>('/calendar/earnings', { from, to }, signal);
+  async getEarningsCalendar(
+    from: string,
+    to: string,
+    signal?: AbortSignal,
+  ): Promise<FinnhubEarningsCalendar> {
+    return this.request<FinnhubEarningsCalendar>(
+      '/calendar/earnings',
+      { from, to },
+      signal,
+    );
   }
 
-  async getProfile(symbol: string, signal?: AbortSignal): Promise<FinnhubProfile> {
+  async getProfile(
+    symbol: string,
+    signal?: AbortSignal,
+  ): Promise<FinnhubProfile> {
     return this.request<FinnhubProfile>('/stock/profile2', { symbol }, signal);
   }
 
-  async getRecommendations(symbol: string, signal?: AbortSignal): Promise<FinnhubRecommendation[]> {
-    return this.request<FinnhubRecommendation[]>('/stock/recommendation', { symbol }, signal);
+  async getRecommendations(
+    symbol: string,
+    signal?: AbortSignal,
+  ): Promise<FinnhubRecommendation[]> {
+    return this.request<FinnhubRecommendation[]>(
+      '/stock/recommendation',
+      { symbol },
+      signal,
+    );
   }
 
   private async request<T>(
@@ -113,7 +138,9 @@ export class FinnhubService {
       url.searchParams.set(key, value);
     }
 
-    const endpoint = `${path}?${Object.entries(params).map(([k, v]) => `${k}=${v}`).join('&')}`;
+    const endpoint = `${path}?${Object.entries(params)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('&')}`;
 
     let lastError: ApiError | null = null;
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {

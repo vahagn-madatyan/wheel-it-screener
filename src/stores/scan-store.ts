@@ -1,6 +1,6 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
-type ScanPhase = "idle" | "running" | "complete" | "error";
+type ScanPhase = 'idle' | 'running' | 'complete' | 'error';
 
 interface ScanStore {
   phase: ScanPhase;
@@ -22,9 +22,9 @@ interface ScanStore {
 }
 
 export const useScanStore = create<ScanStore>()((set) => ({
-  phase: "idle",
+  phase: 'idle',
   progress: 0,
-  currentTicker: "",
+  currentTicker: '',
   scannedCount: 0,
   totalCount: 0,
   candidateCount: 0,
@@ -33,9 +33,9 @@ export const useScanStore = create<ScanStore>()((set) => ({
 
   startScan: (totalCount) =>
     set({
-      phase: "running",
+      phase: 'running',
       progress: 0,
-      currentTicker: "",
+      currentTicker: '',
       scannedCount: 0,
       totalCount,
       candidateCount: 0,
@@ -55,15 +55,15 @@ export const useScanStore = create<ScanStore>()((set) => ({
   incrementCandidates: () =>
     set((state) => ({ candidateCount: state.candidateCount + 1 })),
 
-  completeScan: () => set({ phase: "complete", progress: 1 }),
+  completeScan: () => set({ phase: 'complete', progress: 1 }),
 
-  failScan: (error) => set({ phase: "error", error }),
+  failScan: (error) => set({ phase: 'error', error }),
 
   resetScan: () =>
     set({
-      phase: "idle",
+      phase: 'idle',
       progress: 0,
-      currentTicker: "",
+      currentTicker: '',
       scannedCount: 0,
       totalCount: 0,
       candidateCount: 0,

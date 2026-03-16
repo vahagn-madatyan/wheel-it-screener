@@ -1,6 +1,12 @@
-import { type ReactNode, useState, useCallback, useEffect, useRef } from "react";
-import { Header } from "./Header";
-import { cn } from "@/lib/utils";
+import {
+  type ReactNode,
+  useState,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
+import { Header } from './Header';
+import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
   sidebar: ReactNode;
@@ -37,26 +43,26 @@ export function DashboardLayout({ sidebar, children }: DashboardLayoutProps) {
     if (!sidebarOpen) return;
 
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         closeSidebar();
       }
     }
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
   }, [sidebarOpen, closeSidebar]);
 
   // Close sidebar when resizing past the lg breakpoint (1024px)
   useEffect(() => {
     if (!sidebarOpen) return;
 
-    const mql = window.matchMedia("(min-width: 1024px)");
+    const mql = window.matchMedia('(min-width: 1024px)');
     function handleChange(e: MediaQueryListEvent) {
       if (e.matches) setSidebarOpen(false);
     }
 
-    mql.addEventListener("change", handleChange);
-    return () => mql.removeEventListener("change", handleChange);
+    mql.addEventListener('change', handleChange);
+    return () => mql.removeEventListener('change', handleChange);
   }, [sidebarOpen]);
 
   const showOverlay = sidebarOpen || isClosing;
@@ -86,12 +92,15 @@ export function DashboardLayout({ sidebar, children }: DashboardLayoutProps) {
 
       {/* Mobile sidebar overlay — only mounted when open or closing */}
       {showOverlay && (
-        <div className="fixed inset-0 z-50 lg:hidden" aria-hidden={!sidebarOpen}>
+        <div
+          className="fixed inset-0 z-50 lg:hidden"
+          aria-hidden={!sidebarOpen}
+        >
           {/* Backdrop */}
           <div
             className={cn(
-              "absolute inset-0 bg-black/50 transition-opacity duration-200",
-              sidebarOpen ? "opacity-100" : "opacity-0",
+              'absolute inset-0 bg-black/50 transition-opacity duration-200',
+              sidebarOpen ? 'opacity-100' : 'opacity-0',
             )}
             onClick={closeSidebar}
             data-testid="sidebar-backdrop"
@@ -101,8 +110,8 @@ export function DashboardLayout({ sidebar, children }: DashboardLayoutProps) {
           <div
             ref={panelRef}
             className={cn(
-              "absolute inset-y-0 left-0 w-80 transition-transform duration-200 ease-out",
-              sidebarOpen ? "translate-x-0" : "-translate-x-full",
+              'absolute inset-y-0 left-0 w-80 transition-transform duration-200 ease-out',
+              sidebarOpen ? 'translate-x-0' : '-translate-x-full',
             )}
             onTransitionEnd={handleTransitionEnd}
           >

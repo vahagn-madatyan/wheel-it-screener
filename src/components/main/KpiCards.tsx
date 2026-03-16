@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from "react";
-import { motion, type Variants } from "motion/react";
-import { useScanStore } from "@/stores/scan-store";
-import { useResultsStore } from "@/stores/results-store";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef, useState } from 'react';
+import { motion, type Variants } from 'motion/react';
+import { useScanStore } from '@/stores/scan-store';
+import { useResultsStore } from '@/stores/results-store';
+import { cn } from '@/lib/utils';
 
 const kpiContainerVariants: Variants = {
   hidden: {},
@@ -14,7 +14,7 @@ const kpiItemVariants: Variants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 300, damping: 24 },
+    transition: { type: 'spring', stiffness: 300, damping: 24 },
   },
 };
 
@@ -77,7 +77,7 @@ function KpiCard({ label, value, format }: KpiCardProps) {
       <div className="rounded-[calc(var(--radius)-1px)] bg-card p-4">
         <p className="text-xs font-medium text-muted-foreground">{label}</p>
         <p className="mt-1 font-mono text-2xl font-bold tabular-nums tracking-tight text-foreground">
-          {hasValue ? format(animated) : "—"}
+          {hasValue ? format(animated) : '—'}
         </p>
       </div>
     </div>
@@ -91,7 +91,7 @@ export function KpiCards() {
   const scannedCount = useScanStore((s) => s.scannedCount);
   const filteredResults = useResultsStore((s) => s.filteredResults);
 
-  const hasScanData = phase === "complete" || phase === "running";
+  const hasScanData = phase === 'complete' || phase === 'running';
 
   // Compute averages from filtered results
   const { avgScore, avgPremium } = (() => {
@@ -117,11 +117,11 @@ export function KpiCards() {
 
   return (
     <motion.div
-      className={cn("grid grid-cols-2 gap-3 md:grid-cols-4")}
+      className={cn('grid grid-cols-2 gap-3 md:grid-cols-4')}
       data-testid="kpi-cards"
       variants={kpiContainerVariants}
       initial="hidden"
-      animate={hasScanData ? "visible" : "hidden"}
+      animate={hasScanData ? 'visible' : 'hidden'}
     >
       <motion.div variants={kpiItemVariants}>
         <KpiCard

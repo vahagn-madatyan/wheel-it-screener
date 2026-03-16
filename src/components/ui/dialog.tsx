@@ -1,8 +1,8 @@
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { AnimatePresence, motion, type Variants } from "motion/react";
-import { X } from "lucide-react";
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import { AnimatePresence, motion, type Variants } from 'motion/react';
+import { X } from 'lucide-react';
 
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 const overlayVariants: Variants = {
   closed: { opacity: 0 },
@@ -45,7 +45,7 @@ function DialogOverlay({
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
-      className={cn("fixed inset-0 z-50 bg-black/80", className)}
+      className={cn('fixed inset-0 z-50 bg-black/80', className)}
       {...props}
     />
   );
@@ -100,13 +100,13 @@ function DialogContent({
               <motion.div
                 variants={contentVariants}
                 transition={{
-                  type: "spring",
+                  type: 'spring',
                   stiffness: 300,
                   damping: 30,
                 }}
                 className={cn(
-                  "relative grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg",
-                  "sm:rounded-lg",
+                  'relative grid w-full max-w-lg gap-4 border bg-background p-6 shadow-lg',
+                  'sm:rounded-lg',
                   className,
                 )}
               >
@@ -132,7 +132,7 @@ function DialogHeader({
     <div
       data-slot="dialog-header"
       className={cn(
-        "flex flex-col space-y-1.5 text-center sm:text-left",
+        'flex flex-col space-y-1.5 text-center sm:text-left',
         className,
       )}
       {...props}
@@ -148,7 +148,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+        'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
         className,
       )}
       {...props}
@@ -164,7 +164,7 @@ function DialogTitle({
     <DialogPrimitive.Title
       data-slot="dialog-title"
       className={cn(
-        "text-lg font-semibold leading-none tracking-tight",
+        'text-lg font-semibold leading-none tracking-tight',
         className,
       )}
       {...props}
@@ -179,7 +179,7 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn('text-sm text-muted-foreground', className)}
       {...props}
     />
   );

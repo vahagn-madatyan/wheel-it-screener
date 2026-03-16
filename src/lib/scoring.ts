@@ -1,4 +1,4 @@
-import type { StockResult, FilterState, WeightConfig } from "@/types";
+import type { StockResult, FilterState, WeightConfig } from '@/types';
 
 /** Earnings calendar entry for a single symbol */
 export interface EarningsEntry {
@@ -15,7 +15,7 @@ export interface EarningsEntry {
  */
 export function computeWheelMetrics(
   stock: StockResult,
-  filters: Pick<FilterState, "targetDelta" | "targetDTE">,
+  filters: Pick<FilterState, 'targetDelta' | 'targetDTE'>,
   earningsEntry?: EarningsEntry | null,
 ): StockResult {
   const result = { ...stock };
@@ -34,7 +34,7 @@ export function computeWheelMetrics(
     const rangePercent = ((h - l) / h) * 100;
     const pricePosition = (result.price - l) / (h - l);
     // If price is near lows, IV is likely elevated (fear)
-    const positionFactor = Math.max(0, (1 - pricePosition)) * 40;
+    const positionFactor = Math.max(0, 1 - pricePosition) * 40;
     const betaFactor = result.beta
       ? Math.min(Math.max(result.beta, 0.3), 3) * 20
       : 25;
@@ -58,14 +58,14 @@ export function computeWheelMetrics(
   // 200 SMA status
   if (result.twoHundredDayAvg > 0) {
     result.sma200Status =
-      result.price >= result.twoHundredDayAvg ? "above" : "below";
+      result.price >= result.twoHundredDayAvg ? 'above' : 'below';
     result.sma200Pct =
       Math.round(
         ((result.price - result.twoHundredDayAvg) / result.twoHundredDayAvg) *
           1000,
       ) / 10;
   } else {
-    result.sma200Status = "n/a";
+    result.sma200Status = 'n/a';
     result.sma200Pct = null;
   }
 
@@ -142,8 +142,7 @@ export function computeWheelScore(
   if (result.dividendYield > 0)
     fundScore += Math.min(15, result.dividendYield * 3);
   if (result.roe && result.roe > 15) fundScore += 8;
-  if (result.analystBuyPct != null && result.analystBuyPct > 60)
-    fundScore += 7;
+  if (result.analystBuyPct != null && result.analystBuyPct > 60) fundScore += 7;
   if (result.netMargin && result.netMargin > 15) fundScore += 5;
   fundScore = Math.min(100, Math.round(fundScore));
 

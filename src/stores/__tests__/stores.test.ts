@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { useFilterStore } from "@/stores/filter-store";
-import { useResultsStore } from "@/stores/results-store";
-import { useScanStore } from "@/stores/scan-store";
-import { useApiKeyStore } from "@/stores/api-key-store";
-import { useThemeStore } from "@/stores/theme-store";
-import { useChainStore } from "@/stores/chain-store";
-import { PRESETS } from "@/lib/constants";
-import type { StockResult, ChainData } from "@/types";
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { useFilterStore } from '@/stores/filter-store';
+import { useResultsStore } from '@/stores/results-store';
+import { useScanStore } from '@/stores/scan-store';
+import { useApiKeyStore } from '@/stores/api-key-store';
+import { useThemeStore } from '@/stores/theme-store';
+import { useChainStore } from '@/stores/chain-store';
+import { PRESETS } from '@/lib/constants';
+import type { StockResult, ChainData } from '@/types';
 
 // ---- helpers ----
 function resetAllStores() {
@@ -20,8 +20,8 @@ function resetAllStores() {
 
 function makeResult(overrides: Partial<StockResult> = {}): StockResult {
   return {
-    symbol: "AAPL",
-    name: "Apple Inc",
+    symbol: 'AAPL',
+    name: 'Apple Inc',
     price: 150,
     prevClose: 149,
     dayChange: 0.67,
@@ -37,24 +37,24 @@ function makeResult(overrides: Partial<StockResult> = {}): StockResult {
     twoHundredDayAvg: 145,
     fiftyTwoWeekHigh: 180,
     fiftyTwoWeekLow: 120,
-    fiftyTwoWeekHighDate: "2025-07-15",
-    fiftyTwoWeekLowDate: "2025-01-10",
+    fiftyTwoWeekHighDate: '2025-07-15',
+    fiftyTwoWeekLowDate: '2025-01-10',
     roe: 0.45,
     revenueGrowth: 0.08,
     netMargin: 0.25,
     currentRatio: 1.1,
     debtToEquity: 1.5,
-    source: "finnhub",
+    source: 'finnhub',
     wheelScore: 85,
     ...overrides,
   };
 }
 
 // ---- filterStore ----
-describe("filterStore", () => {
+describe('filterStore', () => {
   beforeEach(resetAllStores);
 
-  it("defaults match finviz_cut2 parsed values", () => {
+  it('defaults match finviz_cut2 parsed values', () => {
     const state = useFilterStore.getState();
     const preset = PRESETS.finviz_cut2;
 
@@ -72,9 +72,9 @@ describe("filterStore", () => {
 
     // String→number conversions
     expect(state.targetDTE).toBe(30);
-    expect(typeof state.targetDTE).toBe("number");
+    expect(typeof state.targetDTE).toBe('number');
     expect(state.targetDelta).toBe(0.3);
-    expect(typeof state.targetDelta).toBe("number");
+    expect(typeof state.targetDelta).toBe('number');
 
     // Boolean field name mapping
     expect(state.requireDividends).toBe(preset.dividends);
@@ -90,18 +90,18 @@ describe("filterStore", () => {
     expect(state.weightFundamentals).toBe(25);
 
     // User-specific fields have their own defaults
-    expect(state.tickerUniverse).toBe("wheel_popular");
-    expect(state.customTickers).toBe("");
+    expect(state.tickerUniverse).toBe('wheel_popular');
+    expect(state.customTickers).toBe('');
   });
 
   it("applyPreset('conservative') converts string→number correctly", () => {
-    useFilterStore.getState().applyPreset("conservative");
+    useFilterStore.getState().applyPreset('conservative');
     const state = useFilterStore.getState();
 
     expect(state.targetDTE).toBe(45);
-    expect(typeof state.targetDTE).toBe("number");
+    expect(typeof state.targetDTE).toBe('number');
     expect(state.targetDelta).toBe(0.2);
-    expect(typeof state.targetDelta).toBe("number");
+    expect(typeof state.targetDelta).toBe('number');
     expect(state.requireDividends).toBe(true);
     expect(state.aboveSMA200).toBe(true);
     expect(state.maxPE).toBe(30);
@@ -110,7 +110,7 @@ describe("filterStore", () => {
   });
 
   it("applyPreset('aggressive') converts string→number correctly", () => {
-    useFilterStore.getState().applyPreset("aggressive");
+    useFilterStore.getState().applyPreset('aggressive');
     const state = useFilterStore.getState();
 
     expect(state.targetDTE).toBe(30);
@@ -123,8 +123,8 @@ describe("filterStore", () => {
 
   it("applyPreset('finviz_cut2') converts string→number correctly", () => {
     // Apply conservative first, then switch back
-    useFilterStore.getState().applyPreset("conservative");
-    useFilterStore.getState().applyPreset("finviz_cut2");
+    useFilterStore.getState().applyPreset('conservative');
+    useFilterStore.getState().applyPreset('finviz_cut2');
     const state = useFilterStore.getState();
 
     expect(state.targetDTE).toBe(30);
@@ -132,20 +132,20 @@ describe("filterStore", () => {
     expect(state.minPrice).toBe(10);
   });
 
-  it("setFilter updates individual fields", () => {
-    useFilterStore.getState().setFilter("minPrice", 25);
+  it('setFilter updates individual fields', () => {
+    useFilterStore.getState().setFilter('minPrice', 25);
     expect(useFilterStore.getState().minPrice).toBe(25);
 
-    useFilterStore.getState().setFilter("requireDividends", true);
+    useFilterStore.getState().setFilter('requireDividends', true);
     expect(useFilterStore.getState().requireDividends).toBe(true);
 
-    useFilterStore.getState().setFilter("tickerUniverse", "sp500_top");
-    expect(useFilterStore.getState().tickerUniverse).toBe("sp500_top");
+    useFilterStore.getState().setFilter('tickerUniverse', 'sp500_top');
+    expect(useFilterStore.getState().tickerUniverse).toBe('sp500_top');
   });
 
-  it("resetFilters returns to defaults", () => {
-    useFilterStore.getState().setFilter("minPrice", 999);
-    useFilterStore.getState().setFilter("requireDividends", true);
+  it('resetFilters returns to defaults', () => {
+    useFilterStore.getState().setFilter('minPrice', 999);
+    useFilterStore.getState().setFilter('requireDividends', true);
     useFilterStore.getState().resetFilters();
 
     const state = useFilterStore.getState();
@@ -155,28 +155,28 @@ describe("filterStore", () => {
   });
 
   it("applyPreset with unknown name warns but doesn't crash", () => {
-    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const before = useFilterStore.getState().minPrice;
-    useFilterStore.getState().applyPreset("nonexistent");
+    useFilterStore.getState().applyPreset('nonexistent');
     expect(useFilterStore.getState().minPrice).toBe(before);
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining("nonexistent"));
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('nonexistent'));
     warn.mockRestore();
   });
 });
 
 // ---- resultsStore ----
-describe("resultsStore", () => {
+describe('resultsStore', () => {
   beforeEach(resetAllStores);
 
-  it("starts empty with wheelScore desc sort", () => {
+  it('starts empty with wheelScore desc sort', () => {
     const state = useResultsStore.getState();
     expect(state.allResults).toEqual([]);
     expect(state.filteredResults).toEqual([]);
-    expect(state.sort).toEqual({ key: "wheelScore", direction: "desc" });
+    expect(state.sort).toEqual({ key: 'wheelScore', direction: 'desc' });
   });
 
-  it("setResults populates both arrays", () => {
-    const all = [makeResult(), makeResult({ symbol: "MSFT" })];
+  it('setResults populates both arrays', () => {
+    const all = [makeResult(), makeResult({ symbol: 'MSFT' })];
     const filtered = [all[0]];
     useResultsStore.getState().setResults(all, filtered);
 
@@ -185,201 +185,210 @@ describe("resultsStore", () => {
     expect(state.filteredResults).toHaveLength(1);
   });
 
-  it("clearResults empties both arrays", () => {
+  it('clearResults empties both arrays', () => {
     useResultsStore.getState().setResults([makeResult()], [makeResult()]);
     useResultsStore.getState().clearResults();
     expect(useResultsStore.getState().allResults).toEqual([]);
     expect(useResultsStore.getState().filteredResults).toEqual([]);
   });
 
-  it("setSortKey toggles direction on same key", () => {
+  it('setSortKey toggles direction on same key', () => {
     // Default: wheelScore desc
-    useResultsStore.getState().setSortKey("wheelScore");
-    expect(useResultsStore.getState().sort).toEqual({ key: "wheelScore", direction: "asc" });
+    useResultsStore.getState().setSortKey('wheelScore');
+    expect(useResultsStore.getState().sort).toEqual({
+      key: 'wheelScore',
+      direction: 'asc',
+    });
 
-    useResultsStore.getState().setSortKey("wheelScore");
-    expect(useResultsStore.getState().sort).toEqual({ key: "wheelScore", direction: "desc" });
+    useResultsStore.getState().setSortKey('wheelScore');
+    expect(useResultsStore.getState().sort).toEqual({
+      key: 'wheelScore',
+      direction: 'desc',
+    });
   });
 
-  it("setSortKey resets to desc on new key", () => {
-    useResultsStore.getState().setSortKey("price");
-    expect(useResultsStore.getState().sort).toEqual({ key: "price", direction: "desc" });
+  it('setSortKey resets to desc on new key', () => {
+    useResultsStore.getState().setSortKey('price');
+    expect(useResultsStore.getState().sort).toEqual({
+      key: 'price',
+      direction: 'desc',
+    });
   });
 });
 
 // ---- scanStore ----
-describe("scanStore", () => {
+describe('scanStore', () => {
   beforeEach(resetAllStores);
 
-  it("starts in idle phase", () => {
-    expect(useScanStore.getState().phase).toBe("idle");
+  it('starts in idle phase', () => {
+    expect(useScanStore.getState().phase).toBe('idle');
   });
 
-  it("idle→running→complete lifecycle", () => {
+  it('idle→running→complete lifecycle', () => {
     const store = useScanStore.getState();
 
     store.startScan(3);
-    expect(useScanStore.getState().phase).toBe("running");
+    expect(useScanStore.getState().phase).toBe('running');
     expect(useScanStore.getState().totalCount).toBe(3);
 
-    useScanStore.getState().tickProgress("AAPL");
+    useScanStore.getState().tickProgress('AAPL');
     expect(useScanStore.getState().scannedCount).toBe(1);
-    expect(useScanStore.getState().currentTicker).toBe("AAPL");
+    expect(useScanStore.getState().currentTicker).toBe('AAPL');
     expect(useScanStore.getState().progress).toBeCloseTo(1 / 3);
 
-    useScanStore.getState().tickProgress("MSFT");
-    useScanStore.getState().tickProgress("GOOGL");
+    useScanStore.getState().tickProgress('MSFT');
+    useScanStore.getState().tickProgress('GOOGL');
     expect(useScanStore.getState().scannedCount).toBe(3);
     expect(useScanStore.getState().progress).toBeCloseTo(1);
 
     useScanStore.getState().completeScan();
-    expect(useScanStore.getState().phase).toBe("complete");
+    expect(useScanStore.getState().phase).toBe('complete');
     expect(useScanStore.getState().progress).toBe(1);
   });
 
-  it("idle→running→error lifecycle", () => {
+  it('idle→running→error lifecycle', () => {
     useScanStore.getState().startScan(10);
-    useScanStore.getState().tickProgress("AAPL");
-    useScanStore.getState().failScan("API rate limit");
+    useScanStore.getState().tickProgress('AAPL');
+    useScanStore.getState().failScan('API rate limit');
 
     const state = useScanStore.getState();
-    expect(state.phase).toBe("error");
-    expect(state.error).toBe("API rate limit");
+    expect(state.phase).toBe('error');
+    expect(state.error).toBe('API rate limit');
   });
 
-  it("resetScan returns to idle", () => {
+  it('resetScan returns to idle', () => {
     useScanStore.getState().startScan(5);
-    useScanStore.getState().tickProgress("AAPL");
+    useScanStore.getState().tickProgress('AAPL');
     useScanStore.getState().resetScan();
 
     const state = useScanStore.getState();
-    expect(state.phase).toBe("idle");
+    expect(state.phase).toBe('idle');
     expect(state.scannedCount).toBe(0);
     expect(state.error).toBeNull();
   });
 
-  it("setEarningsMap stores map", () => {
-    const map = new Map([["AAPL", "2026-04-25"]]);
+  it('setEarningsMap stores map', () => {
+    const map = new Map([['AAPL', '2026-04-25']]);
     useScanStore.getState().setEarningsMap(map);
-    expect(useScanStore.getState().earningsMap.get("AAPL")).toBe("2026-04-25");
+    expect(useScanStore.getState().earningsMap.get('AAPL')).toBe('2026-04-25');
   });
 });
 
 // ---- apiKeyStore ----
-describe("apiKeyStore", () => {
+describe('apiKeyStore', () => {
   beforeEach(() => {
     localStorage.clear();
     resetAllStores();
   });
 
-  it("starts with empty keys and not_set status", () => {
+  it('starts with empty keys and not_set status', () => {
     const state = useApiKeyStore.getState();
-    expect(state.finnhubKey).toBe("");
-    expect(state.status.finnhub).toBe("not_set");
-    expect(state.status.alpaca).toBe("not_set");
-    expect(state.status.massive).toBe("not_set");
+    expect(state.finnhubKey).toBe('');
+    expect(state.status.finnhub).toBe('not_set');
+    expect(state.status.alpaca).toBe('not_set');
+    expect(state.status.massive).toBe('not_set');
   });
 
-  it("setFinnhubKey updates key and derives status", () => {
-    useApiKeyStore.getState().setFinnhubKey("abc123");
+  it('setFinnhubKey updates key and derives status', () => {
+    useApiKeyStore.getState().setFinnhubKey('abc123');
     const state = useApiKeyStore.getState();
-    expect(state.finnhubKey).toBe("abc123");
-    expect(state.status.finnhub).toBe("set");
+    expect(state.finnhubKey).toBe('abc123');
+    expect(state.status.finnhub).toBe('set');
   });
 
-  it("setAlpacaKeys requires both keys for set status", () => {
-    useApiKeyStore.getState().setAlpacaKeys("key-id", "secret");
+  it('setAlpacaKeys requires both keys for set status', () => {
+    useApiKeyStore.getState().setAlpacaKeys('key-id', 'secret');
     const state = useApiKeyStore.getState();
-    expect(state.alpacaKeyId).toBe("key-id");
-    expect(state.alpacaSecretKey).toBe("secret");
-    expect(state.status.alpaca).toBe("set");
+    expect(state.alpacaKeyId).toBe('key-id');
+    expect(state.alpacaSecretKey).toBe('secret');
+    expect(state.status.alpaca).toBe('set');
   });
 
-  it("setMassiveKey updates key and derives status", () => {
-    useApiKeyStore.getState().setMassiveKey("massive-key-123");
-    expect(useApiKeyStore.getState().status.massive).toBe("set");
+  it('setMassiveKey updates key and derives status', () => {
+    useApiKeyStore.getState().setMassiveKey('massive-key-123');
+    expect(useApiKeyStore.getState().status.massive).toBe('set');
   });
 
-  it("clearAllKeys resets everything", () => {
-    useApiKeyStore.getState().setFinnhubKey("test");
-    useApiKeyStore.getState().setMassiveKey("test");
+  it('clearAllKeys resets everything', () => {
+    useApiKeyStore.getState().setFinnhubKey('test');
+    useApiKeyStore.getState().setMassiveKey('test');
     useApiKeyStore.getState().clearAllKeys();
 
     const state = useApiKeyStore.getState();
-    expect(state.finnhubKey).toBe("");
-    expect(state.status.finnhub).toBe("not_set");
-    expect(state.status.massive).toBe("not_set");
+    expect(state.finnhubKey).toBe('');
+    expect(state.status.finnhub).toBe('not_set');
+    expect(state.status.massive).toBe('not_set');
   });
 
-  it("persist serialization excludes status", () => {
-    useApiKeyStore.getState().setFinnhubKey("test-key");
+  it('persist serialization excludes status', () => {
+    useApiKeyStore.getState().setFinnhubKey('test-key');
 
     // Force persist write
     useApiKeyStore.persist.rehydrate();
 
-    const raw = localStorage.getItem("wheelscan-api-keys");
+    const raw = localStorage.getItem('wheelscan-api-keys');
     expect(raw).toBeTruthy();
     const parsed = JSON.parse(raw!);
-    expect(parsed.state).not.toHaveProperty("status");
-    expect(parsed.state.finnhubKey).toBe("test-key");
+    expect(parsed.state).not.toHaveProperty('status');
+    expect(parsed.state.finnhubKey).toBe('test-key');
     expect(parsed.version).toBe(1);
   });
 });
 
 // ---- themeStore ----
-describe("themeStore", () => {
+describe('themeStore', () => {
   beforeEach(() => {
     localStorage.clear();
     // Reset DOM classList
-    document.documentElement.classList.remove("dark", "light");
+    document.documentElement.classList.remove('dark', 'light');
     resetAllStores();
   });
 
-  it("defaults to dark", () => {
-    expect(useThemeStore.getState().theme).toBe("dark");
+  it('defaults to dark', () => {
+    expect(useThemeStore.getState().theme).toBe('dark');
   });
 
-  it("toggleTheme switches and updates DOM", () => {
+  it('toggleTheme switches and updates DOM', () => {
     useThemeStore.getState().toggleTheme();
-    expect(useThemeStore.getState().theme).toBe("light");
-    expect(document.documentElement.classList.contains("light")).toBe(true);
-    expect(document.documentElement.classList.contains("dark")).toBe(false);
+    expect(useThemeStore.getState().theme).toBe('light');
+    expect(document.documentElement.classList.contains('light')).toBe(true);
+    expect(document.documentElement.classList.contains('dark')).toBe(false);
 
     useThemeStore.getState().toggleTheme();
-    expect(useThemeStore.getState().theme).toBe("dark");
-    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    expect(useThemeStore.getState().theme).toBe('dark');
+    expect(document.documentElement.classList.contains('dark')).toBe(true);
   });
 
-  it("setTheme updates DOM", () => {
-    useThemeStore.getState().setTheme("light");
-    expect(useThemeStore.getState().theme).toBe("light");
-    expect(document.documentElement.classList.contains("light")).toBe(true);
+  it('setTheme updates DOM', () => {
+    useThemeStore.getState().setTheme('light');
+    expect(useThemeStore.getState().theme).toBe('light');
+    expect(document.documentElement.classList.contains('light')).toBe(true);
   });
 
-  it("persists to localStorage", () => {
+  it('persists to localStorage', () => {
     useThemeStore.getState().toggleTheme(); // dark → light
     useThemeStore.persist.rehydrate();
 
-    const raw = localStorage.getItem("wheelscan-theme");
+    const raw = localStorage.getItem('wheelscan-theme');
     expect(raw).toBeTruthy();
     const parsed = JSON.parse(raw!);
-    expect(parsed.state.theme).toBe("light");
+    expect(parsed.state.theme).toBe('light');
     expect(parsed.version).toBe(1);
   });
 });
 
 // ---- chainStore ----
-describe("chainStore", () => {
+describe('chainStore', () => {
   beforeEach(resetAllStores);
 
   const mockChain: ChainData = {
-    symbol: "AAPL",
-    expirations: ["2026-04-17", "2026-05-15"],
-    selectedExpiry: "2026-04-17",
+    symbol: 'AAPL',
+    expirations: ['2026-04-17', '2026-05-15'],
+    selectedExpiry: '2026-04-17',
     puts: [],
   };
 
-  it("starts with null chainData and closed modal", () => {
+  it('starts with null chainData and closed modal', () => {
     const state = useChainStore.getState();
     expect(state.chainData).toBeNull();
     expect(state.loading).toBe(false);
@@ -388,37 +397,39 @@ describe("chainStore", () => {
     expect(state.symbol).toBeNull();
   });
 
-  it("setChainData stores data and clears loading/error", () => {
+  it('setChainData stores data and clears loading/error', () => {
     useChainStore.getState().setLoading(true);
     useChainStore.getState().setChainData(mockChain);
 
     const state = useChainStore.getState();
-    expect(state.chainData?.symbol).toBe("AAPL");
+    expect(state.chainData?.symbol).toBe('AAPL');
     expect(state.loading).toBe(false);
     expect(state.error).toBeNull();
   });
 
-  it("setSelectedExpiry updates expiry on existing data", () => {
+  it('setSelectedExpiry updates expiry on existing data', () => {
     useChainStore.getState().setChainData(mockChain);
-    useChainStore.getState().setSelectedExpiry("2026-05-15");
-    expect(useChainStore.getState().chainData?.selectedExpiry).toBe("2026-05-15");
+    useChainStore.getState().setSelectedExpiry('2026-05-15');
+    expect(useChainStore.getState().chainData?.selectedExpiry).toBe(
+      '2026-05-15',
+    );
   });
 
-  it("setSelectedExpiry is no-op when no chain data", () => {
-    useChainStore.getState().setSelectedExpiry("2026-05-15");
+  it('setSelectedExpiry is no-op when no chain data', () => {
+    useChainStore.getState().setSelectedExpiry('2026-05-15');
     expect(useChainStore.getState().chainData).toBeNull();
   });
 
-  it("setError clears loading", () => {
+  it('setError clears loading', () => {
     useChainStore.getState().setLoading(true);
-    useChainStore.getState().setError("Network error");
+    useChainStore.getState().setError('Network error');
 
     const state = useChainStore.getState();
-    expect(state.error).toBe("Network error");
+    expect(state.error).toBe('Network error');
     expect(state.loading).toBe(false);
   });
 
-  it("clearChain resets everything", () => {
+  it('clearChain resets everything', () => {
     useChainStore.getState().setChainData(mockChain);
     useChainStore.getState().clearChain();
 
@@ -428,21 +439,21 @@ describe("chainStore", () => {
     expect(state.error).toBeNull();
   });
 
-  it("open(symbol) sets isOpen and symbol, clears data/error", () => {
+  it('open(symbol) sets isOpen and symbol, clears data/error', () => {
     useChainStore.getState().setChainData(mockChain);
-    useChainStore.getState().setError("stale error");
-    useChainStore.getState().open("MSFT");
+    useChainStore.getState().setError('stale error');
+    useChainStore.getState().open('MSFT');
 
     const state = useChainStore.getState();
     expect(state.isOpen).toBe(true);
-    expect(state.symbol).toBe("MSFT");
+    expect(state.symbol).toBe('MSFT');
     expect(state.chainData).toBeNull();
     expect(state.error).toBeNull();
     expect(state.loading).toBe(false);
   });
 
-  it("close() resets isOpen, symbol, data, and error", () => {
-    useChainStore.getState().open("AAPL");
+  it('close() resets isOpen, symbol, data, and error', () => {
+    useChainStore.getState().open('AAPL');
     useChainStore.getState().setChainData(mockChain);
     useChainStore.getState().close();
 
@@ -453,14 +464,14 @@ describe("chainStore", () => {
     expect(state.error).toBeNull();
   });
 
-  it("open(symbol) after previous open clears stale data", () => {
-    useChainStore.getState().open("AAPL");
+  it('open(symbol) after previous open clears stale data', () => {
+    useChainStore.getState().open('AAPL');
     useChainStore.getState().setChainData(mockChain);
 
     // Open for a different symbol
-    useChainStore.getState().open("TSLA");
+    useChainStore.getState().open('TSLA');
     const state = useChainStore.getState();
-    expect(state.symbol).toBe("TSLA");
+    expect(state.symbol).toBe('TSLA');
     expect(state.chainData).toBeNull();
   });
 });

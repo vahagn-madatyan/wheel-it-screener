@@ -34,7 +34,12 @@ beforeEach(() => {
 
 describe('ApiError', () => {
   it('has correct fields', () => {
-    const err = new ApiError('msg', 429, '/quote?symbol=AAPL', '{"error":"rate limit"}');
+    const err = new ApiError(
+      'msg',
+      429,
+      '/quote?symbol=AAPL',
+      '{"error":"rate limit"}',
+    );
     expect(err.message).toBe('msg');
     expect(err.status).toBe(429);
     expect(err.endpoint).toBe('/quote?symbol=AAPL');
@@ -199,7 +204,10 @@ describe('AlpacaService', () => {
     expect(url.origin).toBe('https://data.alpaca.markets');
     expect(url.pathname).toBe('/v1beta1/options/snapshots/AAPL');
 
-    const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
+    const headers = mockFetch.mock.calls[0][1].headers as Record<
+      string,
+      string
+    >;
     expect(headers['APCA-API-KEY-ID']).toBe('my-key-id');
     expect(headers['APCA-API-SECRET-KEY']).toBe('my-secret');
   });
@@ -233,7 +241,9 @@ describe('AlpacaService', () => {
       );
 
     const svc = new AlpacaService('id', 'secret');
-    const contracts = await svc.getAllOptionContracts({ underlying_symbols: 'AAPL' });
+    const contracts = await svc.getAllOptionContracts({
+      underlying_symbols: 'AAPL',
+    });
 
     expect(contracts).toHaveLength(2);
     expect(contracts[0].id).toBe('1');
@@ -304,7 +314,8 @@ describe('MassiveService', () => {
           results: [{ ticker: 'O:AAPL260417P00100000' }],
           status: 'OK',
           request_id: '1',
-          next_url: 'https://api.polygon.io/v3/snapshot/options/AAPL?cursor=page2',
+          next_url:
+            'https://api.polygon.io/v3/snapshot/options/AAPL?cursor=page2',
         }),
       )
       .mockResolvedValueOnce(

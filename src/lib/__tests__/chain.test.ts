@@ -1,28 +1,28 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi } from 'vitest';
 import {
   fetchChainAlpaca,
   fetchChainMassive,
   selectBestExpiry,
   detectChainProvider,
-} from "@/lib/chain";
-import { AlpacaService } from "@/services/alpaca";
+} from '@/lib/chain';
+import { AlpacaService } from '@/services/alpaca';
 import type {
   AlpacaOptionSnapshot,
   AlpacaOptionSnapshotsResponse,
   AlpacaOptionContract,
-} from "@/services/alpaca";
-import { MassiveService } from "@/services/massive";
-import type { PolygonOptionSnapshotResult } from "@/services/massive";
+} from '@/services/alpaca';
+import { MassiveService } from '@/services/massive';
+import type { PolygonOptionSnapshotResult } from '@/services/massive';
 
 // ---- Mocks ----
 
-vi.mock("@/services/alpaca", () => {
+vi.mock('@/services/alpaca', () => {
   return {
     AlpacaService: vi.fn(),
   };
 });
 
-vi.mock("@/services/massive", () => {
+vi.mock('@/services/massive', () => {
   return {
     MassiveService: vi.fn(),
   };
@@ -56,8 +56,14 @@ function makeAlpacaSnapshot(
   return {
     greeks: { delta: -0.25, gamma: 0.05, theta: -0.02, vega: 0.1, rho: -0.01 },
     impliedVolatility: 0.35,
-    latestQuote: { bp: 2.5, ap: 2.7, bs: 10, as: 15, t: "2026-03-15T10:00:00Z" },
-    latestTrade: { p: 2.6, s: 5, t: "2026-03-15T09:55:00Z" },
+    latestQuote: {
+      bp: 2.5,
+      ap: 2.7,
+      bs: 10,
+      as: 15,
+      t: '2026-03-15T10:00:00Z',
+    },
+    latestTrade: { p: 2.6, s: 5, t: '2026-03-15T09:55:00Z' },
     ...overrides,
   };
 }
@@ -67,23 +73,23 @@ function makeAlpacaContract(
   overrides: Partial<AlpacaOptionContract> = {},
 ): AlpacaOptionContract {
   return {
-    id: "contract-1",
+    id: 'contract-1',
     symbol,
-    name: "Test Contract",
-    status: "active",
+    name: 'Test Contract',
+    status: 'active',
     tradable: true,
-    expiration_date: "2026-04-17",
-    root_symbol: "AAPL",
-    underlying_symbol: "AAPL",
-    underlying_asset_id: "asset-1",
-    type: "put",
-    style: "american",
-    strike_price: "150",
-    size: "100",
-    open_interest: "500",
-    open_interest_date: "2026-03-14",
-    close_price: "2.55",
-    close_price_date: "2026-03-14",
+    expiration_date: '2026-04-17',
+    root_symbol: 'AAPL',
+    underlying_symbol: 'AAPL',
+    underlying_asset_id: 'asset-1',
+    type: 'put',
+    style: 'american',
+    strike_price: '150',
+    size: '100',
+    open_interest: '500',
+    open_interest_date: '2026-03-14',
+    close_price: '2.55',
+    close_price_date: '2026-03-14',
     ...overrides,
   };
 }
@@ -106,15 +112,15 @@ function makePolygonSnapshot(
       vwap: 2.6,
     },
     details: {
-      contract_type: "put",
-      exercise_style: "american",
-      expiration_date: "2026-04-17",
+      contract_type: 'put',
+      exercise_style: 'american',
+      expiration_date: '2026-04-17',
       shares_per_contract: 100,
       strike_price: 150,
-      ticker: "O:AAPL260417P00150000",
+      ticker: 'O:AAPL260417P00150000',
     },
-    greeks: { delta: -0.30, gamma: 0.04, theta: -0.03, vega: 0.12 },
-    implied_volatility: 0.40,
+    greeks: { delta: -0.3, gamma: 0.04, theta: -0.03, vega: 0.12 },
+    implied_volatility: 0.4,
     last_quote: {
       ask: 2.8,
       ask_size: 20,
@@ -122,7 +128,7 @@ function makePolygonSnapshot(
       bid_size: 15,
       last_updated: Date.now(),
       midpoint: 2.65,
-      timeframe: "REAL-TIME",
+      timeframe: 'REAL-TIME',
     },
     last_trade: { price: 2.6, size: 10, sip_timestamp: Date.now() },
     open_interest: 800,
@@ -130,7 +136,7 @@ function makePolygonSnapshot(
       change_to_break_even: -2.5,
       last_updated: Date.now(),
       price: 155,
-      ticker: "AAPL",
+      ticker: 'AAPL',
     },
     ...overrides,
   };
@@ -138,8 +144,8 @@ function makePolygonSnapshot(
 
 // ---- Tests ----
 
-describe("selectBestExpiry", () => {
-  it("picks closest to targetDTE", () => {
+describe('selectBestExpiry', () => {
+  it('picks closest to targetDTE', () => {
     // Mock dates: 7 days, 30 days, 45 days from today
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -159,7 +165,7 @@ describe("selectBestExpiry", () => {
     expect(selectBestExpiry([d7, d30, d45], 40)).toBe(d45);
   });
 
-  it("excludes expirations with DTE < 1", () => {
+  it('excludes expirations with DTE < 1', () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -175,7 +181,7 @@ describe("selectBestExpiry", () => {
     expect(selectBestExpiry([yesterday, todayStr, d30], 1)).toBe(d30);
   });
 
-  it("returns null when no valid expirations", () => {
+  it('returns null when no valid expirations', () => {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const yesterday = new Date(today.getTime() - 86400000)
@@ -187,61 +193,61 @@ describe("selectBestExpiry", () => {
   });
 });
 
-describe("detectChainProvider", () => {
-  it("returns alpaca when both Alpaca keys set", () => {
+describe('detectChainProvider', () => {
+  it('returns alpaca when both Alpaca keys set', () => {
     expect(
       detectChainProvider({
-        alpacaKeyId: "key",
-        alpacaSecretKey: "secret",
-        massiveKey: "",
+        alpacaKeyId: 'key',
+        alpacaSecretKey: 'secret',
+        massiveKey: '',
       }),
-    ).toBe("alpaca");
+    ).toBe('alpaca');
   });
 
-  it("prefers alpaca when both providers have keys", () => {
+  it('prefers alpaca when both providers have keys', () => {
     expect(
       detectChainProvider({
-        alpacaKeyId: "key",
-        alpacaSecretKey: "secret",
-        massiveKey: "mkey",
+        alpacaKeyId: 'key',
+        alpacaSecretKey: 'secret',
+        massiveKey: 'mkey',
       }),
-    ).toBe("alpaca");
+    ).toBe('alpaca');
   });
 
-  it("returns massive when only Massive key set", () => {
+  it('returns massive when only Massive key set', () => {
     expect(
       detectChainProvider({
-        alpacaKeyId: "",
-        alpacaSecretKey: "",
-        massiveKey: "mkey",
+        alpacaKeyId: '',
+        alpacaSecretKey: '',
+        massiveKey: 'mkey',
       }),
-    ).toBe("massive");
+    ).toBe('massive');
   });
 
-  it("returns null when no keys set", () => {
+  it('returns null when no keys set', () => {
     expect(
       detectChainProvider({
-        alpacaKeyId: "",
-        alpacaSecretKey: "",
-        massiveKey: "",
+        alpacaKeyId: '',
+        alpacaSecretKey: '',
+        massiveKey: '',
       }),
     ).toBeNull();
   });
 
-  it("returns null when only one Alpaca key set", () => {
+  it('returns null when only one Alpaca key set', () => {
     expect(
       detectChainProvider({
-        alpacaKeyId: "key",
-        alpacaSecretKey: "",
-        massiveKey: "",
+        alpacaKeyId: 'key',
+        alpacaSecretKey: '',
+        massiveKey: '',
       }),
     ).toBeNull();
   });
 });
 
-describe("fetchChainAlpaca", () => {
-  it("merges snapshots + contracts into correct PutOption fields", async () => {
-    const contractSymbol = "AAPL260417P00150000";
+describe('fetchChainAlpaca', () => {
+  it('merges snapshots + contracts into correct PutOption fields', async () => {
+    const contractSymbol = 'AAPL260417P00150000';
 
     const service = makeAlpacaService({
       getOptionSnapshots: vi.fn().mockResolvedValue({
@@ -260,9 +266,9 @@ describe("fetchChainAlpaca", () => {
               ap: 2.7,
               bs: 10,
               as: 15,
-              t: "2026-03-15",
+              t: '2026-03-15',
             },
-            latestTrade: { p: 2.6, s: 5, t: "2026-03-15" },
+            latestTrade: { p: 2.6, s: 5, t: '2026-03-15' },
           }),
           AAPL260417P00145000: makeAlpacaSnapshot({
             greeks: {
@@ -272,28 +278,28 @@ describe("fetchChainAlpaca", () => {
               vega: 0.08,
               rho: -0.005,
             },
-            impliedVolatility: 0.30,
+            impliedVolatility: 0.3,
             latestQuote: {
               bp: 1.2,
               ap: 1.4,
               bs: 20,
               as: 25,
-              t: "2026-03-15",
+              t: '2026-03-15',
             },
-            latestTrade: { p: 1.3, s: 3, t: "2026-03-15" },
+            latestTrade: { p: 1.3, s: 3, t: '2026-03-15' },
           }),
         },
         next_page_token: null,
       } as AlpacaOptionSnapshotsResponse),
       getAllOptionContracts: vi.fn().mockResolvedValue([
         makeAlpacaContract(contractSymbol, {
-          open_interest: "500",
-          close_price: "2.55",
+          open_interest: '500',
+          close_price: '2.55',
         }),
       ]),
     });
 
-    const puts = await fetchChainAlpaca(service, "AAPL", "2026-04-17", 155, 33);
+    const puts = await fetchChainAlpaca(service, 'AAPL', '2026-04-17', 155, 33);
 
     expect(puts).toHaveLength(2);
 
@@ -303,7 +309,7 @@ describe("fetchChainAlpaca", () => {
     expect(p145.bid).toBe(1.2);
     expect(p145.ask).toBe(1.4);
     expect(p145.delta).toBe(-0.18);
-    expect(p145.iv).toBe(0.30);
+    expect(p145.iv).toBe(0.3);
     expect(p145.oi).toBe(0); // No matching contract
 
     const p150 = puts[1];
@@ -318,7 +324,7 @@ describe("fetchChainAlpaca", () => {
     expect(p150.itm).toBe(false); // 150 < 155
   });
 
-  it("sets oi=0 when snapshot exists but no matching contract", async () => {
+  it('sets oi=0 when snapshot exists but no matching contract', async () => {
     const service = makeAlpacaService({
       getOptionSnapshots: vi.fn().mockResolvedValue({
         snapshots: {
@@ -328,18 +334,18 @@ describe("fetchChainAlpaca", () => {
       }),
       getAllOptionContracts: vi.fn().mockResolvedValue([
         // Different symbol — won't match
-        makeAlpacaContract("AAPL260417P00150000"),
+        makeAlpacaContract('AAPL260417P00150000'),
       ]),
     });
 
-    const puts = await fetchChainAlpaca(service, "AAPL", "2026-04-17", 155, 33);
+    const puts = await fetchChainAlpaca(service, 'AAPL', '2026-04-17', 155, 33);
 
     expect(puts).toHaveLength(1);
     expect(puts[0].strike).toBe(140);
     expect(puts[0].oi).toBe(0);
   });
 
-  it("continues when OI fetch fails", async () => {
+  it('continues when OI fetch fails', async () => {
     const service = makeAlpacaService({
       getOptionSnapshots: vi.fn().mockResolvedValue({
         snapshots: {
@@ -349,30 +355,30 @@ describe("fetchChainAlpaca", () => {
       }),
       getAllOptionContracts: vi
         .fn()
-        .mockRejectedValue(new Error("OI fetch failed")),
+        .mockRejectedValue(new Error('OI fetch failed')),
     });
 
-    const puts = await fetchChainAlpaca(service, "AAPL", "2026-04-17", 155, 33);
+    const puts = await fetchChainAlpaca(service, 'AAPL', '2026-04-17', 155, 33);
     expect(puts).toHaveLength(1);
     expect(puts[0].oi).toBe(0);
   });
 });
 
-describe("fetchChainMassive", () => {
-  it("maps Polygon snapshot to PutOption correctly", async () => {
+describe('fetchChainMassive', () => {
+  it('maps Polygon snapshot to PutOption correctly', async () => {
     const service = makeMassiveService({
       getAllOptionChainSnapshots: vi.fn().mockResolvedValue([
         makePolygonSnapshot({
           details: {
-            contract_type: "put",
-            exercise_style: "american",
-            expiration_date: "2026-04-17",
+            contract_type: 'put',
+            exercise_style: 'american',
+            expiration_date: '2026-04-17',
             shares_per_contract: 100,
             strike_price: 150,
-            ticker: "O:AAPL260417P00150000",
+            ticker: 'O:AAPL260417P00150000',
           },
-          greeks: { delta: -0.30, gamma: 0.04, theta: -0.03, vega: 0.12 },
-          implied_volatility: 0.40,
+          greeks: { delta: -0.3, gamma: 0.04, theta: -0.03, vega: 0.12 },
+          implied_volatility: 0.4,
           last_quote: {
             ask: 2.8,
             ask_size: 20,
@@ -380,7 +386,7 @@ describe("fetchChainMassive", () => {
             bid_size: 15,
             last_updated: Date.now(),
             midpoint: 2.65,
-            timeframe: "REAL-TIME",
+            timeframe: 'REAL-TIME',
           },
           day: {
             change: 0.1,
@@ -402,8 +408,8 @@ describe("fetchChainMassive", () => {
 
     const puts = await fetchChainMassive(
       service,
-      "AAPL",
-      "2026-04-17",
+      'AAPL',
+      '2026-04-17',
       155,
       33,
     );
@@ -414,8 +420,8 @@ describe("fetchChainMassive", () => {
     expect(p.bid).toBe(2.5);
     expect(p.ask).toBe(2.8);
     expect(p.mid).toBe(2.65); // Uses Polygon midpoint
-    expect(p.delta).toBe(-0.30);
-    expect(p.iv).toBe(0.40);
+    expect(p.delta).toBe(-0.3);
+    expect(p.iv).toBe(0.4);
     expect(p.volume).toBe(120);
     expect(p.oi).toBe(800);
     expect(p.last).toBe(2.6);
@@ -424,16 +430,16 @@ describe("fetchChainMassive", () => {
   });
 });
 
-describe("fetchChainAlpaca error propagation", () => {
-  it("surfaces fetch failure as Error", async () => {
+describe('fetchChainAlpaca error propagation', () => {
+  it('surfaces fetch failure as Error', async () => {
     const service = makeAlpacaService({
       getOptionSnapshots: vi
         .fn()
-        .mockRejectedValue(new Error("Network failure")),
+        .mockRejectedValue(new Error('Network failure')),
     });
 
     await expect(
-      fetchChainAlpaca(service, "AAPL", "2026-04-17", 155, 33),
-    ).rejects.toThrow("Network failure");
+      fetchChainAlpaca(service, 'AAPL', '2026-04-17', 155, 33),
+    ).rejects.toThrow('Network failure');
   });
 });

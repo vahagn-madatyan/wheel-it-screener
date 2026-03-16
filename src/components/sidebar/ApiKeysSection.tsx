@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import { useApiKeyStore } from "@/stores/api-key-store";
-import { ApiKeyInput } from "./ApiKeyInput";
+import { useCallback } from 'react';
+import { useApiKeyStore } from '@/stores/api-key-store';
+import { ApiKeyInput } from './ApiKeyInput';
 
 /**
  * API Keys sidebar section.

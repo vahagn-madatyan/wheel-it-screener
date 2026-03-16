@@ -1,7 +1,7 @@
-import type { ReactNode } from "react";
-import { Menu } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ThemeToggle } from "./ThemeToggle";
+import type { ReactNode } from 'react';
+import { Menu } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ThemeToggle } from './ThemeToggle';
 
 interface HeaderProps {
   /** Callback to toggle mobile sidebar — when provided, renders hamburger (hidden on desktop) */
@@ -18,9 +18,9 @@ export function Header({ onMenuClick, actions }: HeaderProps) {
           type="button"
           onClick={onMenuClick}
           className={cn(
-            "mr-3 inline-flex size-9 items-center justify-center rounded-md lg:hidden",
-            "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-            "transition-colors",
+            'mr-3 inline-flex size-9 items-center justify-center rounded-md lg:hidden',
+            'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+            'transition-colors',
           )}
           aria-label="Open menu"
         >

@@ -75,6 +75,13 @@ npx tsc --noEmit          # 0 errors
 npx vitest run            # 222 pass
 ```
 
+## Observability Impact
+- **New signal:** `npx eslint .` — machine-readable lint output. Exit 0 = clean, non-zero = errors with file:line detail.
+- **New signal:** `npx prettier --check .` — reports unformatted files. Exit 0 = all formatted.
+- **New signal:** `npm run lint` script — same as `npx eslint .`, now backed by proper TS/React config.
+- **Failure shape:** Lint errors print as `file:line:col  error  message  rule-name`. Prettier failures list unformatted file paths.
+- **How to inspect later:** Run `npx eslint .` or `npx prettier --check .` from project root. Both produce deterministic pass/fail output.
+
 ## Inputs
 - `eslint.config.mjs` — current vanilla JS flat config to be completely rewritten
 - `package.json` — needs eslint + prettier devDependencies added; `"lint": "eslint ."` script already exists

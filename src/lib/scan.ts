@@ -1,22 +1,19 @@
-import { FinnhubService } from "@/services/finnhub";
-import { TokenBucketRateLimiter } from "@/services/rate-limiter";
-import { ApiError } from "@/services/api-error";
-import { filterStocks } from "@/lib/filters";
-import type { StockResult, FilterState } from "@/types";
-import type { EarningsEntry } from "@/lib/scoring";
-import type {
-  FinnhubQuote,
-  FinnhubMetrics,
-} from "@/services/finnhub";
+import { FinnhubService } from '@/services/finnhub';
+import { TokenBucketRateLimiter } from '@/services/rate-limiter';
+import { ApiError } from '@/services/api-error';
+import { filterStocks } from '@/lib/filters';
+import type { StockResult, FilterState } from '@/types';
+import type { EarningsEntry } from '@/lib/scoring';
+import type { FinnhubQuote, FinnhubMetrics } from '@/services/finnhub';
 
 // ---- Public types ----
 
 export type ScanPhaseLabel =
-  | "earnings"
-  | "quotes"
-  | "profiles"
-  | "recommendations"
-  | "filtering";
+  | 'earnings'
+  | 'quotes'
+  | 'profiles'
+  | 'recommendations'
+  | 'filtering';
 
 export interface ScanParams {
   tickers: string[];
@@ -37,7 +34,7 @@ export interface ScanResult {
 
 function checkAborted(signal: AbortSignal): void {
   if (signal.aborted) {
-    throw new DOMException("Scan aborted", "AbortError");
+    throw new DOMException('Scan aborted', 'AbortError');
   }
 }
 
@@ -59,24 +56,24 @@ function buildStockResult(
     dayChange: quote.dp,
     dayHigh: quote.h,
     dayLow: quote.l,
-    marketCap: (m["marketCapitalization"] as number) ?? 0,
-    pe: (m["peBasicExclExtraTTM"] as number) ?? null,
-    forwardPE: (m["peTTM"] as number) ?? null,
-    beta: (m["beta"] as number) ?? null,
-    dividendYield: (m["dividendYieldIndicatedAnnual"] as number) ?? 0,
-    avgVolume: (m["10DayAverageTradingVolume"] as number) ?? 0,
-    avgVolume3M: (m["3MonthAverageTradingVolume"] as number) ?? 0,
-    twoHundredDayAvg: (m["200DayMovingAverage"] as number) ?? 0,
-    fiftyTwoWeekHigh: (m["52WeekHigh"] as number) ?? 0,
-    fiftyTwoWeekLow: (m["52WeekLow"] as number) ?? 0,
-    fiftyTwoWeekHighDate: String(m["52WeekHighDate"] ?? ""),
-    fiftyTwoWeekLowDate: String(m["52WeekLowDate"] ?? ""),
-    roe: (m["roeTTM"] as number) ?? null,
-    revenueGrowth: (m["revenueGrowthQuarterlyYoy"] as number) ?? null,
-    netMargin: (m["netProfitMarginTTM"] as number) ?? null,
-    currentRatio: (m["currentRatioQuarterly"] as number) ?? null,
-    debtToEquity: (m["totalDebt/totalEquityQuarterly"] as number) ?? null,
-    source: "finnhub",
+    marketCap: (m['marketCapitalization'] as number) ?? 0,
+    pe: (m['peBasicExclExtraTTM'] as number) ?? null,
+    forwardPE: (m['peTTM'] as number) ?? null,
+    beta: (m['beta'] as number) ?? null,
+    dividendYield: (m['dividendYieldIndicatedAnnual'] as number) ?? 0,
+    avgVolume: (m['10DayAverageTradingVolume'] as number) ?? 0,
+    avgVolume3M: (m['3MonthAverageTradingVolume'] as number) ?? 0,
+    twoHundredDayAvg: (m['200DayMovingAverage'] as number) ?? 0,
+    fiftyTwoWeekHigh: (m['52WeekHigh'] as number) ?? 0,
+    fiftyTwoWeekLow: (m['52WeekLow'] as number) ?? 0,
+    fiftyTwoWeekHighDate: String(m['52WeekHighDate'] ?? ''),
+    fiftyTwoWeekLowDate: String(m['52WeekLowDate'] ?? ''),
+    roe: (m['roeTTM'] as number) ?? null,
+    revenueGrowth: (m['revenueGrowthQuarterlyYoy'] as number) ?? null,
+    netMargin: (m['netProfitMarginTTM'] as number) ?? null,
+    currentRatio: (m['currentRatioQuarterly'] as number) ?? null,
+    debtToEquity: (m['totalDebt/totalEquityQuarterly'] as number) ?? null,
+    source: 'finnhub',
   };
 }
 
@@ -110,8 +107,8 @@ export async function runScan({
 
   try {
     // ── Phase 1: Earnings calendar ──
-    onPhaseChange("earnings");
-    let earningsMap: Record<string, EarningsEntry> = {};
+    onPhaseChange('earnings');
+    const earningsMap: Record<string, EarningsEntry> = {};
 
     try {
       const today = new Date();
@@ -138,7 +135,7 @@ export async function runScan({
     } catch (err) {
       // Non-fatal — warn and continue with empty map
       console.warn(
-        "[scan] Earnings calendar failed, continuing:",
+        '[scan] Earnings calendar failed, continuing:',
         err instanceof Error ? err.message : err,
       );
     }
@@ -146,7 +143,7 @@ export async function runScan({
     checkAborted(signal);
 
     // ── Phase 2: Quotes + Metrics per ticker ──
-    onPhaseChange("quotes");
+    onPhaseChange('quotes');
     const candidates: StockResult[] = [];
 
     for (const ticker of tickers) {
@@ -171,8 +168,11 @@ export async function runScan({
         }
       } catch (err) {
         // Auth errors surface immediately as user-facing message
-        if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
-          throw new Error("Invalid Finnhub API key");
+        if (
+          err instanceof ApiError &&
+          (err.status === 401 || err.status === 403)
+        ) {
+          throw new Error('Invalid Finnhub API key');
         }
         // Other per-ticker errors are non-fatal
         console.warn(
@@ -187,7 +187,7 @@ export async function runScan({
     checkAborted(signal);
 
     // ── Phase 3: Profile enrichment for candidates ──
-    onPhaseChange("profiles");
+    onPhaseChange('profiles');
 
     for (const stock of candidates) {
       checkAborted(signal);
@@ -212,7 +212,7 @@ export async function runScan({
     checkAborted(signal);
 
     // ── Phase 4: Analyst recommendations for candidates ──
-    onPhaseChange("recommendations");
+    onPhaseChange('recommendations');
 
     for (const stock of candidates) {
       checkAborted(signal);
@@ -243,7 +243,7 @@ export async function runScan({
     checkAborted(signal);
 
     // ── Phase 5: Full filter + scoring pipeline ──
-    onPhaseChange("filtering");
+    onPhaseChange('filtering');
     const filteredResults = filterStocks(candidates, filters, earningsMap);
 
     return { allResults: candidates, filteredResults };

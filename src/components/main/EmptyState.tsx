@@ -1,18 +1,18 @@
-import { AnimatePresence, motion } from "motion/react";
-import { Search, SlidersHorizontal } from "lucide-react";
-import { useScanStore } from "@/stores/scan-store";
-import { useResultsStore } from "@/stores/results-store";
+import { AnimatePresence, motion } from 'motion/react';
+import { Search, SlidersHorizontal } from 'lucide-react';
+import { useScanStore } from '@/stores/scan-store';
+import { useResultsStore } from '@/stores/results-store';
 
 export function EmptyState() {
   const phase = useScanStore((s) => s.phase);
   const filteredResults = useResultsStore((s) => s.filteredResults);
 
   // Only show when idle (pre-scan) or complete with zero results
-  const isRunningOrError = phase === "running" || phase === "error";
-  const hasResults = phase === "complete" && filteredResults.length > 0;
+  const isRunningOrError = phase === 'running' || phase === 'error';
+  const hasResults = phase === 'complete' && filteredResults.length > 0;
   const isVisible = !isRunningOrError && !hasResults;
 
-  const isZeroResults = phase === "complete" && filteredResults.length === 0;
+  const isZeroResults = phase === 'complete' && filteredResults.length === 0;
 
   return (
     <AnimatePresence>
@@ -33,8 +33,8 @@ export function EmptyState() {
                 No stocks matched your filters
               </h3>
               <p className="max-w-sm text-sm text-muted-foreground">
-                Try loosening your criteria — lower the minimum price, reduce the
-                premium threshold, or expand the ticker universe.
+                Try loosening your criteria — lower the minimum price, reduce
+                the premium threshold, or expand the ticker universe.
               </p>
             </>
           ) : (
@@ -44,9 +44,9 @@ export function EmptyState() {
                 Ready to scan
               </h3>
               <p className="max-w-sm text-sm text-muted-foreground">
-                Configure your filters in the sidebar and click{" "}
-                <span className="font-medium text-primary">Run Screener</span> to
-                find wheel-friendly stocks.
+                Configure your filters in the sidebar and click{' '}
+                <span className="font-medium text-primary">Run Screener</span>{' '}
+                to find wheel-friendly stocks.
               </p>
             </>
           )}

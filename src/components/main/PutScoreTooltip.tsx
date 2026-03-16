@@ -1,10 +1,10 @@
-import type { PutOption } from "@/types";
+import type { PutOption } from '@/types';
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface PutScoreTooltipProps {
   put: PutOption;
@@ -12,17 +12,17 @@ interface PutScoreTooltipProps {
 }
 
 const COMPONENTS = [
-  { label: "Spread", scoreKey: "spreadScore", weight: 30 },
-  { label: "Liquidity", scoreKey: "liquidityScore", weight: 25 },
-  { label: "Premium", scoreKey: "premScore", weight: 20 },
-  { label: "Delta", scoreKey: "deltaScore", weight: 15 },
-  { label: "IV", scoreKey: "ivScore", weight: 10 },
+  { label: 'Spread', scoreKey: 'spreadScore', weight: 30 },
+  { label: 'Liquidity', scoreKey: 'liquidityScore', weight: 25 },
+  { label: 'Premium', scoreKey: 'premScore', weight: 20 },
+  { label: 'Delta', scoreKey: 'deltaScore', weight: 15 },
+  { label: 'IV', scoreKey: 'ivScore', weight: 10 },
 ] as const;
 
 function scoreColor(value: number): string {
-  if (value >= 70) return "text-emerald-400";
-  if (value >= 45) return "text-yellow-400";
-  return "text-red-400";
+  if (value >= 70) return 'text-emerald-400';
+  if (value >= 45) return 'text-yellow-400';
+  return 'text-red-400';
 }
 
 export function PutScoreTooltip({ put, children }: PutScoreTooltipProps) {
@@ -39,10 +39,12 @@ export function PutScoreTooltip({ put, children }: PutScoreTooltipProps) {
             return (
               <div key={label} className="flex items-center justify-between">
                 <span className="text-muted-foreground">
-                  {label}{" "}
+                  {label}{' '}
                   <span className="text-[10px] opacity-70">({weight}%)</span>
                 </span>
-                <span className={cn("tabular-nums font-medium", scoreColor(value))}>
+                <span
+                  className={cn('tabular-nums font-medium', scoreColor(value))}
+                >
                   {value.toFixed(1)}
                 </span>
               </div>
@@ -53,7 +55,7 @@ export function PutScoreTooltip({ put, children }: PutScoreTooltipProps) {
 
           <div className="flex items-center justify-between font-semibold">
             <span>Weighted Total</span>
-            <span className={cn("tabular-nums", scoreColor(put.putScore))}>
+            <span className={cn('tabular-nums', scoreColor(put.putScore))}>
               {put.putScore}/100
             </span>
           </div>

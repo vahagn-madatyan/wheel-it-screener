@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { ApiKeys } from "@/types";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
+import type { ApiKeys } from '@/types';
 
 interface ApiKeyStore extends ApiKeys {
   setFinnhubKey: (key: string) => void;
@@ -10,19 +10,24 @@ interface ApiKeyStore extends ApiKeys {
 }
 
 /** Derive status from key presence — never serialized */
-function deriveStatus(state: Pick<ApiKeys, "finnhubKey" | "alpacaKeyId" | "alpacaSecretKey" | "massiveKey">): ApiKeys["status"] {
+function deriveStatus(
+  state: Pick<
+    ApiKeys,
+    'finnhubKey' | 'alpacaKeyId' | 'alpacaSecretKey' | 'massiveKey'
+  >,
+): ApiKeys['status'] {
   return {
-    finnhub: state.finnhubKey ? "set" : "not_set",
-    alpaca: state.alpacaKeyId && state.alpacaSecretKey ? "set" : "not_set",
-    massive: state.massiveKey ? "set" : "not_set",
+    finnhub: state.finnhubKey ? 'set' : 'not_set',
+    alpaca: state.alpacaKeyId && state.alpacaSecretKey ? 'set' : 'not_set',
+    massive: state.massiveKey ? 'set' : 'not_set',
   };
 }
 
 const INITIAL_KEYS = {
-  finnhubKey: "",
-  alpacaKeyId: "",
-  alpacaSecretKey: "",
-  massiveKey: "",
+  finnhubKey: '',
+  alpacaKeyId: '',
+  alpacaSecretKey: '',
+  massiveKey: '',
 };
 
 export const useApiKeyStore = create<ApiKeyStore>()(
@@ -39,8 +44,16 @@ export const useApiKeyStore = create<ApiKeyStore>()(
 
       setAlpacaKeys: (keyId, secretKey) =>
         set((state) => {
-          const next = { ...state, alpacaKeyId: keyId, alpacaSecretKey: secretKey };
-          return { alpacaKeyId: keyId, alpacaSecretKey: secretKey, status: deriveStatus(next) };
+          const next = {
+            ...state,
+            alpacaKeyId: keyId,
+            alpacaSecretKey: secretKey,
+          };
+          return {
+            alpacaKeyId: keyId,
+            alpacaSecretKey: secretKey,
+            status: deriveStatus(next),
+          };
         }),
 
       setMassiveKey: (key) =>
@@ -53,7 +66,7 @@ export const useApiKeyStore = create<ApiKeyStore>()(
         set({ ...INITIAL_KEYS, status: deriveStatus(INITIAL_KEYS) }),
     }),
     {
-      name: "wheelscan-api-keys",
+      name: 'wheelscan-api-keys',
       version: 1,
       partialize: (state) => ({
         finnhubKey: state.finnhubKey,

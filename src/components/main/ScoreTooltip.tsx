@@ -1,12 +1,12 @@
-import type { StockResult } from "@/types";
-import { useFilterStore } from "@/stores/filter-store";
-import { useShallow } from "zustand/react/shallow";
+import type { StockResult } from '@/types';
+import { useFilterStore } from '@/stores/filter-store';
+import { useShallow } from 'zustand/react/shallow';
 import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 interface ScoreTooltipProps {
   stock: StockResult;
@@ -14,16 +14,28 @@ interface ScoreTooltipProps {
 }
 
 const COMPONENTS = [
-  { label: "Premium", scoreKey: "premiumScore", weightKey: "weightPremium" },
-  { label: "Liquidity", scoreKey: "liquidityScore", weightKey: "weightLiquidity" },
-  { label: "Stability", scoreKey: "stabilityScore", weightKey: "weightStability" },
-  { label: "Fundamentals", scoreKey: "fundamentalsScore", weightKey: "weightFundamentals" },
+  { label: 'Premium', scoreKey: 'premiumScore', weightKey: 'weightPremium' },
+  {
+    label: 'Liquidity',
+    scoreKey: 'liquidityScore',
+    weightKey: 'weightLiquidity',
+  },
+  {
+    label: 'Stability',
+    scoreKey: 'stabilityScore',
+    weightKey: 'weightStability',
+  },
+  {
+    label: 'Fundamentals',
+    scoreKey: 'fundamentalsScore',
+    weightKey: 'weightFundamentals',
+  },
 ] as const;
 
 function scoreColor(value: number): string {
-  if (value >= 70) return "text-emerald-400";
-  if (value >= 45) return "text-yellow-400";
-  return "text-red-400";
+  if (value >= 70) return 'text-emerald-400';
+  if (value >= 45) return 'text-yellow-400';
+  return 'text-red-400';
 }
 
 export function ScoreTooltip({ stock, children }: ScoreTooltipProps) {
@@ -53,15 +65,18 @@ export function ScoreTooltip({ stock, children }: ScoreTooltipProps) {
           {COMPONENTS.map(({ label, scoreKey, weightKey }) => {
             const value = (stock[scoreKey] as number | undefined) ?? 0;
             const weight = weights[weightKey];
-            const pct = totalWeight > 0 ? Math.round((weight / totalWeight) * 100) : 0;
+            const pct =
+              totalWeight > 0 ? Math.round((weight / totalWeight) * 100) : 0;
 
             return (
               <div key={label} className="flex items-center justify-between">
                 <span className="text-muted-foreground">
-                  {label}{" "}
+                  {label}{' '}
                   <span className="text-[10px] opacity-70">({pct}%)</span>
                 </span>
-                <span className={cn("tabular-nums font-medium", scoreColor(value))}>
+                <span
+                  className={cn('tabular-nums font-medium', scoreColor(value))}
+                >
                   {value.toFixed(1)}
                 </span>
               </div>

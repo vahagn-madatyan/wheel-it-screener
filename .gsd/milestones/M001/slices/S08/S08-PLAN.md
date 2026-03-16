@@ -55,7 +55,7 @@
   - Verify: `ls app.js style.css base.css index.vanilla.html 2>&1 | grep -c "No such file"` → 4; `grep -rc "tw-animate-css" src/ package.json` → 0; `npx tsc --noEmit` → 0 errors; `npx vitest run` → 222 pass
   - Done when: All 4 vanilla files gone, tw-animate-css fully removed, build still passes
 
-- [ ] **T02: Configure ESLint v9 + Prettier for TypeScript/React** `est:25m`
+- [x] **T02: Configure ESLint v9 + Prettier for TypeScript/React** `est:25m`
   - Why: R030 — establish code quality tooling for the TS/React codebase. Current eslint.config.mjs is a vanilla JS config with CDN globals.
   - Files: `eslint.config.mjs`, `.prettierrc`, `package.json`
   - Do: (1) Install devDeps: `eslint@^9`, `@eslint/js`, `typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`, `prettier`, `eslint-config-prettier`. (2) Rewrite eslint.config.mjs as flat config: import tseslint.configs.recommended, react-hooks plugin, react-refresh plugin, eslint-config-prettier last. Set parserOptions for tsx. Disable `@typescript-eslint/no-unused-vars` (tsconfig already enforces this via noUnusedLocals/noUnusedParameters). (3) Write .prettierrc with sensible defaults (semi, singleQuote, printWidth:80, trailingComma:all). (4) Run `npx prettier --write .` then `npx eslint --fix .` (5) Fix any remaining lint errors manually. (6) Verify clean: `npx eslint .` → 0 errors, `npx prettier --check .` → all formatted, tests still pass.
