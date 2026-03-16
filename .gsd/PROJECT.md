@@ -12,7 +12,7 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01–S07 complete. S08 (Cleanup + Deploy) is next — the final slice.
+Migration complete on `ui-improve` branch. All 8 slices (S01–S08) shipped. All 32 requirements validated.
 
 **What exists now:**
 - Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
@@ -35,13 +35,15 @@ Migration in progress on `ui-improve` branch. S01–S07 complete. S08 (Cleanup +
 - Framer Motion animations: KPI stagger, table row stagger, dialog spring slide-up, ProgressBar/EmptyState AnimatePresence fades, ThemeToggle icon morph
 - Theme toggle with Sun/Moon icon in header, persisted to localStorage
 - Run button emerald gradient with progress fill during scan
-- Production build (`npm run build`) succeeds — 539KB bundle (173KB gzipped)
+- ESLint v9 flat config (typescript-eslint + react-hooks + react-refresh + eslint-config-prettier) — zero errors
+- Prettier configured (.prettierrc) — entire codebase formatted
+- ChainModal lazy-loaded via React.lazy() + Suspense — code-split into separate chunk
+- Production build: 491KB main + 49KB ChainModal chunks (158KB gzipped total)
+- Static dist/ serves correctly via `npm run preview`
 
-**Vanilla files (still present, to be removed in S08):**
-- `app.js` — 1334-line monolith (source for logic extraction)
-- `style.css` — 1385 lines of hand-written CSS
-- `base.css` — 65 lines of reset/base styles
-- `index.vanilla.html` — renamed original entry point (preserved for reference)
+**Vanilla files removed:**
+- app.js, style.css, base.css, index.vanilla.html — all deleted
+- tw-animate-css dependency removed
 
 ## Architecture / Key Patterns
 
@@ -70,4 +72,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01–S07 complete, S08 next (cleanup + deploy)
+- ✅ M001: React Migration & Visual Redesign — all 8 slices complete, all 32 requirements validated

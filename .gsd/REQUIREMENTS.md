@@ -312,46 +312,46 @@
 
 ### R029 — Remove old vanilla files
 - Class: constraint
-- Status: active
+- Status: validated
 - Description: Delete app.js, style.css, base.css, index.html after React app is verified working
 - Why it matters: Clean repo, no confusion about which code is active
 - Source: user
 - Primary owning slice: M001/S08
 - Supporting slices: none
-- Validation: unmapped
-- Notes: Only after full verification
+- Validation: All 4 files deleted — `ls` confirms "No such file" for each. tw-animate-css dependency also fully removed (package, CSS import, tooltip classes).
+- Notes: Completed alongside tw-animate-css removal in S08/T01
 
 ### R030 — ESLint + Prettier config
 - Class: quality-attribute
-- Status: active
+- Status: validated
 - Description: ESLint with TypeScript + React + Tailwind rules, Prettier for formatting consistency
 - Why it matters: Code quality baseline
 - Source: user
 - Primary owning slice: M001/S08
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: ESLint v9 flat config with typescript-eslint, react-hooks, react-refresh, eslint-config-prettier — `npx eslint .` exits 0. Prettier with .prettierrc — `npx prettier --check .` reports all files formatted.
+- Notes: eslint@^9 pinned due to react-hooks v7 peer dep. React Compiler rules disabled (Decisions #37, #38).
 
 ### R031 — Build optimization + code splitting
 - Class: quality-attribute
-- Status: active
+- Status: validated
 - Description: Lazy-load ChainModal, Vite chunk splitting, tree-shaking verification, bundle size check
 - Why it matters: Fast initial load for static deployment
 - Source: user
 - Primary owning slice: M001/S08
 - Supporting slices: none
-- Validation: unmapped
-- Notes: none
+- Validation: ChainModal lazy-loaded via React.lazy() + Suspense. Build produces 2 JS chunks: index 491KB + ChainModal 49KB. No Vite 500KB chunk warning.
+- Notes: Main chunk close to 500KB threshold — use React.lazy() for future heavy components (Decision #39).
 
 ### R032 — Static SPA deployment build
 - Class: launchability
-- Status: active
+- Status: validated
 - Description: `npm run build` produces a static dist/ folder deployable to Vercel/Netlify/GitHub Pages with correct asset paths
 - Why it matters: App must be deployable, not just dev-server-only
 - Source: user
 - Primary owning slice: M001/S08
 - Supporting slices: none
-- Validation: unmapped
+- Validation: `npm run build` succeeds, produces dist/ with index.html + assets/. `npm run preview` serves working SPA at localhost:4173.
 - Notes: none
 
 ## Traceability
@@ -386,14 +386,14 @@
 | R026 | differentiator | validated | M001/S07 | none | Space Grotesk + General Sans + JetBrains Mono via CDN |
 | R027 | core-capability | validated | M001/S07 | M001/S02 | ThemeToggle with icon morph, persisted dark↔light |
 | R028 | differentiator | validated | M001/S07 | M001/S05 | Emerald gradient + progress fill bar on run button |
-| R029 | constraint | active | M001/S08 | none | unmapped |
-| R030 | quality-attribute | active | M001/S08 | none | unmapped |
-| R031 | quality-attribute | active | M001/S08 | none | unmapped |
-| R032 | launchability | active | M001/S08 | none | unmapped |
+| R029 | constraint | validated | M001/S08 | none | 4 vanilla files deleted, tw-animate-css removed |
+| R030 | quality-attribute | validated | M001/S08 | none | ESLint v9 flat config + Prettier pass clean |
+| R031 | quality-attribute | validated | M001/S08 | none | 2 JS chunks (491KB + 49KB), no 500KB warning |
+| R032 | launchability | validated | M001/S08 | none | dist/ built, preview serves working SPA |
 
 ## Coverage Summary
 
-- Active requirements: 4 (R029, R030, R031, R032)
+- Active requirements: 0
 - Mapped to slices: 32
-- Validated: 28 (R001, R002, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020, R021, R022, R023, R024, R025, R026, R027, R028)
+- Validated: 32 (R001–R032)
 - Unmapped active requirements: 0

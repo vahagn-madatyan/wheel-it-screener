@@ -67,7 +67,7 @@ This milestone is complete only when all are true:
   > After this: Clicking Puts on a result row opens chain modal, option chain loads from Finnhub or Massive.com, put scores with 5-component tooltips and rec badges display correctly
 - [x] **S07: Visual Polish + Animation** `risk:low` `depends:[S06]`
   > After this: Framer Motion animations active (page staggers, toggle springs, modal transitions), noise texture overlay on backgrounds, gradient borders on cards, font trio loaded, theme toggle with icon morph, run button gradient with progress fill
-- [ ] **S08: Cleanup + Deploy** `risk:low` `depends:[S07]`
+- [x] **S08: Cleanup + Deploy** `risk:low` `depends:[S07]`
   > After this: Old vanilla files removed, ESLint + Prettier configured, ChainModal lazy-loaded, `npm run build` produces static SPA, bundle size checked
 
 ## Boundary Map
