@@ -12,38 +12,31 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration complete on `ui-improve` branch. All 8 slices (S01–S08) shipped. All 32 requirements validated.
+**M001 complete** (2026-03-16). React migration and visual redesign fully delivered. All 32 requirements validated. Milestone summary at `.gsd/milestones/M001/M001-SUMMARY.md`.
 
-**What exists now:**
-- Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
+**What exists:**
+- React 19 + Vite 7.3 + TypeScript (strict mode) SPA
 - Tailwind v4 + shadcn/ui with Financial Terminal Noir oklch theme (dark + light)
-- All 8 domain TypeScript interfaces in `src/types/index.ts`
-- All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants, chain fetchers
-- 222 Vitest tests (parity + stores + services + weight redistribution + CSV export + chain fetcher) all passing
-- 6 Zustand stores (filter, results, scan, apiKey w/ persist, theme w/ persist, chain w/ modal control)
+- 8 domain TypeScript interfaces in `src/types/index.ts`
+- Pure business logic in `src/lib/` — scoring, filtering, formatters, scan orchestrator, chain fetcher, CSV export
+- 222 Vitest tests across 12 files — all passing
+- 6 Zustand stores with persist middleware for API keys and theme
 - Typed API services for Finnhub, Alpaca, Massive.com with token-bucket rate limiting
-- TanStack Query v5 — useMutation for scan flow, useQuery for chain data
-- CSS Grid dashboard layout with 320px collapsible sidebar, hamburger overlay on mobile, responsive breakpoints at 1024px and 640px
-- Complete sidebar with all ~25 filter controls bound to stores — presets, weight sliders, API key inputs, toggles, dropdowns, numeric fields
-- Run Screener button triggers 5-phase Finnhub scan with progress bar, cancel support, and inline error handling
-- 12-column sortable results table with gradient score bars, SMA/earnings badges, and score tooltips
-- 4 KPI summary cards with animated count-up (Tickers Scanned, Qualified, Avg Score, Avg Premium)
-- 24-column CSV export matching vanilla format with timestamped filename
-- Empty state for pre-scan and zero-results scenarios
-- Option chain modal: Puts button → Radix Dialog with 12-column put table, 5-component score tooltips, rec badges, Alpaca/Massive provider detection, expiry auto-select
-- Visual polish complete: font trio (Space Grotesk, General Sans, JetBrains Mono), SVG noise texture overlay, gradient borders on KPI cards
-- Framer Motion animations: KPI stagger, table row stagger, dialog spring slide-up, ProgressBar/EmptyState AnimatePresence fades, ThemeToggle icon morph
-- Theme toggle with Sun/Moon icon in header, persisted to localStorage
-- Run button emerald gradient with progress fill during scan
-- ESLint v9 flat config (typescript-eslint + react-hooks + react-refresh + eslint-config-prettier) — zero errors
-- Prettier configured (.prettierrc) — entire codebase formatted
-- ChainModal lazy-loaded via React.lazy() + Suspense — code-split into separate chunk
-- Production build: 491KB main + 49KB ChainModal chunks (158KB gzipped total)
-- Static dist/ serves correctly via `npm run preview`
+- TanStack Query v5 — useMutation for scan, useQuery for chains
+- CSS Grid dashboard (320px sidebar + fluid main), responsive at 1024px and 640px
+- Complete sidebar with ~25 filter controls, 3 presets, 4 weight sliders, API key inputs
+- 5-phase scan pipeline with progress bar, cancel, error handling
+- 12-column sortable results table with gradient score bars and score tooltips
+- 4 KPI summary cards with animated count-up
+- 24-column CSV export matching vanilla format
+- Option chain modal with Alpaca/Massive provider detection, 12-column put table, rec badges
+- Visual polish: font trio, SVG noise overlay, gradient borders, Framer Motion animations
+- Theme toggle (dark/light) persisted to localStorage
+- ESLint v9 + Prettier — zero errors, all formatted
+- ChainModal code-split via React.lazy() — 491KB main + 49KB modal chunks
+- Production build serves via `npm run preview`
 
-**Vanilla files removed:**
-- app.js, style.css, base.css, index.vanilla.html — all deleted
-- tw-animate-css dependency removed
+**Vanilla files removed:** app.js, style.css, base.css, index.vanilla.html, tw-animate-css
 
 ## Architecture / Key Patterns
 
@@ -72,4 +65,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- ✅ M001: React Migration & Visual Redesign — all 8 slices complete, all 32 requirements validated
+- ✅ M001: React Migration & Visual Redesign — all 8 slices complete, all 32 requirements validated (2026-03-16)

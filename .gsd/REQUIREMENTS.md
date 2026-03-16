@@ -397,3 +397,4 @@
 - Mapped to slices: 32
 - Validated: 32 (R001–R032)
 - Unmapped active requirements: 0
+- Milestone: M001 complete (2026-03-16)
