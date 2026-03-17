@@ -57,6 +57,12 @@ The existing test suite (`stores.test.ts` lines 57–160) tests preset-to-filter
 - `npx eslint .` — clean
 - `npx prettier --check .` — clean
 
+## Observability Impact
+
+- **Signals changed:** None — no runtime logging, metrics, or error reporting affected. Pure constant-value corrections.
+- **Inspection:** Run `npx vitest run` and look for the `preset audit values (R033–R037)` describe block. Each assertion pins a literal expected value, so future drift produces a clear mismatch message.
+- **Failure state:** Test failure output shows `expected X, received Y` for the specific preset field — no additional diagnostic tooling needed.
+
 ## Inputs
 
 - `src/lib/constants.ts` — contains `PRESETS` record with current (incorrect) values

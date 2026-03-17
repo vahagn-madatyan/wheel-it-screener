@@ -22,12 +22,19 @@
 
 ## Tasks
 
-- [ ] **T01: Correct preset values and add explicit-value test assertions** `est:20m`
+- [x] **T01: Correct preset values and add explicit-value test assertions** `est:20m`
   - Why: All 6 preset value corrections and their proof live in two files — no reason to split
   - Files: `src/lib/constants.ts`, `src/stores/__tests__/stores.test.ts`
   - Do: Change 6 numeric values in `PRESETS` record (lines 202–289 of constants.ts). Add a new `describe('preset audit values')` block in stores.test.ts with explicit numeric assertions for each corrected field — assert against literal numbers, not against the PRESETS object (existing tests already do that and are tautological).
   - Verify: `npx vitest run && npx tsc --noEmit && npx eslint . && npx prettier --check .`
   - Done when: All 4 verification commands exit 0, new test block has 6+ assertions with literal expected values
+
+## Observability / Diagnostics
+
+- **Runtime signals:** None — preset values are static constants, not runtime state.
+- **Inspection surface:** `npx vitest run --reporter=verbose` shows explicit literal-value assertions in the `preset audit values (R033–R037)` block. Any future drift will fail these tests.
+- **Failure visibility:** A wrong preset value surfaces as a test failure with the expected literal vs. actual value — immediately diagnosable without reading source.
+- **Redaction constraints:** None — no secrets or PII in preset numeric values.
 
 ## Files Likely Touched
 

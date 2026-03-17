@@ -164,6 +164,33 @@ describe('filterStore', () => {
   });
 });
 
+// ---- preset audit values (pinned literals, not tautological) ----
+describe('preset audit values (R033–R037)', () => {
+  it('finviz_cut2.maxPrice is 150 (R033)', () => {
+    expect(PRESETS.finviz_cut2.maxPrice).toBe(150);
+  });
+
+  it('conservative.maxPrice is 150 (R033)', () => {
+    expect(PRESETS.conservative.maxPrice).toBe(150);
+  });
+
+  it('conservative.maxBP is 10000 (R034)', () => {
+    expect(PRESETS.conservative.maxBP).toBe(10000);
+  });
+
+  it('conservative.maxDebtEquity is 1.0 (R035)', () => {
+    expect(PRESETS.conservative.maxDebtEquity).toBe(1.0);
+  });
+
+  it('conservative.minIVRank is 25 (R037)', () => {
+    expect(PRESETS.conservative.minIVRank).toBe(25);
+  });
+
+  it('aggressive.minNetMargin is -10 (R036)', () => {
+    expect(PRESETS.aggressive.minNetMargin).toBe(-10);
+  });
+});
+
 // ---- resultsStore ----
 describe('resultsStore', () => {
   beforeEach(resetAllStores);
