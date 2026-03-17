@@ -390,11 +390,109 @@
 | R030 | quality-attribute | validated | M001/S08 | none | ESLint v9 flat config + Prettier pass clean |
 | R031 | quality-attribute | validated | M001/S08 | none | 2 JS chunks (491KB + 49KB), no 500KB warning |
 | R032 | launchability | validated | M001/S08 | none | dist/ built, preview serves working SPA |
+| R033 | core-capability | active | M003-8nlgd1/S01 | none | unmapped |
+| R034 | core-capability | active | M003-8nlgd1/S01 | none | unmapped |
+| R035 | core-capability | active | M003-8nlgd1/S01 | none | unmapped |
+| R036 | core-capability | active | M003-8nlgd1/S01 | none | unmapped |
+| R037 | core-capability | active | M003-8nlgd1/S01 | none | unmapped |
+| R038 | core-capability | active | M003-8nlgd1/S02 | none | unmapped |
+| R039 | quality-attribute | active | M003-8nlgd1/S02 | none | unmapped |
+| R040 | quality-attribute | active | M003-8nlgd1/S02 | none | unmapped |
 
 ## Coverage Summary
 
-- Active requirements: 0
-- Mapped to slices: 32
+- Active requirements: 8
+- Mapped to slices: 40
 - Validated: 32 (R001–R032)
 - Unmapped active requirements: 0
-- Milestone: M001 complete (2026-03-16)
+- Milestone: M003-8nlgd1 in planning
+
+## Active (M003-8nlgd1)
+
+### R033 — Price ceiling raised across presets
+- Class: core-capability
+- Status: active
+- Description: Default (Finviz Cut 2) maxPrice raised from $50 to $150. Conservative maxPrice raised from $100 to $150. Aggressive stays at $200.
+- Why it matters: $50 ceiling excludes blue-chip wheel stocks (AAPL, MSFT, GOOGL) that are the most popular wheel candidates
+- Source: user
+- Primary owning slice: M003-8nlgd1/S01
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #1
+
+### R034 — Conservative maxBP tightened to $10K
+- Class: core-capability
+- Status: active
+- Description: Conservative preset maxBP changed from $15,000 to $10,000
+- Why it matters: Conservative should have a tighter buying power cap than Aggressive ($20K)
+- Source: user
+- Primary owning slice: M003-8nlgd1/S01
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #2
+
+### R035 — Conservative D/E raised to 1.0
+- Class: core-capability
+- Status: active
+- Description: Conservative preset maxDebtEquity raised from 0.5 to 1.0
+- Why it matters: 0.5 excludes the entire banking/financial sector which naturally runs higher D/E ratios
+- Source: user
+- Primary owning slice: M003-8nlgd1/S01
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #3. Raising to 1.0 is pragmatic — still conservative for non-financials.
+
+### R036 — Aggressive minNetMargin raised to -10%
+- Class: core-capability
+- Status: active
+- Description: Aggressive preset minNetMargin changed from -50% to -10%
+- Why it matters: -50% filters nothing meaningful — allows deeply broken businesses through
+- Source: user
+- Primary owning slice: M003-8nlgd1/S01
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #4
+
+### R037 — Conservative IV rank floor raised to 25
+- Class: core-capability
+- Status: active
+- Description: Conservative preset minIVRank raised from 20 to 25
+- Why it matters: 20 is barely above baseline and doesn't ensure meaningful vol premium exists
+- Source: user
+- Primary owning slice: M003-8nlgd1/S01
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #7
+
+### R038 — Pharmaceuticals removed from blanket exclusion
+- Class: core-capability
+- Status: active
+- Description: Remove 'Pharmaceuticals' from EXCLUDED_INDUSTRIES, keeping only 'Biotechnology' as the blanket pharma-adjacent exclusion
+- Why it matters: Big pharma (JNJ, PFE, ABBV) are solid wheel candidates — only biotech carries binary event risk
+- Source: user
+- Primary owning slice: M003-8nlgd1/S02
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #5
+
+### R039 — E&P industry labels verified for integrated oil majors
+- Class: quality-attribute
+- Status: active
+- Description: Verify that Finnhub's finnhubIndustry labels for XOM/CVX use 'Integrated Oil & Gas' (not 'Oil & Gas Exploration & Production') so they survive the sector filter
+- Why it matters: Excluding E&P should not accidentally catch integrated oil majors
+- Source: user
+- Primary owning slice: M003-8nlgd1/S02
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #6. Verification may be documentation check + test assertion.
+
+### R040 — Excluded ticker count accurate
+- Class: quality-attribute
+- Status: active
+- Description: EXCLUDED_TICKERS array length matches any documented count. Current array has 28 entries.
+- Why it matters: Mismatch between documented count and actual list erodes trust
+- Source: user
+- Primary owning slice: M003-8nlgd1/S02
+- Supporting slices: none
+- Validation: unmapped
+- Notes: Issue-Fix.csv item #8. Audit the list, fix any docs/UI that say 30.
