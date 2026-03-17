@@ -41,3 +41,4 @@ tmp/
 
 # ── GSD baseline (auto-generated) ──
 .gsd/forensics/
+Issue-Fix.csv
