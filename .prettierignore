@@ -1,0 +1,9 @@
+# GSD agent metadata (auto-generated, not source code)
+.gsd/
+.bg-shell/
+
+# Review artifacts (not source code)
+RECOMMENDATIONS.md
+
+# Build output
+dist/

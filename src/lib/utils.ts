@@ -1,4 +1,11 @@
-import { EXCLUDED_INDUSTRIES, EXCLUDED_TICKERS, TICKER_LISTS } from "./constants";
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import {
+  EXCLUDED_INDUSTRIES,
+  EXCLUDED_TICKERS,
+  TICKER_LISTS,
+} from './constants';
+import type { TickerUniverse } from '@/types';
 
 /**
  * Parse strike price from OCC option symbol.
@@ -36,13 +43,13 @@ export function isExcludedSector(
  *   deduped, length-capped at 10 chars per ticker
  */
 export function getTickerList(filters: {
-  tickerUniverse: string;
+  tickerUniverse: TickerUniverse;
   customTickers: string;
 }): string[] {
   let tickers: string[] = [];
 
-  if (filters.tickerUniverse !== "custom") {
-    tickers = [...(TICKER_LISTS[filters.tickerUniverse] || TICKER_LISTS.wheel_popular)];
+  if (filters.tickerUniverse !== 'custom') {
+    tickers = [...TICKER_LISTS[filters.tickerUniverse]];
   }
 
   // Add custom tickers
@@ -58,4 +65,9 @@ export function getTickerList(filters: {
   }
 
   return tickers;
+}
+
+/** Merge Tailwind classes with conflict resolution. */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
 }

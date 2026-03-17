@@ -12,21 +12,31 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 ## Current State
 
-Migration in progress on `ui-improve` branch. S01 (Foundation + Business Logic) is complete.
+**M001 complete** (2026-03-16). React migration and visual redesign fully delivered. All 32 requirements validated. Milestone summary at `.gsd/milestones/M001/M001-SUMMARY.md`.
 
-**What exists now:**
-- Vite + React 19 + TypeScript project scaffold with dev server on localhost:5173
+**What exists:**
+- React 19 + Vite 7.3 + TypeScript (strict mode) SPA
 - Tailwind v4 + shadcn/ui with Financial Terminal Noir oklch theme (dark + light)
-- All 8 domain TypeScript interfaces in `src/types/index.ts`
-- All business logic extracted as pure functions in `src/lib/` — scoring, filtering, formatters, utilities, constants
-- 128 Vitest parity tests proving scoring/filtering matches vanilla app
-- Minimal App shell (placeholder — layout comes in S03)
+- 8 domain TypeScript interfaces in `src/types/index.ts`
+- Pure business logic in `src/lib/` — scoring, filtering, formatters, scan orchestrator, chain fetcher, CSV export
+- 222 Vitest tests across 12 files — all passing
+- 6 Zustand stores with persist middleware for API keys and theme
+- Typed API services for Finnhub, Alpaca, Massive.com with token-bucket rate limiting
+- TanStack Query v5 — useMutation for scan, useQuery for chains
+- CSS Grid dashboard (320px sidebar + fluid main), responsive at 1024px and 640px
+- Complete sidebar with ~25 filter controls, 3 presets, 4 weight sliders, API key inputs
+- 5-phase scan pipeline with progress bar, cancel, error handling
+- 12-column sortable results table with gradient score bars and score tooltips
+- 4 KPI summary cards with animated count-up
+- 24-column CSV export matching vanilla format
+- Option chain modal with Alpaca/Massive provider detection, 12-column put table, rec badges
+- Visual polish: font trio, SVG noise overlay, gradient borders, Framer Motion animations
+- Theme toggle (dark/light) persisted to localStorage
+- ESLint v9 + Prettier — zero errors, all formatted
+- ChainModal code-split via React.lazy() — 491KB main + 49KB modal chunks
+- Production build serves via `npm run preview`
 
-**Vanilla files (still present, to be removed in S08):**
-- `app.js` — 1334-line monolith (source for logic extraction)
-- `style.css` — 1385 lines of hand-written CSS
-- `base.css` — 65 lines of reset/base styles
-- `index.vanilla.html` — renamed original entry point (preserved for reference)
+**Vanilla files removed:** app.js, style.css, base.css, index.vanilla.html, tw-animate-css
 
 ## Architecture / Key Patterns
 
@@ -55,4 +65,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 ## Milestone Sequence
 
-- 🔄 M001: React Migration & Visual Redesign — S01 complete (foundation + business logic), S02 next (state management + API services)
+- ✅ M001: React Migration & Visual Redesign — all 8 slices complete, all 32 requirements validated (2026-03-16)

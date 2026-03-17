@@ -1,5 +1,11 @@
 // ---- Domain Types for WheelScan ----
 
+export type TickerUniverse =
+  | 'wheel_popular'
+  | 'sp500_top'
+  | 'high_dividend'
+  | 'custom';
+
 /** Weight configuration for wheel score components */
 export interface WeightConfig {
   weightPremium: number;
@@ -24,13 +30,13 @@ export interface FilterState extends WeightConfig {
   minSalesGrowth: number | undefined;
   /** NaN when user leaves field blank */
   minROE: number | undefined;
-  tickerUniverse: string;
+  tickerUniverse: TickerUniverse;
   customTickers: string;
   minPremium: number;
   maxBP: number;
-  /** Select-bound string value, e.g. "30", "45" */
+  /** Target days to expiration (e.g. 30, 45) */
   targetDTE: number;
-  /** Select-bound string value, e.g. "0.30", "0.20" */
+  /** Target option delta (e.g. 0.30, 0.20) */
   targetDelta: number;
   minIVRank: number;
   maxIVRank: number;
@@ -83,7 +89,7 @@ export interface StockResult {
   earningsDate?: string | null;
   ivRank?: number;
   premiumYield?: number;
-  sma200Status?: "above" | "below" | "n/a";
+  sma200Status?: 'above' | 'below' | 'n/a';
   sma200Pct?: number | null;
 
   // Computed scores (populated by computeWheelScore)
@@ -152,18 +158,6 @@ export interface Preset {
   weightFundamentals: number;
 }
 
-/** Scan progress state */
-export interface ScanProgress {
-  running: boolean;
-  /** 0-1 */
-  progress: number;
-  currentTicker: string;
-  scannedCount: number;
-  totalCount: number;
-  candidateCount: number;
-  error: string | null;
-}
-
 /** Option chain data for a symbol */
 export interface ChainData {
   symbol: string;
@@ -179,8 +173,8 @@ export interface ApiKeys {
   alpacaSecretKey: string;
   massiveKey: string;
   status: {
-    finnhub: "set" | "not_set";
-    alpaca: "set" | "not_set";
-    massive: "set" | "not_set";
+    finnhub: 'set' | 'not_set';
+    alpaca: 'set' | 'not_set';
+    massive: 'set' | 'not_set';
   };
 }

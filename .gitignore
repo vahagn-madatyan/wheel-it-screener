@@ -31,3 +31,14 @@ vendor/
 coverage/
 .cache/
 tmp/
+
+# ── GSD baseline (auto-generated) ──
+.gsd/completed-units.json
+.gsd/gsd.db
+.gsd/DISCUSSION-MANIFEST.json
+.gsd/milestones/**/*-CONTINUE.md
+.gsd/milestones/**/continue.md
+
+# ── GSD baseline (auto-generated) ──
+.gsd/forensics/
+Issue-Fix.csv

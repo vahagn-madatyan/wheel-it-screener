@@ -1,14 +1,80 @@
+import { lazy, Suspense } from 'react';
+import { useChainStore } from '@/stores/chain-store';
+import { useResultsStore } from '@/stores/results-store';
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { Sidebar } from '@/components/layout/Sidebar';
+import { SidebarSection } from '@/components/layout/SidebarSection';
+import { ApiKeysSection } from '@/components/sidebar/ApiKeysSection';
+import { StockFiltersSection } from '@/components/sidebar/StockFiltersSection';
+import { WheelCriteriaSection } from '@/components/sidebar/WheelCriteriaSection';
+import { ScoringWeightsSection } from '@/components/sidebar/ScoringWeightsSection';
+import { ActionButtons } from '@/components/sidebar/ActionButtons';
+import { ProgressBar } from '@/components/main/ProgressBar';
+import { ScanWarnings } from '@/components/main/ScanWarnings';
+import { KpiCards } from '@/components/main/KpiCards';
+import { ResultsTable } from '@/components/main/ResultsTable';
+import { EmptyState } from '@/components/main/EmptyState';
+import { useScanStore } from '@/stores/scan-store';
+
+const ChainModal = lazy(() => import('@/components/main/ChainModal'));
+
+// DEV: expose stores to window for browser testing (tree-shaken in production)
+if (import.meta.env.DEV) {
+  const w = window as unknown as Record<string, unknown>;
+  w.__chainStore = useChainStore;
+  w.__resultsStore = useResultsStore;
+  w.__scanStore = useScanStore;
+}
+
 export function App() {
+  const phase = useScanStore((s) => s.phase);
+  const filteredResults = useResultsStore((s) => s.filteredResults);
+
+  const showTable =
+    filteredResults.length > 0 && (phase === 'complete' || phase === 'running');
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-primary">
-          WheelScan
-        </h1>
-        <p className="mt-2 text-muted-foreground">
-          Options wheel screening terminal
-        </p>
+    <DashboardLayout
+      sidebar={
+        <Sidebar>
+          <SidebarSection title="API Keys" defaultOpen={false}>
+            <ApiKeysSection />
+          </SidebarSection>
+
+          <SidebarSection title="Stock Filters">
+            <StockFiltersSection />
+          </SidebarSection>
+
+          <SidebarSection title="Wheel Criteria" defaultOpen={false}>
+            <WheelCriteriaSection />
+          </SidebarSection>
+
+          <SidebarSection title="Scoring Weights" defaultOpen={false}>
+            <ScoringWeightsSection />
+          </SidebarSection>
+
+          <div className="px-4 py-3">
+            <ActionButtons />
+          </div>
+        </Sidebar>
+      }
+    >
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 md:p-6">
+        <KpiCards />
+        <ProgressBar />
+        <ScanWarnings />
+        {showTable ? <ResultsTable /> : <EmptyState />}
       </div>
-    </div>
+
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          </div>
+        }
+      >
+        <ChainModal />
+      </Suspense>
+    </DashboardLayout>
   );
 }

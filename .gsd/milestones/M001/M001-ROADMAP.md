@@ -55,19 +55,19 @@ This milestone is complete only when all are true:
 
 - [x] **S01: Foundation + Business Logic** `risk:medium` `depends:[]`
   > After this: Vite dev server runs, TypeScript types defined, all scoring/filtering logic extracted as pure functions, Vitest tests pass proving parity with vanilla app
-- [ ] **S02: State Management + API Services** `risk:medium` `depends:[S01]`
+- [x] **S02: State Management + API Services** `risk:medium` `depends:[S01]`
   > After this: 6 Zustand stores created with correct shapes, API key store persists to localStorage, Finnhub/Alpaca/Massive.com typed service clients exist, token-bucket rate limiter works, TanStack Query provider wired
-- [ ] **S03: Layout Shell** `risk:low` `depends:[S01]`
+- [x] **S03: Layout Shell** `risk:low` `depends:[S01]`
   > After this: CSS Grid dashboard renders with 320px sidebar + fluid main, sidebar sections collapse via Radix, responsive breakpoints work at 1024px and 640px, Financial Terminal Noir base theme visible
-- [ ] **S04: Sidebar Controls** `risk:medium` `depends:[S02,S03]`
+- [x] **S04: Sidebar Controls** `risk:medium` `depends:[S02,S03]`
   > After this: All filter inputs render in sidebar, bound to filterStore, presets switch all values, weight sliders work with sum constraint, API key inputs with masked fields and status badges
-- [ ] **S05: Results + Scan Flow** `risk:high` `depends:[S04]`
+- [x] **S05: Results + Scan Flow** `risk:high` `depends:[S04]`
   > After this: Run button triggers full scan via Finnhub API, progress bar shows ticker-by-ticker progress, KPI cards animate on completion, results table populates with sorted/scored data, wheel score tooltips show breakdown, CSV export works
-- [ ] **S06: Option Chain Modal** `risk:medium-high` `depends:[S05]`
+- [x] **S06: Option Chain Modal** `risk:medium-high` `depends:[S05]`
   > After this: Clicking Puts on a result row opens chain modal, option chain loads from Finnhub or Massive.com, put scores with 5-component tooltips and rec badges display correctly
-- [ ] **S07: Visual Polish + Animation** `risk:low` `depends:[S06]`
+- [x] **S07: Visual Polish + Animation** `risk:low` `depends:[S06]`
   > After this: Framer Motion animations active (page staggers, toggle springs, modal transitions), noise texture overlay on backgrounds, gradient borders on cards, font trio loaded, theme toggle with icon morph, run button gradient with progress fill
-- [ ] **S08: Cleanup + Deploy** `risk:low` `depends:[S07]`
+- [x] **S08: Cleanup + Deploy** `risk:low` `depends:[S07]`
   > After this: Old vanilla files removed, ESLint + Prettier configured, ChainModal lazy-loaded, `npm run build` produces static SPA, bundle size checked
 
 ## Boundary Map
