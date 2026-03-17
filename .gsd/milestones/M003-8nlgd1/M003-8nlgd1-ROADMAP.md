@@ -42,7 +42,7 @@ This milestone is complete only when all are true:
 
 ## Slices
 
-- [ ] **S01: Preset value corrections** `risk:low` `depends:[]`
+- [x] **S01: Preset value corrections** `risk:low` `depends:[]`
   > After this: All 3 presets have corrected values — Finviz Cut 2 maxPrice $150, Conservative maxBP $10K / D/E 1.0 / IV rank 25, Aggressive minNetMargin -10%. Verified by updated preset tests and tsc clean.
 
 - [ ] **S02: Sector exclusion refinement & ticker audit** `risk:low` `depends:[]`

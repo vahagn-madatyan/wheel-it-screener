@@ -14,6 +14,8 @@ Full scan flow works end-to-end: enter API keys → select preset → run scan �
 
 **M002 complete** (2026-03-16). PR review fixes — 21 recommendations addressed: market cap unit fix, error visibility, type safety (discriminated union ChainParams), React Error Boundary, sessionStorage for API keys, scan phase labels, failed ticker surfacing, dead code cleanup. 227 tests passing.
 
+**M003-8nlgd1 in progress** (2026-03-16). S01 complete — corrected 6 preset numeric values per Issue-Fix.csv audit (R033–R037 validated). 233 tests passing. S02 (sector exclusion refinement) pending.
+
 **What exists:**
 - React 19 + Vite 7.3 + TypeScript (strict mode) SPA
 - Tailwind v4 + shadcn/ui with Financial Terminal Noir oklch theme (dark + light)
@@ -57,4 +59,4 @@ See `.gsd/REQUIREMENTS.md` for the explicit capability contract, requirement sta
 
 - ✅ M001: React Migration & Visual Redesign — all 8 slices complete, all 32 requirements validated
 - ✅ M002: PR Review Fixes — 5 slices, 21 review recommendations addressed, 227 tests
-- [ ] M003-8nlgd1: Filter Preset Tuning & Sector Exclusion Audit — correct preset values and refine sector exclusion logic
+- [ ] M003-8nlgd1: Filter Preset Tuning & Sector Exclusion Audit — S01 complete (preset values corrected), S02 pending (sector exclusion refinement)

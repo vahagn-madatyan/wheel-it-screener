@@ -244,17 +244,17 @@ graph LR
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | React 19 + TypeScript (strict) |
-| Build | Vite 7.3 |
-| Styling | Tailwind CSS v4 + shadcn/ui |
-| State | Zustand 5 (6 stores, persist middleware) |
-| Data Fetching | TanStack Query v5 |
-| Animation | Framer Motion |
-| Testing | Vitest 4 + Testing Library |
-| Linting | ESLint 9 + Prettier |
-| APIs | Finnhub, Alpaca, Massive.com (Polygon) |
+| Layer         | Technology                               |
+| ------------- | ---------------------------------------- |
+| Framework     | React 19 + TypeScript (strict)           |
+| Build         | Vite 7.3                                 |
+| Styling       | Tailwind CSS v4 + shadcn/ui              |
+| State         | Zustand 5 (6 stores, persist middleware) |
+| Data Fetching | TanStack Query v5                        |
+| Animation     | Framer Motion                            |
+| Testing       | Vitest 4 + Testing Library               |
+| Linting       | ESLint 9 + Prettier                      |
+| APIs          | Finnhub, Alpaca, Massive.com (Polygon)   |
 
 ---
 
@@ -346,55 +346,57 @@ The app loads with **Finviz Cut 2** as the default preset. All filter values are
 
 ### All Preset Defaults
 
-| Filter | Finviz Cut 2 (default) | Conservative | Aggressive |
-|---|---|---|---|
-| **Price Range** | $10 - $50 | $20 - $100 | $5 - $200 |
-| **Market Cap** | $2B - $2000B | $10B - $2000B | $1B - $2000B |
-| **Min Volume** | 2M | 5M | 0.5M |
-| **Max P/E** | 60 | 30 | 100 |
-| **Max Debt/Equity** | 1.0 | 0.5 | 2.0 |
-| **Min Net Margin %** | 0 | 10 | -50 |
-| **Min Sales Growth %** | 5 | 0 | -50 |
-| **Min ROE %** | 0 | 10 | -50 |
-| **Min Premium** | 12 | 8 | 15 |
-| **Max Buying Power** | $10,000 | $15,000 | $20,000 |
-| **Target DTE** | 30 | 45 | 30 |
-| **Target Delta** | 0.30 | 0.20 | 0.35 |
-| **IV Rank Range** | 30 - 80 | 20 - 60 | 30 - 100 |
-| **Require Dividends** | No | Yes | No |
-| **Above 200 SMA** | Yes | Yes | No |
-| **Exclude Earnings** | Yes | Yes | Yes |
-| **Require Weeklies** | No | No | No |
-| **Exclude Risky Sectors** | Yes | Yes | No |
+| Filter                    | Finviz Cut 2 (default) | Conservative  | Aggressive   |
+| ------------------------- | ---------------------- | ------------- | ------------ |
+| **Price Range**           | $10 - $50              | $20 - $100    | $5 - $200    |
+| **Market Cap**            | $2B - $2000B           | $10B - $2000B | $1B - $2000B |
+| **Min Volume**            | 2M                     | 5M            | 0.5M         |
+| **Max P/E**               | 60                     | 30            | 100          |
+| **Max Debt/Equity**       | 1.0                    | 0.5           | 2.0          |
+| **Min Net Margin %**      | 0                      | 10            | -50          |
+| **Min Sales Growth %**    | 5                      | 0             | -50          |
+| **Min ROE %**             | 0                      | 10            | -50          |
+| **Min Premium**           | 12                     | 8             | 15           |
+| **Max Buying Power**      | $10,000                | $15,000       | $20,000      |
+| **Target DTE**            | 30                     | 45            | 30           |
+| **Target Delta**          | 0.30                   | 0.20          | 0.35         |
+| **IV Rank Range**         | 30 - 80                | 20 - 60       | 30 - 100     |
+| **Require Dividends**     | No                     | Yes           | No           |
+| **Above 200 SMA**         | Yes                    | Yes           | No           |
+| **Exclude Earnings**      | Yes                    | Yes           | Yes          |
+| **Require Weeklies**      | No                     | No            | No           |
+| **Exclude Risky Sectors** | Yes                    | Yes           | No           |
 
 ### Scoring Weights per Preset
 
-| Weight | Finviz Cut 2 (default) | Conservative | Aggressive |
-|---|---|---|---|
-| **Premium** | 30 | 20 | 40 |
-| **Liquidity** | 20 | 25 | 20 |
-| **Stability** | 25 | 30 | 15 |
-| **Fundamentals** | 25 | 25 | 25 |
+| Weight           | Finviz Cut 2 (default) | Conservative | Aggressive |
+| ---------------- | ---------------------- | ------------ | ---------- |
+| **Premium**      | 30                     | 20           | 40         |
+| **Liquidity**    | 20                     | 25           | 20         |
+| **Stability**    | 25                     | 30           | 15         |
+| **Fundamentals** | 25                     | 25           | 25         |
 
 ### Ticker Universes
 
 Ticker universe is set separately from presets. Default is `wheel_popular`.
 
-| Universe | Tickers | Description |
-|---|---|---|
-| `wheel_popular` (default) | 50 | Popular wheel strategy stocks: AAPL, MSFT, AMZN, GOOGL, META, NVDA, AMD, TSLA, JPM, BAC, WFC, C, GS, V, MA, DIS, NFLX, PYPL, SQ, INTC, CSCO, QCOM, MU, F, GM, T, VZ, PFE, JNJ, MRK, ABBV, BMY, UNH, CVS, XOM, CVX, COP, OXY, ET, KO, PEP, MCD, WMT, TGT, HD, LOW, NKE, SBUX, PLTR, SOFI |
-| `sp500_top` | 50 | Top 50 S&P 500 by market cap: AAPL, MSFT, AMZN, NVDA, GOOGL, META, TSLA, BRK.B, LLY, UNH, JPM, V, XOM, AVGO, MA, JNJ, PG, HD, COST, MRK, ABBV, CVX, PEP, KO, ADBE, WMT, CRM, BAC, MCD, CSCO, TMO, ACN, ABT, LIN, ORCL, DHR, NKE, NFLX, AMD, TXN, CMCSA, PM, NEE, LOW, UPS, RTX, HON, INTC, AMGN, IBM |
-| `high_dividend` | 29 | High dividend yield: T, VZ, MO, PM, XOM, CVX, COP, OXY, ET, EPD, KMI, WMB, ABBV, PFE, BMY, JNJ, MRK, KO, PEP, CSCO, IBM, INTC, F, GM, WFC, BAC, USB, KEY, SCHW, MMM |
-| `custom` | user-defined | User enters comma-separated tickers |
+| Universe                  | Tickers      | Description                                                                                                                                                                                                                                                                                          |
+| ------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `wheel_popular` (default) | 50           | Popular wheel strategy stocks: AAPL, MSFT, AMZN, GOOGL, META, NVDA, AMD, TSLA, JPM, BAC, WFC, C, GS, V, MA, DIS, NFLX, PYPL, SQ, INTC, CSCO, QCOM, MU, F, GM, T, VZ, PFE, JNJ, MRK, ABBV, BMY, UNH, CVS, XOM, CVX, COP, OXY, ET, KO, PEP, MCD, WMT, TGT, HD, LOW, NKE, SBUX, PLTR, SOFI              |
+| `sp500_top`               | 50           | Top 50 S&P 500 by market cap: AAPL, MSFT, AMZN, NVDA, GOOGL, META, TSLA, BRK.B, LLY, UNH, JPM, V, XOM, AVGO, MA, JNJ, PG, HD, COST, MRK, ABBV, CVX, PEP, KO, ADBE, WMT, CRM, BAC, MCD, CSCO, TMO, ACN, ABT, LIN, ORCL, DHR, NKE, NFLX, AMD, TXN, CMCSA, PM, NEE, LOW, UPS, RTX, HON, INTC, AMGN, IBM |
+| `high_dividend`           | 29           | High dividend yield: T, VZ, MO, PM, XOM, CVX, COP, OXY, ET, EPD, KMI, WMB, ABBV, PFE, BMY, JNJ, MRK, KO, PEP, CSCO, IBM, INTC, F, GM, WFC, BAC, USB, KEY, SCHW, MMM                                                                                                                                  |
+| `custom`                  | user-defined | User enters comma-separated tickers                                                                                                                                                                                                                                                                  |
 
 ### Exclusion Lists (hardcoded)
 
 These are always applied when the corresponding filter toggle is enabled. Not configurable per preset.
 
 **Excluded Industries** (10) - filtered when "Exclude Risky Sectors" is on:
+
 > Biotechnology, Pharmaceuticals, Blank Checks, Shell Companies, Savings Institutions, Thrifts & Mortgage Finance, Oil & Gas Exploration & Production, Oil & Gas Drilling, Mortgage REITs, Mortgage Finance
 
 **Excluded Tickers** (30) - always filtered out:
+
 > GME, AMC, BBBY, BB, WISH, CLOV, SPCE, RIDE, WKHS, SNDL, MARA, RIOT, COIN, MSTR, HUT, BITF, BITO, GBTC, TQQQ, SQQQ, UVXY, SVXY, SPXS, SPXL, LABU, LABD, JNUG, JDST
 
 ---
@@ -411,18 +413,18 @@ npm run test:watch
 
 Test coverage by module:
 
-| Module | Tests | Coverage |
-|--------|:-----:|----------|
-| `lib/scoring.ts` | 18 | Wheel metrics, sub-scores, edge cases |
-| `lib/filters.ts` | 20+ | All filter types, nulls, boundaries |
-| `lib/put-scoring.ts` | 25+ | Spread tiers, delta zones, rec badges |
-| `lib/chain.ts` | 30+ | Alpaca/Massive parsing, expiry selection |
-| `lib/csv-export.ts` | 15+ | Headers, escaping, null handling |
-| `lib/formatters.ts` | 20+ | Currency, percentages, market cap |
-| `lib/utils.ts` | 15+ | Ticker parsing, dedup, OCC |
-| `stores/*` | 40+ | All 6 stores, state transitions |
-| `services/*` | 20+ | URL construction, auth, retry, rate limiting |
-| `components/*` | 10+ | Weight redistribution algorithm |
+| Module               | Tests | Coverage                                     |
+| -------------------- | :---: | -------------------------------------------- |
+| `lib/scoring.ts`     |  18   | Wheel metrics, sub-scores, edge cases        |
+| `lib/filters.ts`     |  20+  | All filter types, nulls, boundaries          |
+| `lib/put-scoring.ts` |  25+  | Spread tiers, delta zones, rec badges        |
+| `lib/chain.ts`       |  30+  | Alpaca/Massive parsing, expiry selection     |
+| `lib/csv-export.ts`  |  15+  | Headers, escaping, null handling             |
+| `lib/formatters.ts`  |  20+  | Currency, percentages, market cap            |
+| `lib/utils.ts`       |  15+  | Ticker parsing, dedup, OCC                   |
+| `stores/*`           |  40+  | All 6 stores, state transitions              |
+| `services/*`         |  20+  | URL construction, auth, retry, rate limiting |
+| `components/*`       |  10+  | Weight redistribution algorithm              |
 
 ---
 
