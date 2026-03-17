@@ -152,13 +152,16 @@ export function computeWheelScore(
   result.fundamentalsScore = fundScore;
 
   // wheelScore uses UNROUNDED sub-scores (matching vanilla)
-  result.wheelScore = Math.round(
-    (premiumScore * weights.weightPremium +
-      liquidityScore * weights.weightLiquidity +
-      stabilityScore * weights.weightStability +
-      fundScore * weights.weightFundamentals) /
-      totalWeight,
-  );
+  result.wheelScore =
+    totalWeight > 0
+      ? Math.round(
+          (premiumScore * weights.weightPremium +
+            liquidityScore * weights.weightLiquidity +
+            stabilityScore * weights.weightStability +
+            fundScore * weights.weightFundamentals) /
+            totalWeight,
+        )
+      : 0;
 
   return result;
 }

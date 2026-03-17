@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 
 export function ProgressBar() {
   const phase = useScanStore((s) => s.phase);
+  const phaseLabel = useScanStore((s) => s.phaseLabel);
   const progress = useScanStore((s) => s.progress);
   const currentTicker = useScanStore((s) => s.currentTicker);
   const scannedCount = useScanStore((s) => s.scannedCount);
@@ -36,7 +37,10 @@ export function ProgressBar() {
               {/* Phase label and stats */}
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
-                  Scanning{currentTicker ? `: ${currentTicker}` : '…'}
+                  {phaseLabel ||
+                    (currentTicker
+                      ? `Scanning: ${currentTicker}`
+                      : 'Scanning…')}
                 </span>
                 <span className="tabular-nums text-muted-foreground">
                   {scannedCount}/{totalCount} · {candidateCount} candidates

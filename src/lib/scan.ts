@@ -28,6 +28,8 @@ export interface ScanParams {
 export interface ScanResult {
   allResults: StockResult[];
   filteredResults: StockResult[];
+  failedTickers: string[];
+  earningsWarning: string | null;
 }
 
 // ---- Helpers ----
@@ -56,7 +58,8 @@ function buildStockResult(
     dayChange: quote.dp,
     dayHigh: quote.h,
     dayLow: quote.l,
-    marketCap: (m['marketCapitalization'] as number) ?? 0,
+    // Finnhub returns marketCapitalization in millions — normalize to raw dollars
+    marketCap: ((m['marketCapitalization'] as number) ?? 0) * 1e6,
     pe: (m['peBasicExclExtraTTM'] as number) ?? null,
     forwardPE: (m['peTTM'] as number) ?? null,
     beta: (m['beta'] as number) ?? null,
@@ -109,6 +112,7 @@ export async function runScan({
     // ── Phase 1: Earnings calendar ──
     onPhaseChange('earnings');
     const earningsMap: Record<string, EarningsEntry> = {};
+    let earningsWarning: string | null = null;
 
     try {
       const today = new Date();
@@ -134,10 +138,9 @@ export async function runScan({
       }
     } catch (err) {
       // Non-fatal — warn and continue with empty map
-      console.warn(
-        '[scan] Earnings calendar failed, continuing:',
-        err instanceof Error ? err.message : err,
-      );
+      const msg = err instanceof Error ? err.message : String(err);
+      earningsWarning = `Earnings data unavailable — earnings filter may be incomplete (${msg})`;
+      console.warn('[scan] Earnings calendar failed, continuing:', msg);
     }
 
     checkAborted(signal);
@@ -145,6 +148,7 @@ export async function runScan({
     // ── Phase 2: Quotes + Metrics per ticker ──
     onPhaseChange('quotes');
     const candidates: StockResult[] = [];
+    const failedTickers: string[] = [];
 
     for (const ticker of tickers) {
       checkAborted(signal);
@@ -174,7 +178,8 @@ export async function runScan({
         ) {
           throw new Error('Invalid Finnhub API key');
         }
-        // Other per-ticker errors are non-fatal
+        // Other per-ticker errors are non-fatal — track for user visibility
+        failedTickers.push(ticker);
         console.warn(
           `[scan] Quote/metrics failed for ${ticker}:`,
           err instanceof Error ? err.message : err,
@@ -198,7 +203,8 @@ export async function runScan({
         if (profile.finnhubIndustry) stock.industry = profile.finnhubIndustry;
         if (profile.exchange) stock.exchange = profile.exchange;
         if (profile.marketCapitalization > 0) {
-          stock.marketCap = profile.marketCapitalization;
+          // Finnhub returns millions — normalize to raw dollars
+          stock.marketCap = profile.marketCapitalization * 1e6;
         }
       } catch (err) {
         // Non-fatal per ticker
@@ -246,7 +252,12 @@ export async function runScan({
     onPhaseChange('filtering');
     const filteredResults = filterStocks(candidates, filters, earningsMap);
 
-    return { allResults: candidates, filteredResults };
+    return {
+      allResults: candidates,
+      filteredResults,
+      failedTickers,
+      earningsWarning,
+    };
   } finally {
     rateLimiter.dispose();
   }

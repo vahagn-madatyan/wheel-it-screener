@@ -2,5 +2,8 @@
 .gsd/
 .bg-shell/
 
+# Review artifacts (not source code)
+RECOMMENDATIONS.md
+
 # Build output
 dist/

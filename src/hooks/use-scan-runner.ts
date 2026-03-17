@@ -44,8 +44,8 @@ export function useScanRunner() {
         signal: controller.signal,
         onTick: (ticker) => useScanStore.getState().tickProgress(ticker),
         onCandidateFound: () => useScanStore.getState().incrementCandidates(),
-        onPhaseChange: (_phase: ScanPhaseLabel) => {
-          // Phase tracking — store can be extended later for phase display
+        onPhaseChange: (phase: ScanPhaseLabel) => {
+          useScanStore.getState().setPhaseLabel(PHASE_LABELS[phase]);
         },
       });
     },
@@ -54,7 +54,9 @@ export function useScanRunner() {
       useResultsStore
         .getState()
         .setResults(result.allResults, result.filteredResults);
-      useScanStore.getState().completeScan();
+      useScanStore
+        .getState()
+        .completeScan(result.failedTickers, result.earningsWarning);
       abortControllerRef.current = null;
     },
 

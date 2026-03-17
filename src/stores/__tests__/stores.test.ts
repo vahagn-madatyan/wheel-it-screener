@@ -241,9 +241,10 @@ describe('scanStore', () => {
     expect(useScanStore.getState().scannedCount).toBe(3);
     expect(useScanStore.getState().progress).toBeCloseTo(1);
 
-    useScanStore.getState().completeScan();
+    useScanStore.getState().completeScan(['FAIL1'], null);
     expect(useScanStore.getState().phase).toBe('complete');
     expect(useScanStore.getState().progress).toBe(1);
+    expect(useScanStore.getState().failedTickers).toEqual(['FAIL1']);
   });
 
   it('idle→running→error lifecycle', () => {
@@ -277,7 +278,7 @@ describe('scanStore', () => {
 // ---- apiKeyStore ----
 describe('apiKeyStore', () => {
   beforeEach(() => {
-    localStorage.clear();
+    sessionStorage.clear();
     resetAllStores();
   });
 
@@ -326,12 +327,12 @@ describe('apiKeyStore', () => {
     // Force persist write
     useApiKeyStore.persist.rehydrate();
 
-    const raw = localStorage.getItem('wheelscan-api-keys');
+    const raw = sessionStorage.getItem('wheelscan-api-keys');
     expect(raw).toBeTruthy();
     const parsed = JSON.parse(raw!);
     expect(parsed.state).not.toHaveProperty('status');
     expect(parsed.state.finnhubKey).toBe('test-key');
-    expect(parsed.version).toBe(1);
+    expect(parsed.version).toBe(2);
   });
 });
 

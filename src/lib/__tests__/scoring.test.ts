@@ -397,4 +397,18 @@ describe('computeWheelScore', () => {
     // wheelScore should equal premiumScore since only premium has weight
     expect(result.wheelScore).toBe(result.premiumScore);
   });
+
+  it('returns wheelScore 0 when all weights are zero', () => {
+    const stock = makeStock({ premiumYield: 20, avgVolume: 5 });
+    const enriched = computeWheelMetrics(stock, defaultFilters, null);
+    const zeroWeights: WeightConfig = {
+      weightPremium: 0,
+      weightLiquidity: 0,
+      weightStability: 0,
+      weightFundamentals: 0,
+    };
+    const result = computeWheelScore(enriched, zeroWeights);
+    expect(result.wheelScore).toBe(0);
+    expect(Number.isNaN(result.wheelScore)).toBe(false);
+  });
 });

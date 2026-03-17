@@ -5,6 +5,7 @@ import {
   EXCLUDED_TICKERS,
   TICKER_LISTS,
 } from './constants';
+import type { TickerUniverse } from '@/types';
 
 /**
  * Parse strike price from OCC option symbol.
@@ -42,15 +43,13 @@ export function isExcludedSector(
  *   deduped, length-capped at 10 chars per ticker
  */
 export function getTickerList(filters: {
-  tickerUniverse: string;
+  tickerUniverse: TickerUniverse;
   customTickers: string;
 }): string[] {
   let tickers: string[] = [];
 
   if (filters.tickerUniverse !== 'custom') {
-    tickers = [
-      ...(TICKER_LISTS[filters.tickerUniverse] || TICKER_LISTS.wheel_popular),
-    ];
+    tickers = [...TICKER_LISTS[filters.tickerUniverse]];
   }
 
   // Add custom tickers

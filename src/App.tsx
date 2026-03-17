@@ -10,6 +10,7 @@ import { WheelCriteriaSection } from '@/components/sidebar/WheelCriteriaSection'
 import { ScoringWeightsSection } from '@/components/sidebar/ScoringWeightsSection';
 import { ActionButtons } from '@/components/sidebar/ActionButtons';
 import { ProgressBar } from '@/components/main/ProgressBar';
+import { ScanWarnings } from '@/components/main/ScanWarnings';
 import { KpiCards } from '@/components/main/KpiCards';
 import { ResultsTable } from '@/components/main/ResultsTable';
 import { EmptyState } from '@/components/main/EmptyState';
@@ -36,7 +37,7 @@ export function App() {
     <DashboardLayout
       sidebar={
         <Sidebar>
-          <SidebarSection title="API Keys">
+          <SidebarSection title="API Keys" defaultOpen={false}>
             <ApiKeysSection />
           </SidebarSection>
 
@@ -44,11 +45,11 @@ export function App() {
             <StockFiltersSection />
           </SidebarSection>
 
-          <SidebarSection title="Wheel Criteria">
+          <SidebarSection title="Wheel Criteria" defaultOpen={false}>
             <WheelCriteriaSection />
           </SidebarSection>
 
-          <SidebarSection title="Scoring Weights">
+          <SidebarSection title="Scoring Weights" defaultOpen={false}>
             <ScoringWeightsSection />
           </SidebarSection>
 
@@ -58,13 +59,20 @@ export function App() {
         </Sidebar>
       }
     >
-      <div className="flex flex-1 flex-col gap-4 overflow-hidden p-4 md:p-6">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-4 md:p-6">
         <KpiCards />
         <ProgressBar />
+        <ScanWarnings />
         {showTable ? <ResultsTable /> : <EmptyState />}
       </div>
 
-      <Suspense fallback={null}>
+      <Suspense
+        fallback={
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          </div>
+        }
+      >
         <ChainModal />
       </Suspense>
     </DashboardLayout>

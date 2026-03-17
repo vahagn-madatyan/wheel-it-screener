@@ -111,7 +111,7 @@ export function ScoringWeightsSection() {
   };
 
   const handleWeightChange = useCallback(
-    (key: keyof WeightConfig) => (value: number) => {
+    (key: keyof WeightConfig, value: number) => {
       const currentWeights: WeightConfig = {
         weightPremium: useFilterStore.getState().weightPremium,
         weightLiquidity: useFilterStore.getState().weightLiquidity,
@@ -141,7 +141,7 @@ export function ScoringWeightsSection() {
           </div>
           <Slider
             value={weights[key]}
-            onValueChange={handleWeightChange(key)}
+            onValueChange={(v) => handleWeightChange(key, v)}
             min={0}
             max={100}
             step={1}

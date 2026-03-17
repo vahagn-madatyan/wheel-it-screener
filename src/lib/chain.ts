@@ -1,3 +1,4 @@
+import { ApiError } from '@/services/api-error';
 import { AlpacaService } from '@/services/alpaca';
 import type { AlpacaOptionSnapshot } from '@/services/alpaca';
 import { MassiveService } from '@/services/massive';
@@ -11,20 +12,27 @@ import type { PutOption, ChainData } from '@/types';
 
 export type ChainProvider = 'alpaca' | 'massive';
 
-export interface ChainParams {
+interface ChainParamsBase {
   symbol: string;
   currentPrice: number;
   targetDTE: number;
   targetDelta: number;
   signal?: AbortSignal;
-  provider: ChainProvider;
-  // Alpaca auth
-  alpacaKeyId?: string;
-  alpacaSecretKey?: string;
-  // Massive auth
-  massiveKey?: string;
+}
+
+interface AlpacaChainParams extends ChainParamsBase {
+  provider: 'alpaca';
+  alpacaKeyId: string;
+  alpacaSecretKey: string;
+}
+
+interface MassiveChainParams extends ChainParamsBase {
+  provider: 'massive';
+  massiveKey: string;
   massiveRateLimiter?: TokenBucketRateLimiter;
 }
+
+export type ChainParams = AlpacaChainParams | MassiveChainParams;
 
 // ---- Expiry logic ----
 
@@ -141,8 +149,16 @@ export async function fetchChainAlpaca(
         closePrice: parseFloat(c.close_price) || 0,
       };
     }
-  } catch {
-    // OI fetch is supplementary — continue without it
+  } catch (err) {
+    // Re-throw abort signals and auth errors — these are not supplementary failures
+    if (signal?.aborted) throw err;
+    if (err instanceof ApiError && (err.status === 401 || err.status === 403)) {
+      throw err;
+    }
+    console.warn(
+      `[chain] OI fetch failed for ${symbol}, continuing without OI:`,
+      err instanceof Error ? err.message : err,
+    );
   }
 
   // Step 3: Merge on OCC symbol key
@@ -270,17 +286,46 @@ export async function fetchChain(params: ChainParams): Promise<ChainData> {
 
   // Get expirations
   let expirations: string[];
+  let puts: PutOption[];
 
   if (provider === 'alpaca') {
     const service = new AlpacaService(
-      params.alpacaKeyId!,
-      params.alpacaSecretKey!,
+      params.alpacaKeyId,
+      params.alpacaSecretKey,
     );
     expirations = await service.getOptionExpirations(symbol, signal);
+
+    const selectedExpiry = selectBestExpiry(expirations, targetDTE);
+    if (!selectedExpiry) {
+      throw new Error(`No valid expirations found for ${symbol}`);
+    }
+
+    const dte = computeDTE(selectedExpiry);
+    puts = await fetchChainAlpaca(
+      service,
+      symbol,
+      selectedExpiry,
+      currentPrice,
+      dte,
+      signal,
+    );
+
+    // Score puts
+    const scoredPuts = scorePuts(puts, targetDelta);
+
+    console.log(
+      `[chain] loaded ${scoredPuts.length} puts for ${symbol}/${selectedExpiry}`,
+    );
+
+    return {
+      symbol,
+      expirations,
+      selectedExpiry,
+      puts: scoredPuts,
+    };
   } else {
-    // Massive: get expirations from contracts reference
     const service = new MassiveService(
-      params.massiveKey!,
+      params.massiveKey,
       params.massiveRateLimiter,
     );
     const contracts = await service.getAllOptionContracts(
@@ -293,37 +338,13 @@ export async function fetchChain(params: ChainParams): Promise<ChainData> {
       signal,
     );
     expirations = [...new Set(contracts.map((c) => c.expiration_date))].sort();
-  }
 
-  // Select best expiry
-  const selectedExpiry = selectBestExpiry(expirations, targetDTE);
-  if (!selectedExpiry) {
-    throw new Error(`No valid expirations found for ${symbol}`);
-  }
+    const selectedExpiry = selectBestExpiry(expirations, targetDTE);
+    if (!selectedExpiry) {
+      throw new Error(`No valid expirations found for ${symbol}`);
+    }
 
-  const dte = computeDTE(selectedExpiry);
-
-  // Fetch puts for selected expiry
-  let puts: PutOption[];
-
-  if (provider === 'alpaca') {
-    const service = new AlpacaService(
-      params.alpacaKeyId!,
-      params.alpacaSecretKey!,
-    );
-    puts = await fetchChainAlpaca(
-      service,
-      symbol,
-      selectedExpiry,
-      currentPrice,
-      dte,
-      signal,
-    );
-  } else {
-    const service = new MassiveService(
-      params.massiveKey!,
-      params.massiveRateLimiter,
-    );
+    const dte = computeDTE(selectedExpiry);
     puts = await fetchChainMassive(
       service,
       symbol,
@@ -332,19 +353,19 @@ export async function fetchChain(params: ChainParams): Promise<ChainData> {
       dte,
       signal,
     );
+
+    // Score puts
+    const scoredPuts = scorePuts(puts, targetDelta);
+
+    console.log(
+      `[chain] loaded ${scoredPuts.length} puts for ${symbol}/${selectedExpiry}`,
+    );
+
+    return {
+      symbol,
+      expirations,
+      selectedExpiry,
+      puts: scoredPuts,
+    };
   }
-
-  // Score puts
-  const scoredPuts = scorePuts(puts, targetDelta);
-
-  console.log(
-    `[chain] loaded ${scoredPuts.length} puts for ${symbol}/${selectedExpiry}`,
-  );
-
-  return {
-    symbol,
-    expirations,
-    selectedExpiry,
-    puts: scoredPuts,
-  };
 }

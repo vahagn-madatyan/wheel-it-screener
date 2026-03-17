@@ -55,7 +55,14 @@ export function useChainQuery() {
   }, []);
 
   const query = useQuery({
-    queryKey: ['chain', symbol, provider] as const,
+    queryKey: [
+      'chain',
+      symbol,
+      provider,
+      currentPrice,
+      targetDTE,
+      targetDelta,
+    ] as const,
     queryFn: async ({ signal }) => {
       if (!symbol || !provider) {
         throw new Error(
@@ -63,27 +70,34 @@ export function useChainQuery() {
         );
       }
 
-      // Create/reuse rate limiter for Massive
-      let massiveRateLimiter: TokenBucketRateLimiter | undefined;
-      if (provider === 'massive') {
-        if (!rateLimiterRef.current) {
-          rateLimiterRef.current = new TokenBucketRateLimiter(5, 5, 60000);
-        }
-        massiveRateLimiter = rateLimiterRef.current;
-      }
-
-      return fetchChain({
+      // Build provider-specific params
+      const baseParams = {
         symbol,
         currentPrice,
         targetDTE,
         targetDelta,
         signal,
-        provider,
-        alpacaKeyId,
-        alpacaSecretKey,
-        massiveKey,
-        massiveRateLimiter,
-      });
+      };
+
+      if (provider === 'alpaca') {
+        return fetchChain({
+          ...baseParams,
+          provider: 'alpaca',
+          alpacaKeyId,
+          alpacaSecretKey,
+        });
+      } else {
+        // Create/reuse rate limiter for Massive
+        if (!rateLimiterRef.current) {
+          rateLimiterRef.current = new TokenBucketRateLimiter(5, 5, 60000);
+        }
+        return fetchChain({
+          ...baseParams,
+          provider: 'massive',
+          massiveKey,
+          massiveRateLimiter: rateLimiterRef.current,
+        });
+      }
     },
     enabled: isOpen && symbol !== null && provider !== null,
     staleTime: 5 * 60 * 1000, // 5 minutes

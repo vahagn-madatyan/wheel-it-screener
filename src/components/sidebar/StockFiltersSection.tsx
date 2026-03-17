@@ -1,8 +1,15 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useFilterStore } from '@/stores/filter-store';
 import { PRESETS } from '@/lib/constants';
-import type { FilterState, Preset } from '@/types';
+import type { FilterState, Preset, TickerUniverse } from '@/types';
 import { NumberInput } from './NumberInput';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 /** Numeric fields that presets set (used for preset detection) */
 const PRESET_NUMERIC_FIELDS = [
@@ -74,16 +81,24 @@ const UNIVERSE_OPTIONS = [
 ];
 
 export function StockFiltersSection() {
-  const state = useFilterStore();
   const setFilter = useFilterStore((s) => s.setFilter);
   const applyPreset = useFilterStore((s) => s.applyPreset);
-
-  // Derive the current preset from the full filter state
-  const currentPreset = useMemo(() => detectPreset(state), [state]);
+  const currentPreset = useFilterStore((s) => detectPreset(s));
+  const tickerUniverse = useFilterStore((s) => s.tickerUniverse);
+  const customTickers = useFilterStore((s) => s.customTickers);
+  const minPrice = useFilterStore((s) => s.minPrice);
+  const maxPrice = useFilterStore((s) => s.maxPrice);
+  const minMktCap = useFilterStore((s) => s.minMktCap);
+  const maxMktCap = useFilterStore((s) => s.maxMktCap);
+  const minVolume = useFilterStore((s) => s.minVolume);
+  const maxPE = useFilterStore((s) => s.maxPE);
+  const maxDebtEquity = useFilterStore((s) => s.maxDebtEquity);
+  const minNetMargin = useFilterStore((s) => s.minNetMargin);
+  const minSalesGrowth = useFilterStore((s) => s.minSalesGrowth);
+  const minROE = useFilterStore((s) => s.minROE);
 
   const handlePresetChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = e.target.value;
+    (value: string) => {
       if (value !== 'custom') {
         applyPreset(value);
       }
@@ -92,8 +107,8 @@ export function StockFiltersSection() {
   );
 
   const handleUniverseChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFilter('tickerUniverse', e.target.value);
+    (value: string) => {
+      setFilter('tickerUniverse', value as TickerUniverse);
     },
     [setFilter],
   );
@@ -102,50 +117,44 @@ export function StockFiltersSection() {
     <div className="flex flex-col gap-3">
       {/* Preset Dropdown */}
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="preset-select"
-          className="text-xs font-medium text-sidebar-foreground/70"
-        >
+        <label className="text-xs font-medium text-sidebar-foreground/70">
           Preset
         </label>
-        <select
-          id="preset-select"
-          value={currentPreset}
-          onChange={handlePresetChange}
-          className="h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm text-sidebar-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-        >
-          {PRESET_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <Select value={currentPreset} onValueChange={handlePresetChange}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {PRESET_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Ticker Universe */}
       <div className="flex flex-col gap-1">
-        <label
-          htmlFor="universe-select"
-          className="text-xs font-medium text-sidebar-foreground/70"
-        >
+        <label className="text-xs font-medium text-sidebar-foreground/70">
           Ticker Universe
         </label>
-        <select
-          id="universe-select"
-          value={state.tickerUniverse}
-          onChange={handleUniverseChange}
-          className="h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm text-sidebar-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-        >
-          {UNIVERSE_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        <Select value={tickerUniverse} onValueChange={handleUniverseChange}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {UNIVERSE_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Custom Tickers (only visible when universe is "custom") */}
-      {state.tickerUniverse === 'custom' && (
+      {tickerUniverse === 'custom' && (
         <div className="flex flex-col gap-1">
           <label
             htmlFor="custom-tickers"
@@ -156,7 +165,7 @@ export function StockFiltersSection() {
           <input
             id="custom-tickers"
             type="text"
-            value={state.customTickers}
+            value={customTickers}
             onChange={(e) => setFilter('customTickers', e.target.value)}
             placeholder="AAPL, MSFT, NVDA…"
             className="h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm text-sidebar-foreground placeholder:text-sidebar-foreground/40 focus:outline-none focus:ring-1 focus:ring-primary"
@@ -168,7 +177,7 @@ export function StockFiltersSection() {
       <div className="grid grid-cols-2 gap-x-3 gap-y-2">
         <NumberInput
           label="Min Price ($)"
-          value={state.minPrice}
+          value={minPrice}
           onChange={(v) => setFilter('minPrice', v ?? 0)}
           min={0}
           step={1}
@@ -176,7 +185,7 @@ export function StockFiltersSection() {
         />
         <NumberInput
           label="Max Price ($)"
-          value={state.maxPrice}
+          value={maxPrice}
           onChange={(v) => setFilter('maxPrice', v ?? 0)}
           min={0}
           step={1}
@@ -185,7 +194,7 @@ export function StockFiltersSection() {
 
         <NumberInput
           label="Min Mkt Cap (B)"
-          value={state.minMktCap}
+          value={minMktCap}
           onChange={(v) => setFilter('minMktCap', v ?? 0)}
           min={0}
           step={0.1}
@@ -193,7 +202,7 @@ export function StockFiltersSection() {
         />
         <NumberInput
           label="Max Mkt Cap (B)"
-          value={state.maxMktCap}
+          value={maxMktCap}
           onChange={(v) => setFilter('maxMktCap', v ?? 0)}
           min={0}
           step={1}
@@ -202,7 +211,7 @@ export function StockFiltersSection() {
 
         <NumberInput
           label="Min Volume (M)"
-          value={state.minVolume}
+          value={minVolume}
           onChange={(v) => setFilter('minVolume', v ?? 0)}
           min={0}
           step={0.1}
@@ -210,7 +219,7 @@ export function StockFiltersSection() {
         />
         <NumberInput
           label="Max P/E"
-          value={state.maxPE}
+          value={maxPE}
           onChange={(v) => setFilter('maxPE', v ?? 0)}
           min={0}
           step={1}
@@ -219,7 +228,7 @@ export function StockFiltersSection() {
 
         <NumberInput
           label="Max D/E Ratio"
-          value={state.maxDebtEquity}
+          value={maxDebtEquity}
           onChange={(v) => setFilter('maxDebtEquity', v)}
           min={0}
           step={0.1}
@@ -227,7 +236,7 @@ export function StockFiltersSection() {
         />
         <NumberInput
           label="Min Net Margin (%)"
-          value={state.minNetMargin}
+          value={minNetMargin}
           onChange={(v) => setFilter('minNetMargin', v)}
           step={1}
           placeholder="Any"
@@ -235,14 +244,14 @@ export function StockFiltersSection() {
 
         <NumberInput
           label="Min Sales Growth (%)"
-          value={state.minSalesGrowth}
+          value={minSalesGrowth}
           onChange={(v) => setFilter('minSalesGrowth', v)}
           step={1}
           placeholder="Any"
         />
         <NumberInput
           label="Min ROE (%)"
-          value={state.minROE}
+          value={minROE}
           onChange={(v) => setFilter('minROE', v)}
           step={1}
           placeholder="Any"

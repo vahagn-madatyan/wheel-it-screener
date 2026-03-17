@@ -67,13 +67,23 @@ export const useApiKeyStore = create<ApiKeyStore>()(
     }),
     {
       name: 'wheelscan-api-keys',
-      version: 1,
-      partialize: (state) => ({
-        finnhubKey: state.finnhubKey,
-        alpacaKeyId: state.alpacaKeyId,
-        alpacaSecretKey: state.alpacaSecretKey,
-        massiveKey: state.massiveKey,
-      }),
+      version: 2,
+      storage: {
+        getItem: (name) => {
+          const value = sessionStorage.getItem(name);
+          return value ? JSON.parse(value) : null;
+        },
+        setItem: (name, value) =>
+          sessionStorage.setItem(name, JSON.stringify(value)),
+        removeItem: (name) => sessionStorage.removeItem(name),
+      },
+      partialize: (state) =>
+        ({
+          finnhubKey: state.finnhubKey,
+          alpacaKeyId: state.alpacaKeyId,
+          alpacaSecretKey: state.alpacaSecretKey,
+          massiveKey: state.massiveKey,
+        }) as unknown as ApiKeyStore,
       merge: (persisted, current) => {
         const keys = persisted as Partial<typeof INITIAL_KEYS> | undefined;
         const merged = { ...current, ...keys };

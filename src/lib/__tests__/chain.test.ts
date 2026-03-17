@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import {
+  fetchChain,
   fetchChainAlpaca,
   fetchChainMassive,
   selectBestExpiry,
@@ -441,5 +442,138 @@ describe('fetchChainAlpaca error propagation', () => {
     await expect(
       fetchChainAlpaca(service, 'AAPL', '2026-04-17', 155, 33),
     ).rejects.toThrow('Network failure');
+  });
+});
+
+// ---- fetchChain dispatcher ----
+
+describe('fetchChain dispatcher', () => {
+  const futureDate = new Date();
+  futureDate.setDate(futureDate.getDate() + 30);
+  const futureExpiry = futureDate.toISOString().slice(0, 10);
+
+  it('routes to Alpaca when provider is alpaca', async () => {
+    const mockService = makeAlpacaService({
+      getOptionExpirations: vi.fn().mockResolvedValue([futureExpiry]),
+      getOptionSnapshots: vi.fn().mockResolvedValue({
+        snapshots: {
+          [`AAPL${futureExpiry.replace(/-/g, '').slice(2)}P00150000`]:
+            makeAlpacaSnapshot(),
+        },
+        next_page_token: null,
+      }),
+      getAllOptionContracts: vi.fn().mockResolvedValue([]),
+    });
+
+    (AlpacaService as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      function () {
+        return mockService;
+      },
+    );
+
+    const result = await fetchChain({
+      symbol: 'AAPL',
+      currentPrice: 155,
+      targetDTE: 30,
+      targetDelta: 0.3,
+      provider: 'alpaca',
+      alpacaKeyId: 'test-key',
+      alpacaSecretKey: 'test-secret',
+    });
+
+    expect(result.symbol).toBe('AAPL');
+    expect(result.selectedExpiry).toBe(futureExpiry);
+    expect(result.puts.length).toBeGreaterThanOrEqual(0);
+    expect(AlpacaService).toHaveBeenCalledWith('test-key', 'test-secret');
+  });
+
+  it('routes to Massive when provider is massive', async () => {
+    const mockService = makeMassiveService({
+      getAllOptionContracts: vi
+        .fn()
+        .mockResolvedValue([
+          { expiration_date: futureExpiry, symbol: 'O:AAPL260417P00150000' },
+        ]),
+      getAllOptionChainSnapshots: vi.fn().mockResolvedValue([
+        makePolygonSnapshot({
+          details: {
+            contract_type: 'put',
+            exercise_style: 'american',
+            expiration_date: futureExpiry,
+            shares_per_contract: 100,
+            strike_price: 150,
+            ticker: 'O:AAPL260417P00150000',
+          },
+          greeks: { delta: -0.3, gamma: 0.04, theta: -0.03, vega: 0.12 },
+          implied_volatility: 0.4,
+          last_quote: {
+            ask: 2.8,
+            ask_size: 20,
+            bid: 2.5,
+            bid_size: 15,
+            last_updated: Date.now(),
+            midpoint: 2.65,
+            timeframe: 'REAL-TIME',
+          },
+          day: {
+            change: 0.1,
+            change_percent: 4.0,
+            close: 2.6,
+            high: 2.8,
+            last_updated: Date.now(),
+            low: 2.4,
+            open: 2.5,
+            previous_close: 2.5,
+            volume: 120,
+            vwap: 2.6,
+          },
+          open_interest: 800,
+          last_trade: { price: 2.6, size: 10, sip_timestamp: Date.now() },
+        }),
+      ] as PolygonOptionSnapshotResult[]),
+    });
+
+    (MassiveService as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      function () {
+        return mockService;
+      },
+    );
+
+    const result = await fetchChain({
+      symbol: 'AAPL',
+      currentPrice: 155,
+      targetDTE: 30,
+      targetDelta: 0.3,
+      provider: 'massive',
+      massiveKey: 'test-massive-key',
+    });
+
+    expect(result.symbol).toBe('AAPL');
+    expect(result.puts.length).toBeGreaterThanOrEqual(0);
+    expect(MassiveService).toHaveBeenCalledWith('test-massive-key', undefined);
+  });
+
+  it('throws when no valid expirations found', async () => {
+    const mockService = makeAlpacaService({
+      getOptionExpirations: vi.fn().mockResolvedValue([]),
+    });
+
+    (AlpacaService as unknown as ReturnType<typeof vi.fn>).mockImplementation(
+      function () {
+        return mockService;
+      },
+    );
+
+    await expect(
+      fetchChain({
+        symbol: 'AAPL',
+        currentPrice: 155,
+        targetDTE: 30,
+        targetDelta: 0.3,
+        provider: 'alpaca',
+        alpacaKeyId: 'test-key',
+        alpacaSecretKey: 'test-secret',
+      }),
+    ).rejects.toThrow('No valid expirations found for AAPL');
   });
 });

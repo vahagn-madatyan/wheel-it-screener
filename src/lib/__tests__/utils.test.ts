@@ -112,14 +112,6 @@ describe('getTickerList', () => {
     expect(result).toEqual(TICKER_LISTS.high_dividend);
   });
 
-  it('falls back to wheel_popular for unknown universe', () => {
-    const result = getTickerList({
-      tickerUniverse: 'nonexistent',
-      customTickers: '',
-    });
-    expect(result).toEqual(TICKER_LISTS.wheel_popular);
-  });
-
   it("returns only custom tickers when universe is 'custom'", () => {
     const result = getTickerList({
       tickerUniverse: 'custom',

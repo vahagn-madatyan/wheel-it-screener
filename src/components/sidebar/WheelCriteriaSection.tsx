@@ -1,21 +1,28 @@
 import { useCallback } from 'react';
 import { useFilterStore } from '@/stores/filter-store';
 import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { NumberInput } from './NumberInput';
 
 const DTE_OPTIONS = [
-  { value: 30, label: '30 days' },
-  { value: 45, label: '45 days' },
-  { value: 60, label: '60 days' },
-  { value: 90, label: '90 days' },
+  { value: '30', label: '30 days' },
+  { value: '45', label: '45 days' },
+  { value: '60', label: '60 days' },
+  { value: '90', label: '90 days' },
 ];
 
 const DELTA_OPTIONS = [
-  { value: 0.2, label: '0.20' },
-  { value: 0.25, label: '0.25' },
-  { value: 0.3, label: '0.30' },
-  { value: 0.35, label: '0.35' },
-  { value: 0.4, label: '0.40' },
+  { value: '0.2', label: '0.20' },
+  { value: '0.25', label: '0.25' },
+  { value: '0.3', label: '0.30' },
+  { value: '0.35', label: '0.35' },
+  { value: '0.4', label: '0.40' },
 ];
 
 interface ToggleRowProps {
@@ -54,15 +61,15 @@ export function WheelCriteriaSection() {
   const excludeRiskySectors = useFilterStore((s) => s.excludeRiskySectors);
 
   const handleDTEChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFilter('targetDTE', parseInt(e.target.value, 10));
+    (value: string) => {
+      setFilter('targetDTE', parseInt(value, 10));
     },
     [setFilter],
   );
 
   const handleDeltaChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setFilter('targetDelta', parseFloat(e.target.value));
+    (value: string) => {
+      setFilter('targetDelta', parseFloat(value));
     },
     [setFilter],
   );
@@ -92,45 +99,39 @@ export function WheelCriteriaSection() {
       {/* DTE & Delta Selects */}
       <div className="grid grid-cols-2 gap-x-3">
         <div className="flex flex-col gap-1">
-          <label
-            htmlFor="dte-select"
-            className="text-xs font-medium text-sidebar-foreground/70"
-          >
+          <label className="text-xs font-medium text-sidebar-foreground/70">
             Target DTE
           </label>
-          <select
-            id="dte-select"
-            value={targetDTE}
-            onChange={handleDTEChange}
-            className="h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm text-sidebar-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            {DTE_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          <Select value={String(targetDTE)} onValueChange={handleDTEChange}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {DTE_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
 
         <div className="flex flex-col gap-1">
-          <label
-            htmlFor="delta-select"
-            className="text-xs font-medium text-sidebar-foreground/70"
-          >
+          <label className="text-xs font-medium text-sidebar-foreground/70">
             Target Delta
           </label>
-          <select
-            id="delta-select"
-            value={targetDelta}
-            onChange={handleDeltaChange}
-            className="h-8 w-full rounded-md border border-sidebar-border bg-sidebar px-2 text-sm text-sidebar-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-          >
-            {DELTA_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+          <Select value={String(targetDelta)} onValueChange={handleDeltaChange}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {DELTA_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
 

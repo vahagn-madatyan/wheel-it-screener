@@ -38,6 +38,11 @@ export function ApiKeysSection() {
 
   return (
     <div className="flex flex-col gap-3">
+      <p className="text-[11px] text-muted-foreground leading-tight">
+        Keys are stored in your browser session only and cleared when you close
+        the browser.
+      </p>
+
       <ApiKeyInput
         label="Finnhub"
         value={finnhubKey}

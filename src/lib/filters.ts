@@ -113,6 +113,13 @@ export function filterStocks(
     )
       continue;
 
+    // Minimum premium yield filter
+    if (
+      filters.minPremium > 0 &&
+      (enrichedStock.premiumYield ?? 0) < filters.minPremium
+    )
+      continue;
+
     // Compute wheel score (pure — returns new object)
     enrichedStock = computeWheelScore(enrichedStock, filters);
 

@@ -1,7 +1,12 @@
 import type { Preset, WeightConfig } from '@/types';
 
 // ---- Curated Ticker Lists (exact match to app.js) ----
-export const TICKER_LISTS: Record<string, string[]> = {
+import type { TickerUniverse } from '@/types';
+
+export const TICKER_LISTS: Record<
+  Exclude<TickerUniverse, 'custom'>,
+  string[]
+> = {
   wheel_popular: [
     'AAPL',
     'MSFT',

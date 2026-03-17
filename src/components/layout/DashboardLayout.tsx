@@ -68,7 +68,7 @@ export function DashboardLayout({ sidebar, children }: DashboardLayoutProps) {
   const showOverlay = sidebarOpen || isClosing;
 
   return (
-    <div className="relative grid min-h-dvh grid-cols-1 grid-rows-[auto_1fr] lg:grid-cols-[320px_1fr]">
+    <div className="relative grid h-dvh overflow-hidden grid-cols-1 grid-rows-[auto_1fr] lg:grid-cols-[320px_1fr]">
       {/* Noise texture overlay — subtle grain aesthetic */}
       <div
         className="pointer-events-none fixed inset-0 z-[1] opacity-[0.04]"
@@ -88,7 +88,7 @@ export function DashboardLayout({ sidebar, children }: DashboardLayoutProps) {
         </svg>
       </div>
       {/* Desktop sidebar — always visible at lg+ */}
-      <div className="row-span-2 hidden lg:flex">{sidebar}</div>
+      <div className="row-span-2 hidden overflow-hidden lg:flex">{sidebar}</div>
 
       {/* Mobile sidebar overlay — only mounted when open or closing */}
       {showOverlay && (

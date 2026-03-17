@@ -286,6 +286,19 @@ describe('filterStocks', () => {
     expect(result.length).toBe(1);
   });
 
+  it('filters by minimum premium yield', () => {
+    // minPremium=20 — stock with default premiumYield (computed from metrics) must meet threshold
+    // High minPremium should exclude stocks with low premium yield
+    const result = filterStocks([makeStock()], makeFilters({ minPremium: 99 }));
+    expect(result.length).toBe(0);
+  });
+
+  it('passes stock meeting minimum premium yield', () => {
+    // minPremium=0 — all stocks pass
+    const result = filterStocks([makeStock()], makeFilters({ minPremium: 0 }));
+    expect(result.length).toBe(1);
+  });
+
   // ---- Ordering and composition tests ----
 
   it('computes metrics before buying power filter (filter ordering)', () => {
