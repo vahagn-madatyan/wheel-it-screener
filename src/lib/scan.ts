@@ -1,7 +1,7 @@
 import { FinnhubService } from '@/services/finnhub';
 import { TokenBucketRateLimiter } from '@/services/rate-limiter';
 import { ApiError } from '@/services/api-error';
-import { filterStocks } from '@/lib/filters';
+import { filterStocks, passesMetricFilters } from '@/lib/filters';
 import type { StockResult, FilterState } from '@/types';
 import type { EarningsEntry } from '@/lib/scoring';
 import type { FinnhubQuote, FinnhubMetrics } from '@/services/finnhub';
@@ -105,7 +105,9 @@ export async function runScan({
   onCandidateFound,
   onPhaseChange,
 }: ScanParams): Promise<ScanResult> {
-  const rateLimiter = new TokenBucketRateLimiter(28, 28, 1000);
+  // Finnhub free tier: 60 API calls/min. 2 tokens lets quote+metrics fire in
+  // parallel per ticker, then wait ~2.1s before the next pair (≈57 req/min).
+  const rateLimiter = new TokenBucketRateLimiter(2, 2, 2100);
   const service = new FinnhubService(finnhubKey, rateLimiter);
 
   try {
@@ -161,12 +163,9 @@ export async function runScan({
 
         const stock = buildStockResult(ticker, quote, metrics);
 
-        // Early price filter — skip expensive enrichment for out-of-range stocks
-        if (
-          stock.price > 0 &&
-          stock.price >= filters.minPrice &&
-          stock.price <= filters.maxPrice
-        ) {
+        // Early filter — skip expensive enrichment for stocks that fail
+        // metric-based filters (price, mkt cap, volume, P/E, D/E, etc.)
+        if (passesMetricFilters(stock, filters)) {
           candidates.push(stock);
           onCandidateFound();
         }
@@ -217,10 +216,18 @@ export async function runScan({
 
     checkAborted(signal);
 
-    // ── Phase 4: Analyst recommendations for candidates ──
+    // ── Phase 4: Full filter + scoring pipeline ──
+    onPhaseChange('filtering');
+    const filteredResults = filterStocks(candidates, filters, earningsMap);
+
+    checkAborted(signal);
+
+    // ── Phase 5: Analyst recommendations (only for filtered results) ──
+    // Recommendations are display-only (not used by any filter), so we fetch
+    // them last and only for stocks that survived the full filter pipeline.
     onPhaseChange('recommendations');
 
-    for (const stock of candidates) {
+    for (const stock of filteredResults) {
       checkAborted(signal);
 
       try {
@@ -245,12 +252,6 @@ export async function runScan({
         );
       }
     }
-
-    checkAborted(signal);
-
-    // ── Phase 5: Full filter + scoring pipeline ──
-    onPhaseChange('filtering');
-    const filteredResults = filterStocks(candidates, filters, earningsMap);
 
     return {
       allResults: candidates,

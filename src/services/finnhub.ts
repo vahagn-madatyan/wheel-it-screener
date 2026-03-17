@@ -2,8 +2,17 @@ import { ApiError } from './api-error';
 import type { TokenBucketRateLimiter } from './rate-limiter';
 
 const BASE_URL = 'https://finnhub.io/api/v1';
-const MAX_RETRIES = 3;
-const RETRY_BACKOFF_MS = 1200;
+const MAX_RETRIES = 4;
+const RETRY_BACKOFF_MS = 3000;
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+/** Module-level cache shared across FinnhubService instances within a session */
+const responseCache = new Map<string, { data: unknown; expiry: number }>();
+
+/** Clear the response cache (useful for tests and manual cache invalidation) */
+export function clearFinnhubCache(): void {
+  responseCache.clear();
+}
 
 // ---- Response types matching Finnhub API shapes ----
 
@@ -69,8 +78,9 @@ export interface FinnhubRecommendation {
  * Finnhub API service client.
  *
  * Auth: `token` query param.
- * Rate limit: pair with TokenBucketRateLimiter(28, 28, 1000).
- * Retries 429 responses up to 3 times with 1200ms backoff.
+ * Free tier: 60 API calls/min. Pair with TokenBucketRateLimiter(2, 2, 2100).
+ * Retries 429 responses up to 4 times with 3s exponential backoff.
+ * Includes in-memory response cache (5 min TTL) to avoid redundant calls.
  */
 export class FinnhubService {
   constructor(
@@ -128,6 +138,16 @@ export class FinnhubService {
     params: Record<string, string>,
     signal?: AbortSignal,
   ): Promise<T> {
+    const cacheKey = `${path}?${Object.entries(params)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('&')}`;
+
+    // Check cache before consuming a rate limit token
+    const cached = responseCache.get(cacheKey);
+    if (cached && cached.expiry > Date.now()) {
+      return cached.data as T;
+    }
+
     if (this.rateLimiter) {
       await this.rateLimiter.acquire();
     }
@@ -138,25 +158,26 @@ export class FinnhubService {
       url.searchParams.set(key, value);
     }
 
-    const endpoint = `${path}?${Object.entries(params)
-      .map(([k, v]) => `${k}=${v}`)
-      .join('&')}`;
-
     let lastError: ApiError | null = null;
     for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
       const response = await fetch(url.toString(), { signal });
 
       if (response.ok) {
-        return (await response.json()) as T;
+        const data = (await response.json()) as T;
+        responseCache.set(cacheKey, {
+          data,
+          expiry: Date.now() + CACHE_TTL_MS,
+        });
+        return data;
       }
 
       const body = await response.text().catch(() => null);
 
       if (response.status === 429 && attempt < MAX_RETRIES - 1) {
         lastError = new ApiError(
-          `Finnhub rate limited on ${endpoint}`,
+          `Finnhub rate limited on ${cacheKey}`,
           429,
-          endpoint,
+          cacheKey,
           body,
         );
         await delay(RETRY_BACKOFF_MS * (attempt + 1));
@@ -168,9 +189,9 @@ export class FinnhubService {
       }
 
       throw new ApiError(
-        `Finnhub ${response.status} on ${endpoint}`,
+        `Finnhub ${response.status} on ${cacheKey}`,
         response.status,
-        endpoint,
+        cacheKey,
         body,
       );
     }

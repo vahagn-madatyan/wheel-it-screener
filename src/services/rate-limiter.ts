@@ -2,11 +2,11 @@
  * Token-bucket rate limiter for browser API clients.
  *
  * Usage:
- *   const limiter = new TokenBucketRateLimiter(28, 28, 1000); // Finnhub: 28 tokens refilled every 1s
+ *   const limiter = new TokenBucketRateLimiter(2, 2, 2100); // Finnhub free tier
  *   await limiter.acquire(); // blocks when exhausted, resolves on next refill
  *
  * Configs:
- *   Finnhub:  (28, 28, 1000)   — 28 req/sec with 2-call buffer below 30 limit
+ *   Finnhub:  (2, 2, 2100)    — ~57 req/min (free tier limit: 60 req/min)
  *   Massive:  (5, 5, 60000)    — 5 req/min (free tier)
  */
 export class TokenBucketRateLimiter {

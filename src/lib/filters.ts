@@ -7,6 +7,78 @@ import {
 } from './scoring';
 
 /**
+ * Early metric-based filters that can run using only quote + metrics data.
+ * Used in scan.ts to discard stocks before expensive Profile/Recommendation calls.
+ * Checks: price, market cap, volume, P/E, D/E, net margin, sales growth, ROE,
+ * dividends, and SMA200.
+ */
+export function passesMetricFilters(
+  stock: StockResult,
+  filters: FilterState,
+): boolean {
+  // Price filter
+  if (stock.price <= 0 || stock.price < filters.minPrice || stock.price > filters.maxPrice)
+    return false;
+
+  // Market cap filter
+  if (stock.marketCap > 0) {
+    const capB = stock.marketCap / 1e9;
+    if (capB < filters.minMktCap || capB > filters.maxMktCap) return false;
+  }
+
+  // Volume filter (avgVolume is in millions)
+  if (stock.avgVolume > 0 && stock.avgVolume < filters.minVolume) return false;
+
+  // P/E filter
+  if (stock.pe !== null && stock.pe > 0 && stock.pe > filters.maxPE) return false;
+
+  // D/E filter
+  if (
+    filters.maxDebtEquity !== undefined &&
+    stock.debtToEquity !== null &&
+    stock.debtToEquity > filters.maxDebtEquity
+  )
+    return false;
+
+  // Net Margin filter
+  if (
+    filters.minNetMargin !== undefined &&
+    stock.netMargin !== null &&
+    stock.netMargin < filters.minNetMargin
+  )
+    return false;
+
+  // Sales Growth filter
+  if (
+    filters.minSalesGrowth !== undefined &&
+    stock.revenueGrowth !== null &&
+    stock.revenueGrowth < filters.minSalesGrowth
+  )
+    return false;
+
+  // ROE filter
+  if (
+    filters.minROE !== undefined &&
+    stock.roe !== null &&
+    stock.roe < filters.minROE
+  )
+    return false;
+
+  // Dividend filter
+  if (filters.requireDividends && stock.dividendYield <= 0) return false;
+
+  // 200 SMA filter
+  if (
+    filters.aboveSMA200 &&
+    stock.twoHundredDayAvg > 0 &&
+    stock.price < stock.twoHundredDayAvg
+  )
+    return false;
+
+  return true;
+}
+
+/**
  * Apply the complete filter pipeline and return scored, sorted results.
  * Pure function — no mutation of input candidates.
  *

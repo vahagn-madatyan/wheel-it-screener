@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ApiError } from '../api-error';
-import { FinnhubService } from '../finnhub';
+import { FinnhubService, clearFinnhubCache } from '../finnhub';
 import { AlpacaService } from '../alpaca';
 import { MassiveService } from '../massive';
 
@@ -28,6 +28,7 @@ function errorResponse(status: number, body = 'error'): Response {
 
 beforeEach(() => {
   mockFetch.mockReset();
+  clearFinnhubCache();
 });
 
 // ---- ApiError ----
@@ -127,7 +128,7 @@ describe('FinnhubService', () => {
     }
   });
 
-  it('retries on 429 with backoff (3 attempts)', async () => {
+  it('retries on 429 with backoff (4 attempts)', async () => {
     vi.useFakeTimers();
 
     mockFetch
@@ -138,10 +139,10 @@ describe('FinnhubService', () => {
     const svc = new FinnhubService('key');
     const promise = svc.getQuote('AAPL');
 
-    // First retry after 1200ms
-    await vi.advanceTimersByTimeAsync(1200);
-    // Second retry after 2400ms
-    await vi.advanceTimersByTimeAsync(2400);
+    // First retry after 3000ms
+    await vi.advanceTimersByTimeAsync(3000);
+    // Second retry after 6000ms
+    await vi.advanceTimersByTimeAsync(6000);
 
     const result = await promise;
     expect(result).toEqual({ c: 100 });
@@ -156,6 +157,7 @@ describe('FinnhubService', () => {
     mockFetch
       .mockResolvedValueOnce(errorResponse(429))
       .mockResolvedValueOnce(errorResponse(429))
+      .mockResolvedValueOnce(errorResponse(429))
       .mockResolvedValueOnce(errorResponse(429));
 
     const svc = new FinnhubService('key');
@@ -165,14 +167,15 @@ describe('FinnhubService', () => {
     // while timers are advancing
     const resultPromise = promise.catch((err: unknown) => err as ApiError);
 
-    // Advance past all backoff delays
-    await vi.advanceTimersByTimeAsync(1200);
-    await vi.advanceTimersByTimeAsync(2400);
+    // Advance past all backoff delays (3s + 6s + 9s)
+    await vi.advanceTimersByTimeAsync(3000);
+    await vi.advanceTimersByTimeAsync(6000);
+    await vi.advanceTimersByTimeAsync(9000);
 
     const err = await resultPromise;
     expect(err).toBeInstanceOf(ApiError);
     expect((err as ApiError).status).toBe(429);
-    expect(mockFetch).toHaveBeenCalledTimes(3);
+    expect(mockFetch).toHaveBeenCalledTimes(4);
 
     vi.useRealTimers();
   });
