@@ -17,7 +17,11 @@ export function passesMetricFilters(
   filters: FilterState,
 ): boolean {
   // Price filter
-  if (stock.price <= 0 || stock.price < filters.minPrice || stock.price > filters.maxPrice)
+  if (
+    stock.price <= 0 ||
+    stock.price < filters.minPrice ||
+    stock.price > filters.maxPrice
+  )
     return false;
 
   // Market cap filter
@@ -30,7 +34,8 @@ export function passesMetricFilters(
   if (stock.avgVolume > 0 && stock.avgVolume < filters.minVolume) return false;
 
   // P/E filter
-  if (stock.pe !== null && stock.pe > 0 && stock.pe > filters.maxPE) return false;
+  if (stock.pe !== null && stock.pe > 0 && stock.pe > filters.maxPE)
+    return false;
 
   // D/E filter
   if (

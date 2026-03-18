@@ -208,6 +208,16 @@ describe('filterStocks', () => {
     expect(result.length).toBe(1);
   });
 
+  it('passes Pharmaceuticals through sector filter (no longer excluded)', () => {
+    const stock = makeStock({ symbol: 'PFE', industry: 'Pharmaceuticals' });
+    const result = filterStocks(
+      [stock],
+      makeFilters({ excludeRiskySectors: true }),
+    );
+    expect(result.length).toBe(1);
+    expect(result[0].symbol).toBe('PFE');
+  });
+
   it('filters by buying power (computed after metrics)', () => {
     // price=150 => buyingPower=15000, maxBP=10000 => filtered
     const stock = makeStock({ price: 150 });
