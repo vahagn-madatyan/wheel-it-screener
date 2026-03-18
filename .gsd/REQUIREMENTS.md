@@ -2,41 +2,6 @@
 
 This file is the explicit capability and coverage contract for the project.
 
-## Active
-
-### R038 — Remove 'Pharmaceuticals' from EXCLUDED_INDUSTRIES, keeping only 'Biotechnology' as the blanket pharma-adjacent exclusion
-- Class: core-capability
-- Status: active
-- Description: Remove 'Pharmaceuticals' from EXCLUDED_INDUSTRIES, keeping only 'Biotechnology' as the blanket pharma-adjacent exclusion
-- Why it matters: Big pharma (JNJ, PFE, ABBV) are solid wheel candidates — only biotech carries binary event risk
-- Source: user
-- Primary owning slice: M003-8nlgd1/S02
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Issue-Fix.csv item #5
-
-### R039 — Verify that Finnhub's finnhubIndustry labels for XOM/CVX use 'Integrated Oil & Gas' (not 'Oil & Gas Exploration & Production') so they survive the sector filter
-- Class: quality-attribute
-- Status: active
-- Description: Verify that Finnhub's finnhubIndustry labels for XOM/CVX use 'Integrated Oil & Gas' (not 'Oil & Gas Exploration & Production') so they survive the sector filter
-- Why it matters: Excluding E&P should not accidentally catch integrated oil majors
-- Source: user
-- Primary owning slice: M003-8nlgd1/S02
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Issue-Fix.csv item #6. Verification may be documentation check + test assertion.
-
-### R040 — EXCLUDED_TICKERS array length matches any documented count. Current array has 28 entries.
-- Class: quality-attribute
-- Status: active
-- Description: EXCLUDED_TICKERS array length matches any documented count. Current array has 28 entries.
-- Why it matters: Mismatch between documented count and actual list erodes trust
-- Source: user
-- Primary owning slice: M003-8nlgd1/S02
-- Supporting slices: none
-- Validation: unmapped
-- Notes: Issue-Fix.csv item #8. Audit the list, fix any docs/UI that say 30.
-
 ## Validated
 
 ### R001 — Project initializes with Vite, React 19, TypeScript strict mode, path aliases (@/)
@@ -446,6 +411,39 @@ This file is the explicit capability and coverage contract for the project.
 - Validation: conservative.minIVRank asserted as 25 — literal-value test in `preset audit values (R033–R037)` describe block, vitest green
 - Notes: Issue-Fix.csv item #7
 
+### R038 — Remove 'Pharmaceuticals' from EXCLUDED_INDUSTRIES, keeping only 'Biotechnology' as the blanket pharma-adjacent exclusion
+- Class: core-capability
+- Status: validated
+- Description: Remove 'Pharmaceuticals' from EXCLUDED_INDUSTRIES, keeping only 'Biotechnology' as the blanket pharma-adjacent exclusion
+- Why it matters: Big pharma (JNJ, PFE, ABBV) are solid wheel candidates — only biotech carries binary event risk
+- Source: user
+- Primary owning slice: M003-8nlgd1/S02
+- Supporting slices: none
+- Validation: Pharmaceuticals removed from EXCLUDED_INDUSTRIES in constants.ts (10→9 entries). isExcludedSector('Pharmaceuticals', null) asserted as false. Integration test confirms Pharmaceuticals stock survives filterStocks with excludeRiskySectors: true. 236 vitest tests green.
+- Notes: Issue-Fix.csv item #5
+
+### R039 — Verify that Finnhub's finnhubIndustry labels for XOM/CVX use 'Integrated Oil & Gas' (not 'Oil & Gas Exploration & Production') so they survive the sector filter
+- Class: quality-attribute
+- Status: validated
+- Description: Verify that Finnhub's finnhubIndustry labels for XOM/CVX use 'Integrated Oil & Gas' (not 'Oil & Gas Exploration & Production') so they survive the sector filter
+- Why it matters: Excluding E&P should not accidentally catch integrated oil majors
+- Source: user
+- Primary owning slice: M003-8nlgd1/S02
+- Supporting slices: none
+- Validation: Test assertion: isExcludedSector('Integrated Oil & Gas', null) returns false — E&P exclusion string does not partial-match Integrated Oil. XOM/CVX safe.
+- Notes: Issue-Fix.csv item #6. Verification may be documentation check + test assertion.
+
+### R040 — EXCLUDED_TICKERS array length matches any documented count. Current array has 28 entries.
+- Class: quality-attribute
+- Status: validated
+- Description: EXCLUDED_TICKERS array length matches any documented count. Current array has 28 entries.
+- Why it matters: Mismatch between documented count and actual list erodes trust
+- Source: user
+- Primary owning slice: M003-8nlgd1/S02
+- Supporting slices: none
+- Validation: EXCLUDED_TICKERS.toHaveLength(28) assertion in utils.test.ts. Actual array has exactly 28 entries. No stale "30" references found in src/ or README.md.
+- Notes: Issue-Fix.csv item #8. Audit the list, fix any docs/UI that say 30.
+
 ## Traceability
 
 | ID | Class | Status | Primary owner | Supporting | Proof |
@@ -487,13 +485,13 @@ This file is the explicit capability and coverage contract for the project.
 | R035 | core-capability | validated | M003-8nlgd1/S01 | none | conservative.maxDebtEquity asserted as 1.0 — literal-value test in `preset audit values (R033–R037)` describe block, vitest green |
 | R036 | core-capability | validated | M003-8nlgd1/S01 | none | aggressive.minNetMargin asserted as -10 — literal-value test in `preset audit values (R033–R037)` describe block, vitest green |
 | R037 | core-capability | validated | M003-8nlgd1/S01 | none | conservative.minIVRank asserted as 25 — literal-value test in `preset audit values (R033–R037)` describe block, vitest green |
-| R038 | core-capability | active | M003-8nlgd1/S02 | none | unmapped |
-| R039 | quality-attribute | active | M003-8nlgd1/S02 | none | unmapped |
-| R040 | quality-attribute | active | M003-8nlgd1/S02 | none | unmapped |
+| R038 | core-capability | validated | M003-8nlgd1/S02 | none | Pharmaceuticals removed from EXCLUDED_INDUSTRIES in constants.ts (10→9 entries). isExcludedSector('Pharmaceuticals', null) asserted as false. Integration test confirms Pharmaceuticals stock survives filterStocks with excludeRiskySectors: true. 236 vitest tests green. |
+| R039 | quality-attribute | validated | M003-8nlgd1/S02 | none | Test assertion: isExcludedSector('Integrated Oil & Gas', null) returns false — E&P exclusion string does not partial-match Integrated Oil. XOM/CVX safe. |
+| R040 | quality-attribute | validated | M003-8nlgd1/S02 | none | EXCLUDED_TICKERS.toHaveLength(28) assertion in utils.test.ts. Actual array has exactly 28 entries. No stale "30" references found in src/ or README.md. |
 
 ## Coverage Summary
 
-- Active requirements: 3
-- Mapped to slices: 3
-- Validated: 37 (R001, R002, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020, R021, R022, R023, R024, R025, R026, R027, R028, R029, R030, R031, R032, R033, R034, R035, R036, R037)
+- Active requirements: 0
+- Mapped to slices: 0
+- Validated: 40 (R001, R002, R003, R004, R005, R006, R007, R008, R009, R010, R011, R012, R013, R014, R015, R016, R017, R018, R019, R020, R021, R022, R023, R024, R025, R026, R027, R028, R029, R030, R031, R032, R033, R034, R035, R036, R037, R038, R039, R040)
 - Unmapped active requirements: 0

@@ -4,7 +4,7 @@ import {
   isExcludedSector,
   getTickerList,
 } from '../utils';
-import { TICKER_LISTS } from '../constants';
+import { TICKER_LISTS, EXCLUDED_TICKERS } from '../constants';
 
 describe('parseStrikeFromSymbol', () => {
   it('parses valid OCC symbol', () => {
@@ -53,7 +53,7 @@ describe('isExcludedSector', () => {
   it('excludes by industry (case-insensitive partial match)', () => {
     expect(isExcludedSector('Biotechnology', null)).toBe(true);
     expect(isExcludedSector('biotechnology', null)).toBe(true);
-    expect(isExcludedSector('Pharmaceuticals', null)).toBe(true);
+    expect(isExcludedSector('Pharmaceuticals', null)).toBe(false);
     expect(isExcludedSector('Shell Companies', null)).toBe(true);
     expect(
       isExcludedSector('Mortgage Real Estate Investment Trusts (REITs)', null),
@@ -84,6 +84,14 @@ describe('isExcludedSector', () => {
 
   it('excludes ticker even with clean industry', () => {
     expect(isExcludedSector('Technology', 'COIN')).toBe(true);
+  });
+
+  it('does not over-match Integrated Oil & Gas via E&P exclusion', () => {
+    expect(isExcludedSector('Integrated Oil & Gas', null)).toBe(false);
+  });
+
+  it('confirms excluded ticker count', () => {
+    expect(EXCLUDED_TICKERS).toHaveLength(28);
   });
 });
 

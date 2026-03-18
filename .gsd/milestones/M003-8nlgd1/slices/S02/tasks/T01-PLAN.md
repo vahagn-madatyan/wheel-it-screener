@@ -60,3 +60,9 @@ Three related changes to sector exclusion constants and their tests:
 - `src/lib/constants.ts` — `EXCLUDED_INDUSTRIES` has 9 entries (Pharmaceuticals removed)
 - `src/lib/__tests__/utils.test.ts` — Pharmaceuticals assertion flipped, 2 new assertions added (E&P safety, ticker count)
 - `src/lib/__tests__/filters.test.ts` — 1 new test case for Pharmaceuticals surviving sector filter
+
+## Observability Impact
+
+- **What changes:** Three test assertions added/modified — these are the durable regression signals for R038/R039/R040.
+- **How to inspect:** `npx vitest run --reporter=verbose` shows each assertion by name. Grep for "Pharmaceuticals", "Integrated Oil", or "ticker count" to confirm coverage.
+- **Failure visibility:** If `EXCLUDED_INDUSTRIES` or `EXCLUDED_TICKERS` arrays are modified incorrectly in the future, the length assertion and industry-specific assertions fail with clear expected-vs-actual output.

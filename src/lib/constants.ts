@@ -148,7 +148,6 @@ export const TICKER_LISTS: Record<
 // ---- Excluded sectors (from strategy doc) ----
 export const EXCLUDED_INDUSTRIES: string[] = [
   'Biotechnology',
-  'Pharmaceuticals',
   'Blank Checks',
   'Shell Companies',
   'Savings Institutions',
